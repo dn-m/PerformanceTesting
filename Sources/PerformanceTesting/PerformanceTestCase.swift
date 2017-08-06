@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 
 open class PerformanceTestCase: XCTestCase {
-    
+
     /// Classes of complexity (big-oh style).
     public enum Complexity {
 
