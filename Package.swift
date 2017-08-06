@@ -10,6 +10,6 @@ let package = Package(
     ],
     targets: [
         .target(name: "PerformanceTesting"),
-        .testTarget(name: "PerformanceTestingTests", dependencies: ["PerformanceTesting"]),
+        .testTarget(name: "PerformanceTestingTests", dependencies: ["PerformanceTesting"])
     ]
 )

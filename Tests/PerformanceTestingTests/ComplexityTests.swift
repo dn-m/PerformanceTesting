@@ -11,7 +11,7 @@ import PerformanceTesting
 /// Tests to check correctness of PerformanceComplexityAssertion functions.
 ///
 /// - Note: Data is intentionally dirty.
-class PerformanceTestingTests: XCTestCase {
+class PerformanceTestingTests: PerformanceTestCase {
 
     // - MARK: Constant
 
