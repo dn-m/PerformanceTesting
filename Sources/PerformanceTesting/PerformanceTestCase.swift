@@ -113,30 +113,35 @@ open class PerformanceTestCase: XCTestCase {
     )
     {
         let mappedData = complexity.mapDataForLinearFit(data)
-        let (slope, intercept, correlation) = linearRegression(mappedData)
+        let results = linearRegression(mappedData)
 
         if Configuration.debug {
             print("\(#function): mapped data:")
             for (x, y) in mappedData { print("\t(\(x), \(y))") }
 
-            print("\(#function): slope:       \(slope)")
-            print("\(#function): intercept:   \(intercept)")
-            print("\(#function): correlation: \(correlation)")
+            print("\(#function): slope:       \(results.slope)")
+            print("\(#function): intercept:   \(results.intercept)")
+            print("\(#function): correlation: \(results.correlation)")
             print("\(#function): min corr.:   \(minimumCorrelation)")
         }
 
         // FIXME: should split into two methods, add accuracy arg
         switch complexity {
         case .constant:
-            XCTAssertEqual(slope, 0, accuracy: 0.01)
+            XCTAssertEqual(results.slope, 0, accuracy: 0.01)
         default:
-            XCTAssert(correlation >= minimumCorrelation)
+            XCTAssert(results.correlation >= minimumCorrelation)
         }
     }
 
-    /// Performs linear regression on the given dataset. Returns a triple of
-    /// (slope, intercept, correlation).
-    private func linearRegression(_ data: [(Double, Double)]) -> (Double, Double, Double) {
+    private struct RegressionData {
+        public let slope: Double
+        public let intercept: Double
+        public let correlation: Double
+    }
+
+    /// Performs linear regression on the given dataset.
+    private func linearRegression(_ data: [(Double, Double)]) -> RegressionData {
         let xs = data.map { $0.0 }
         let ys = data.map { $0.1 }
         let sumOfXs = xs.reduce(0, +)
@@ -150,13 +155,13 @@ open class PerformanceTestCase: XCTestCase {
 
         let intercept = interceptNumerator / denominator
         let slope = slopeNumerator / denominator
-        let regressionCoefficient = calculateRegressionCoefficient(data, sumOfXs: sumOfXs, sumOfYs: sumOfYs, slope: slope)
+        let correlation = calculateCorrelation(data, sumOfXs: sumOfXs, sumOfYs: sumOfYs, slope: slope)
 
-        return (slope, intercept, regressionCoefficient)
+        return RegressionData(slope: slope, intercept: intercept, correlation: correlation)
     }
 
     /// Helper function to calculate the regression coefficient ("r") of the given dataset.
-    private func calculateRegressionCoefficient(
+    private func calculateCorrelation(
         _ data: [(Double, Double)],
         sumOfXs: Double,
         sumOfYs: Double,
