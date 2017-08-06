@@ -11,9 +11,13 @@ import PerformanceTesting
 /// Tests to check correctness of PerformanceComplexityAssertion functions.
 ///
 /// - Note: Data is intentionally dirty.
-class PerformanceTestingTests: PerformanceTestCase {
+class PerformanceTestingTests: XCTestCase {
 
     // - MARK: Constant
+
+    func testLinearRegression() {
+        XCTAssertEqual(1, 1)
+    }
 
     func testConstant() {
         let data: [(Double, Double)] = [(1, 1.01), (2, 1.01), (3, 1.05), (4, 0.99)]
