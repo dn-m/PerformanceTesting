@@ -46,6 +46,18 @@ class PerformanceTestingTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .logarithmic)
     }
 
+    // - MARK: SquareRoot
+
+    func testSquareRootSlopeOne() {
+        let data: [(Double, Double)] = [(10, 3.16), (20, 4.47), (30, 5.47), (40, 6.32)]
+        assertPerformanceComplexity(data, complexity: .squareRoot)
+    }
+
+    func testSquareRootSlopeThree() {
+        let data: [(Double, Double)] = [(10, 9.16), (20, 12.47), (30, 15.47), (40, 18.32)]
+        assertPerformanceComplexity(data, complexity: .squareRoot)
+    }
+
     // - MARK: Linear
 
     func testLinearSlopeOne() {
