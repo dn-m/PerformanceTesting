@@ -15,6 +15,7 @@ open class PerformanceTestCase: XCTestCase {
 
         case constant
         case logarithmic
+        case squareRoot
         case linear
         case quadratic
         case cubic
@@ -30,6 +31,8 @@ open class PerformanceTestCase: XCTestCase {
                 return data
             case .logarithmic:
                 return data.map { ($0.0, exp($0.1)) }
+            case .squareRoot:
+                return data.map { ($0.0, pow($0.1, 2)) }
             case .linear:
                 return data
             case .quadratic:
