@@ -26,6 +26,10 @@ open class PerformanceTestCase: XCTestCase {
 
         // Default number of trials for performance testing
         public static let defaultTrialCount: Int = 10
+
+        // Default accuracy to use when testing the slope of constant-time performance
+        public static let defaultConstantTimeSlopeAccuracy: Double = 0.01
+
     }
 
     /// Classes of complexity (big-oh style).
@@ -112,8 +116,30 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
+    /// Assert that the data indicates that performance is constant-time ( O(1) ).
+    public func assertConstantTimePerformance(
+        _ data: [(Double, Double)],
+        slopeAccuracy: Double = Configuration.defaultConstantTimeSlopeAccuracy
+    )
+    {
+        let results = linearRegression(data)
+
+        if Configuration.debug {
+            print("\(#function): data:")
+            for (x, y) in data { print("\t(\(x), \(y))") }
+
+            print("\(#function): slope:       \(results.slope)")
+            print("\(#function): intercept:   \(results.intercept)")
+            print("\(#function): correlation: \(results.correlation)")
+            print("\(#function): slope acc.:  \(slopeAccuracy)")
+        }
+
+        XCTAssertEqual(results.slope, 0, accuracy: slopeAccuracy)
+    }
+
     /// Assert that the data indicates that performance fits well to the given
     /// complexity class. Optional parameter for minimum acceptable correlation.
+    /// Use assertConstantTimePerformance for O(1) assertions
     public func assertPerformanceComplexity(
         _ data: [(Double, Double)],
         complexity: Complexity,
@@ -133,13 +159,15 @@ open class PerformanceTestCase: XCTestCase {
             print("\(#function): min corr.:   \(minimumCorrelation)")
         }
 
-        // FIXME: should split into two methods, add accuracy arg
         switch complexity {
         case .constant:
-            XCTAssertEqual(results.slope, 0, accuracy: 0.01)
+            print("\(#function): warning: constant-time complexity is not well-supported. You",
+                "probably mean assertConstantTimePerformance")
         default:
-            XCTAssert(results.correlation >= minimumCorrelation)
+            () // do nothing
         }
+
+        XCTAssert(results.correlation >= minimumCorrelation)
     }
 
     /// MARK - Private associated types

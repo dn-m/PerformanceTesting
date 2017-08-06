@@ -21,7 +21,7 @@ class PerformanceTestingTests: PerformanceTestCase {
 
     func testConstant() {
         let data: [(Double, Double)] = [(1, 1.01), (2, 1.01), (3, 1.05), (4, 0.99)]
-        assertPerformanceComplexity(data, complexity: .constant)
+        assertConstantTimePerformance(data)
     }
 
     // - MARK: Logarithmic
