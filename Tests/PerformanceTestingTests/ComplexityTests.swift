@@ -8,18 +8,19 @@
 import XCTest
 import PerformanceTesting
 
-/// Tests to check correctness of PerformanceComplexityAssertion functions. Data is
-/// intentionally dirty.
-class PerformanceComplexityAssertionTests: XCTestCase {
+/// Tests to check correctness of PerformanceComplexityAssertion functions.
+///
+/// - Note: Data is intentionally dirty.
+class PerformanceTestingTests: PerformanceTestCase {
 
-    // - MARK: constant
+    // - MARK: Constant
 
     func testConstant() {
         let data: [(Double, Double)] = [(1, 1.01), (2, 1.01), (3, 1.05), (4, 0.99)]
         assertPerformanceComplexity(data, complexity: .constant)
     }
 
-    // - MARK: logarithmic
+    // - MARK: Logarithmic
 
     func testLogarithmicBaseTwoSlopeOne() {
         let data: [(Double, Double)] = [(10, 3.32), (20, 4.32), (30, 4.91), (40, 5.32)]
@@ -41,7 +42,7 @@ class PerformanceComplexityAssertionTests: XCTestCase {
         assertPerformanceComplexity(data, complexity: .logarithmic)
     }
 
-    // - MARK: linear
+    // - MARK: Linear
 
     func testLinearSlopeOne() {
         let data: [(Double, Double)] = [(10, 10), (20, 20.5), (30, 29.5), (40, 39.9)]
@@ -53,9 +54,7 @@ class PerformanceComplexityAssertionTests: XCTestCase {
         assertPerformanceComplexity(data, complexity: .linear)
     }
 
-    // - MARK: linearithmic (TODO)
-
-    // - MARK: quadratic
+    // - MARK: Quadratic
 
     func testQuadraticSlopeOne() {
         let data: [(Double, Double)] = [(10, 100), (20, 400), (30, 900), (40, 1640)]
@@ -67,7 +66,7 @@ class PerformanceComplexityAssertionTests: XCTestCase {
         assertPerformanceComplexity(data, complexity: .quadratic)
     }
 
-    // - MARK: cubic
+    // - MARK: Cubic
 
     func testCubicSlopeOne() {
         let data: [(Double, Double)] = [(10, 1000), (20, 4000), (30, 9000), (40, 16040)]
@@ -79,7 +78,7 @@ class PerformanceComplexityAssertionTests: XCTestCase {
         assertPerformanceComplexity(data, complexity: .cubic)
     }
 
-    // - MARK: exponential
+    // - MARK: Exponential
 
     func testExponentialBaseTwoSlopeOne() {
         let data: [(Double, Double)] = [(10, 1024), (20, 1e6), (30, 1e9), (40, 1e12)]
@@ -90,5 +89,4 @@ class PerformanceComplexityAssertionTests: XCTestCase {
         let data: [(Double, Double)] = [(10, 3072), (20, 3e6), (30, 3e9), (40, 3e12)]
         assertPerformanceComplexity(data, complexity: .exponential)
     }
-
 }
