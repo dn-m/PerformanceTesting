@@ -32,6 +32,8 @@ open class PerformanceTestCase: XCTestCase {
         // Default accuracy to use when testing the slope of constant-time performance
         public static let defaultConstantTimeSlopeAccuracy: Double = 0.01
 
+        // Default scale to use for test size
+        public static let defaultScale: StrideThrough<Double> = Scale.medium
     }
 
     /// Classes of complexity (big-oh style).
@@ -71,6 +73,16 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
+    /// Ranges of values to use for testPoints (values of `n` in `O(f(n))`).
+    public struct Scale {
+
+        public static let tiny   = stride(from: 1.0,         through : 10.0,         by : 1.0)
+        public static let small  = stride(from: 1000.0,      through : 10_000.0,     by : 1000.0)
+        public static let medium = stride(from: 10_000.0,    through : 100_000.0,    by : 10_000.0)
+        public static let large  = stride(from: 1_000_000.0, through : 10_000_000.0, by : 1_000_000.0)
+
+    }
+
     /// MARK - Public functions.
 
     /// Benchmarks the performance of a non-mutating operation.
@@ -78,7 +90,7 @@ open class PerformanceTestCase: XCTestCase {
         mock object: C,
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
-        testPoints: [Double],
+        testPoints: StrideThrough<Double> = Configuration.defaultScale,
         trialCount: Int = Configuration.defaultTrialCount
     ) -> BenchmarkData
     {
@@ -100,7 +112,7 @@ open class PerformanceTestCase: XCTestCase {
         mock object: C,
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
-        testPoints: [Double],
+        testPoints: StrideThrough<Double> = Configuration.defaultScale,
         trialCount: Int = Configuration.defaultTrialCount
     ) -> BenchmarkData
     {
