@@ -10,6 +10,12 @@ import XCTest
 
 open class PerformanceTestCase: XCTestCase {
 
+    /// MARK - Associated types.
+
+    public typealias SetupFunction<C> = (inout C, Double) -> ()
+
+    public typealias RunFunction<C> = (inout C, Double) -> ()
+
     public struct Configuration {
 
         // Controls whether any methods in this file print debugging information
@@ -59,11 +65,13 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
+    /// MARK - Public functions.
+
     /// Tests the performance of a non-mutating operation.
     public func testNonMutatingOperation <C> (
         mock object: C,
-        setupFunction: (inout C, Double) -> (),
-        trialCode: (inout C, Double) -> (),
+        setupFunction: SetupFunction<C>,
+        trialCode: RunFunction<C>,
         testPoints: [Double],
         trialCount: Int = Configuration.defaultTrialCount
     ) -> [(Double, Double)]
@@ -84,8 +92,8 @@ open class PerformanceTestCase: XCTestCase {
     /// Tests the performance of a mutating operation.
     public func testMutatingOperation <C> (
         mock object: C,
-        setupFunction: (inout C, Double) -> (),
-        trialCode: (inout C, Double) -> (),
+        setupFunction: SetupFunction<C>,
+        trialCode: RunFunction<C>,
         testPoints: [Double],
         trialCount: Int = Configuration.defaultTrialCount
     ) -> [(Double, Double)]
@@ -134,11 +142,15 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
+    /// MARK - Private associated types
+
     private struct RegressionData {
         public let slope: Double
         public let intercept: Double
         public let correlation: Double
     }
+
+    /// MARK - Private functions
 
     /// Performs linear regression on the given dataset.
     private func linearRegression(_ data: [(Double, Double)]) -> RegressionData {
