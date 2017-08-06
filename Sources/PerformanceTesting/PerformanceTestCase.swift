@@ -8,21 +8,20 @@
 import Foundation
 import XCTest
 
-struct PerformanceComplexityAssertionConfig {
+public struct PerformanceComplexityAssertionConfig {
 
     // Controls whether any methods in this file print debugging information
-    static var debug: Bool = true
+    public static var debug: Bool = true
 
     // The default minimum correlation to accept
-    static var defaultMinimumCorrelation: Double = 0.95
+    public static var defaultMinimumCorrelation: Double = 0.95
 
     // Default number of trials for performance testing
-    static var defaultTrialCount: Int = 10
-
+    public static var defaultTrialCount: Int = 10
 }
 
 /// Classes of complexity (big-oh style).
-enum ComplexityClass {
+public enum ComplexityClass {
 
     case constant
     case logarithmic
@@ -61,13 +60,13 @@ enum ComplexityClass {
 /// TODO: add helper functions that wraps data generation and performance assertion.
 
 /// Tests the performance of a non-mutating operation.
-func testNonMutatingOperation<C>(
+public func testNonMutatingOperation<C>(
     mock object: C,
     setupFunction: (inout C, Double) -> (),
     trialCode: (inout C, Double) -> (),
     testPoints: [Double],
-    trialCount: Int = PerformanceComplexityAssertionConfig.defaultTrialCount)
-    -> [(Double, Double)]
+    trialCount: Int = PerformanceComplexityAssertionConfig.defaultTrialCount
+) -> [(Double, Double)]
 {
     return testPoints.map { point in
         var pointMock = object
@@ -83,7 +82,7 @@ func testNonMutatingOperation<C>(
 }
 
 /// Tests the performance of a mutating operation.
-func testMutatingOperation<C>(
+public func testMutatingOperation<C>(
     mock object: C,
     setupFunction: (inout C, Double) -> (),
     trialCode: (inout C, Double) -> (),
@@ -107,7 +106,7 @@ func testMutatingOperation<C>(
 
 /// Assert that the data indicates that performance fits well to the given
 /// complexity class. Optional parameter for minimum acceptable correlation.
-func assertPerformanceComplexity(
+public func assertPerformanceComplexity(
     _ data: [(Double, Double)],
     complexity: ComplexityClass,
     minimumCorrelation: Double = PerformanceComplexityAssertionConfig.defaultMinimumCorrelation)
@@ -136,7 +135,7 @@ func assertPerformanceComplexity(
 
 /// Performs linear regression on the given dataset. Returns a triple of
 /// (slope, intercept, correlation).
-func linearRegression(_ data: [(Double, Double)]) -> (Double, Double, Double) {
+public func linearRegression(_ data: [(Double, Double)]) -> (Double, Double, Double) {
     let xs = data.map { $0.0 }
     let ys = data.map { $0.1 }
     let sumOfXs = xs.reduce(0, +)
@@ -156,7 +155,7 @@ func linearRegression(_ data: [(Double, Double)]) -> (Double, Double, Double) {
 }
 
 /// Helper function to calculate the regression coefficient ("r") of the given dataset.
-func calculateRegressionCoefficient(_ data: [(Double, Double)], sumOfXs: Double, sumOfYs: Double, slope: Double) -> Double {
+public func calculateRegressionCoefficient(_ data: [(Double, Double)], sumOfXs: Double, sumOfYs: Double, slope: Double) -> Double {
 
     let meanOfYs = sumOfYs / Double(data.count)
     let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0, +)
