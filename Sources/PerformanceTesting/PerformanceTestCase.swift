@@ -9,7 +9,19 @@ import Foundation
 import XCTest
 
 open class PerformanceTestCase: XCTestCase {
-    
+
+    public struct Configuration {
+
+        // Controls whether any methods in this file print debugging information
+        public static let debug: Bool = true
+
+        // The default minimum correlation to accept
+        public static let defaultMinimumCorrelation: Double = 0.95
+
+        // Default number of trials for performance testing
+        public static let defaultTrialCount: Int = 10
+    }
+
     /// Classes of complexity (big-oh style).
     public enum Complexity {
 
@@ -45,13 +57,13 @@ open class PerformanceTestCase: XCTestCase {
     }
 
     /// Tests the performance of a non-mutating operation.
-    public func testNonMutatingOperation<C>(
+    public func testNonMutatingOperation <C> (
         mock object: C,
         setupFunction: (inout C, Double) -> (),
         trialCode: (inout C, Double) -> (),
         testPoints: [Double],
-        trialCount: Int = PerformanceComplexityAssertionConfig.defaultTrialCount
-        ) -> [(Double, Double)]
+        trialCount: Int = Configuration.defaultTrialCount
+    ) -> [(Double, Double)]
     {
         return testPoints.map { point in
             var pointMock = object
@@ -67,13 +79,13 @@ open class PerformanceTestCase: XCTestCase {
     }
 
     /// Tests the performance of a mutating operation.
-    public func testMutatingOperation<C>(
+    public func testMutatingOperation <C> (
         mock object: C,
         setupFunction: (inout C, Double) -> (),
         trialCode: (inout C, Double) -> (),
         testPoints: [Double],
-        trialCount: Int = PerformanceComplexityAssertionConfig.defaultTrialCount
-        ) -> [(Double, Double)]
+        trialCount: Int = Configuration.defaultTrialCount
+    ) -> [(Double, Double)]
     {
         return testPoints.map { point in
             var pointMock = object
@@ -94,13 +106,13 @@ open class PerformanceTestCase: XCTestCase {
     public func assertPerformanceComplexity(
         _ data: [(Double, Double)],
         complexity: Complexity,
-        minimumCorrelation: Double = PerformanceComplexityAssertionConfig.defaultMinimumCorrelation
+        minimumCorrelation: Double = Configuration.defaultMinimumCorrelation
     )
     {
         let mappedData = complexity.mapDataForLinearFit(data)
         let (slope, intercept, correlation) = linearRegression(mappedData)
 
-        if PerformanceComplexityAssertionConfig.debug {
+        if Configuration.debug {
             print("\(#function): mapped data:")
             for (x, y) in mappedData { print("\t(\(x), \(y))") }
 
@@ -118,62 +130,49 @@ open class PerformanceTestCase: XCTestCase {
             XCTAssert(correlation >= minimumCorrelation)
         }
     }
-}
 
-public struct PerformanceComplexityAssertionConfig {
+    /// Performs linear regression on the given dataset. Returns a triple of
+    /// (slope, intercept, correlation).
+    public func linearRegression(_ data: [(Double, Double)]) -> (Double, Double, Double) {
+        let xs = data.map { $0.0 }
+        let ys = data.map { $0.1 }
+        let sumOfXs = xs.reduce(0, +)
+        let sumOfYs = ys.reduce(0, +)
+        let sumOfXsSquared = xs.map { pow($0, 2) }.reduce(0, +)
+        let sumOfXsTimesYs = data.map(*).reduce(0, +)
 
-    // Controls whether any methods in this file print debugging information
-    public static var debug: Bool = true
+        let denominator = Double(data.count) * sumOfXsSquared - pow(sumOfXs, 2)
+        let interceptNumerator = sumOfYs * sumOfXsSquared - sumOfXs * sumOfXsTimesYs
+        let slopeNumerator = Double(data.count) * sumOfXsTimesYs - sumOfXs * sumOfYs
 
-    // The default minimum correlation to accept
-    public static var defaultMinimumCorrelation: Double = 0.95
+        let intercept = interceptNumerator / denominator
+        let slope = slopeNumerator / denominator
+        let regressionCoefficient = calculateRegressionCoefficient(data, sumOfXs: sumOfXs, sumOfYs: sumOfYs, slope: slope)
 
-    // Default number of trials for performance testing
-    public static var defaultTrialCount: Int = 10
-}
-
-
-/// Performs linear regression on the given dataset. Returns a triple of
-/// (slope, intercept, correlation).
-public func linearRegression(_ data: [(Double, Double)]) -> (Double, Double, Double) {
-    let xs = data.map { $0.0 }
-    let ys = data.map { $0.1 }
-    let sumOfXs = xs.reduce(0, +)
-    let sumOfYs = ys.reduce(0, +)
-    let sumOfXsSquared = xs.map { pow($0, 2) }.reduce(0, +)
-    let sumOfXsTimesYs = data.map(*).reduce(0, +)
-
-    let denominator = Double(data.count) * sumOfXsSquared - pow(sumOfXs, 2)
-    let interceptNumerator = sumOfYs * sumOfXsSquared - sumOfXs * sumOfXsTimesYs
-    let slopeNumerator = Double(data.count) * sumOfXsTimesYs - sumOfXs * sumOfYs
-
-    let intercept = interceptNumerator / denominator
-    let slope = slopeNumerator / denominator
-    let regressionCoefficient = calculateRegressionCoefficient(data, sumOfXs: sumOfXs, sumOfYs: sumOfYs, slope: slope)
-
-    return (slope, intercept, regressionCoefficient)
-}
-
-/// Helper function to calculate the regression coefficient ("r") of the given dataset.
-public func calculateRegressionCoefficient(_ data: [(Double, Double)], sumOfXs: Double, sumOfYs: Double, slope: Double) -> Double {
-
-    let meanOfYs = sumOfYs / Double(data.count)
-    let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0, +)
-    let denominator = squaredErrorOfYs
-
-    if PerformanceComplexityAssertionConfig.debug {
-        print("\(#function): denominator: \(denominator)")
+        return (slope, intercept, regressionCoefficient)
     }
 
-    guard denominator != 0 else { return 0 }
+    /// Helper function to calculate the regression coefficient ("r") of the given dataset.
+    public func calculateRegressionCoefficient(_ data: [(Double, Double)], sumOfXs: Double, sumOfYs: Double, slope: Double) -> Double {
 
-    let meanOfXs = sumOfXs / Double(data.count)
-    let squaredErrorOfXs = data.map { pow($0.0 - meanOfXs, 2) }.reduce(0, +)
-    let numerator = squaredErrorOfXs
+        let meanOfYs = sumOfYs / Double(data.count)
+        let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0, +)
+        let denominator = squaredErrorOfYs
 
-    if PerformanceComplexityAssertionConfig.debug {
-        print("\(#function): numerator: \(numerator)")
+        if Configuration.debug {
+            print("\(#function): denominator: \(denominator)")
+        }
+
+        guard denominator != 0 else { return 0 }
+
+        let meanOfXs = sumOfXs / Double(data.count)
+        let squaredErrorOfXs = data.map { pow($0.0 - meanOfXs, 2) }.reduce(0, +)
+        let numerator = squaredErrorOfXs
+
+        if Configuration.debug {
+            print("\(#function): numerator: \(numerator)")
+        }
+
+        return sqrt(numerator / denominator) * slope
     }
-
-    return sqrt(numerator / denominator) * slope
 }
