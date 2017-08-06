@@ -16,6 +16,8 @@ open class PerformanceTestCase: XCTestCase {
 
     public typealias RunFunction<C> = (inout C, Double) -> ()
 
+    public typealias BenchmarkData = [(Double, Double)]
+
     public struct Configuration {
 
         // Controls whether any methods in this file print debugging information
@@ -47,7 +49,7 @@ open class PerformanceTestCase: XCTestCase {
         /// Maps data representing performance of a certain complexity so that it
         /// can be fit with linear regression. This is done by applying the inverse
         /// function of the expected performance function.
-        public func mapDataForLinearFit(_ data: [(Double, Double)]) -> [(Double, Double)] {
+        public func mapDataForLinearFit(_ data: BenchmarkData) -> BenchmarkData {
             switch self {
             case .constant:
                 return data
@@ -71,14 +73,14 @@ open class PerformanceTestCase: XCTestCase {
 
     /// MARK - Public functions.
 
-    /// Tests the performance of a non-mutating operation.
-    public func testNonMutatingOperation <C> (
+    /// Benchmarks the performance of a non-mutating operation.
+    public func benchmarkNonMutatingOperation <C> (
         mock object: C,
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
         testPoints: [Double],
         trialCount: Int = Configuration.defaultTrialCount
-    ) -> [(Double, Double)]
+    ) -> BenchmarkData
     {
         return testPoints.map { point in
             var pointMock = object
@@ -93,14 +95,14 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-    /// Tests the performance of a mutating operation.
-    public func testMutatingOperation <C> (
+    /// Benchmarks the performance of a mutating operation.
+    public func benchmarkMutatingOperation <C> (
         mock object: C,
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
         testPoints: [Double],
         trialCount: Int = Configuration.defaultTrialCount
-    ) -> [(Double, Double)]
+    ) -> BenchmarkData
     {
         return testPoints.map { point in
             var pointMock = object
@@ -118,7 +120,7 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
     public func assertConstantTimePerformance(
-        _ data: [(Double, Double)],
+        _ data: BenchmarkData,
         slopeAccuracy: Double = Configuration.defaultConstantTimeSlopeAccuracy
     )
     {
@@ -141,7 +143,7 @@ open class PerformanceTestCase: XCTestCase {
     /// complexity class. Optional parameter for minimum acceptable correlation.
     /// Use assertConstantTimePerformance for O(1) assertions
     public func assertPerformanceComplexity(
-        _ data: [(Double, Double)],
+        _ data: BenchmarkData,
         complexity: Complexity,
         minimumCorrelation: Double = Configuration.defaultMinimumCorrelation
     )
@@ -181,7 +183,7 @@ open class PerformanceTestCase: XCTestCase {
     /// MARK - Private functions
 
     /// Performs linear regression on the given dataset.
-    private func linearRegression(_ data: [(Double, Double)]) -> RegressionData {
+    private func linearRegression(_ data: BenchmarkData) -> RegressionData {
         let xs = data.map { $0.0 }
         let ys = data.map { $0.1 }
         let sumOfXs = xs.reduce(0, +)
@@ -202,7 +204,7 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Helper function to calculate the regression coefficient ("r") of the given dataset.
     private func calculateCorrelation(
-        _ data: [(Double, Double)],
+        _ data: BenchmarkData,
         sumOfXs: Double,
         sumOfYs: Double,
         slope: Double
