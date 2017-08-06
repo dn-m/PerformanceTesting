@@ -136,7 +136,7 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Performs linear regression on the given dataset. Returns a triple of
     /// (slope, intercept, correlation).
-    public func linearRegression(_ data: [(Double, Double)]) -> (Double, Double, Double) {
+    private func linearRegression(_ data: [(Double, Double)]) -> (Double, Double, Double) {
         let xs = data.map { $0.0 }
         let ys = data.map { $0.1 }
         let sumOfXs = xs.reduce(0, +)
@@ -156,7 +156,13 @@ open class PerformanceTestCase: XCTestCase {
     }
 
     /// Helper function to calculate the regression coefficient ("r") of the given dataset.
-    public func calculateRegressionCoefficient(_ data: [(Double, Double)], sumOfXs: Double, sumOfYs: Double, slope: Double) -> Double {
+    private func calculateRegressionCoefficient(
+        _ data: [(Double, Double)],
+        sumOfXs: Double,
+        sumOfYs: Double,
+        slope: Double
+        ) -> Double
+    {
 
         let meanOfYs = sumOfYs / Double(data.count)
         let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0, +)
