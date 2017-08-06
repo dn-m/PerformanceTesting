@@ -73,7 +73,7 @@ open class PerformanceTestCase: XCTestCase {
                 trialCode(&pointMock, point)
                 let finishTime = CFAbsoluteTimeGetCurrent()
                 return finishTime - startTime
-                }.reduce(0, +) / Double(trialCount)
+            }.reduce(0, +) / Double(trialCount)
             return (point, average)
         }
     }
@@ -96,7 +96,7 @@ open class PerformanceTestCase: XCTestCase {
                 trialCode(&trialMock, point)
                 let finishTime = CFAbsoluteTimeGetCurrent()
                 return finishTime - startTime
-                }.reduce(0, +) / Double(trialCount)
+            }.reduce(0, +) / Double(trialCount)
             return (point, average)
         }
     }
