@@ -24,7 +24,7 @@ open class PerformanceTestCase: XCTestCase {
         public static let debug: Bool = true
 
         // The default minimum correlation to accept
-        public static let defaultMinimumCorrelation: Double = 0.95
+        public static let defaultMinimumCorrelation: Double = 0.90
 
         // Default number of trials for performance testing
         public static let defaultTrialCount: Int = 10
