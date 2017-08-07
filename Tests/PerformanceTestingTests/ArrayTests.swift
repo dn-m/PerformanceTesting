@@ -12,11 +12,20 @@ class ArrayTests: PerformanceTestCase {
 
     /// MARK - Helper functions.
 
-    // Constructs an array of size `n`.
+    // Constructs an array of size `n` with linearly increasing elements.
     let constructSizeNArray: SetupFunction<[Int]> = { array, n in
         array.reserveCapacity(Int(n))
         for i in 0..<Int(n) {
             array.append(i)
+        }
+    }
+
+    // Constructs an array of size `n` with random elements.
+    let constructRandomSizeNArray: SetupFunction<[Int]> = { array, n in
+        array.reserveCapacity(Int(n))
+        for i in 0..<Int(n) {
+            let randomNumber = Int(arc4random_uniform(UInt32(n)))
+            array.append(randomNumber)
         }
     }
 
@@ -100,15 +109,45 @@ class ArrayTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .linear)
     }
 
-    // `reserveCapacity` should be O(n) in the number of elements
-    func testReserveCapacity() {
+    /// MARK - Tests: removing elements
+
+    // `remove` should be O(n) in the number of elements
+    func testRemove() {
         let data = benchmarkMutatingOperation(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, n in
-                for _ in 0..<100 {
-                    array.reserveCapacity(Int(n))
+                for _ in 0..<2 {
+                    _ = array.remove(at: 0)
                 }
+            }
+        )
+        assertPerformanceComplexity(data, complexity: .linear)
+    }
+
+    /// MARK - Tests: sorting an array
+
+    // `sort` should be roughly O(n) in the number of elements
+    // Technically, it's linearithmic, but we should be able to fit
+    // a line to it well enough.
+    func testSort() {
+        let data = benchmarkMutatingOperation(
+            mock: [],
+            setupFunction: constructRandomSizeNArray,
+            trialCode: { array, n in
+                array.sort()
+            }
+        )
+        assertPerformanceComplexity(data, complexity: .linear)
+    }
+
+    // `partition` should be O(n) in the number of elements
+    func testPartition() {
+        let data = benchmarkMutatingOperation(
+            mock: [],
+            setupFunction: constructRandomSizeNArray,
+            trialCode: { array, n in
+                _ = array.partition { element in element > 50 }
             }
         )
         assertPerformanceComplexity(data, complexity: .linear)
