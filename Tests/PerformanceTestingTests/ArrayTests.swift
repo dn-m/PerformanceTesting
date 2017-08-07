@@ -117,7 +117,7 @@ class ArrayTests: PerformanceTestCase {
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, n in
-                for _ in 0..<2 {
+                for _ in 0..<100 {
                     _ = array.remove(at: 0)
                 }
             }
