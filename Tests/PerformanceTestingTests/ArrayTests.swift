@@ -35,7 +35,7 @@ class ArrayTests: PerformanceTestCase {
     func testIsEmpty() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructSizeNArray,
+            setUp: constructSizeNArray,
             trialCode: { array, _ in _ = array.isEmpty },
             isMutating: false
         )
@@ -46,7 +46,7 @@ class ArrayTests: PerformanceTestCase {
     func testCount() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructSizeNArray,
+            setUp: constructSizeNArray,
             trialCode: { array, _ in _ = array.count },
             isMutating: false
         )
@@ -59,7 +59,7 @@ class ArrayTests: PerformanceTestCase {
     func testSubscript() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructSizeNArray,
+            setUp: constructSizeNArray,
             trialCode: { array, _ in _ = array[3] },
             isMutating: false
         )
@@ -70,7 +70,7 @@ class ArrayTests: PerformanceTestCase {
     func testFirst() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructSizeNArray,
+            setUp: constructSizeNArray,
             trialCode: { array, _ in _ = array.first },
             isMutating: false
         )
@@ -81,7 +81,7 @@ class ArrayTests: PerformanceTestCase {
     func testLast() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructSizeNArray,
+            setUp: constructSizeNArray,
             trialCode: { array, _ in _ = array.last },
             isMutating: false
         )
@@ -94,7 +94,7 @@ class ArrayTests: PerformanceTestCase {
     func testAppend() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructSizeNArray,
+            setUp: constructSizeNArray,
             trialCode: { array, _ in array.append(6) },
             isMutating: true
         )
@@ -105,7 +105,7 @@ class ArrayTests: PerformanceTestCase {
     func testInsert() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructSizeNArray,
+            setUp: constructSizeNArray,
             trialCode: { array, _ in
                 for _ in 0..<100 {
                     array.insert(6, at: 0)
@@ -122,7 +122,7 @@ class ArrayTests: PerformanceTestCase {
     func testRemove() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructSizeNArray,
+            setUp: constructSizeNArray,
             trialCode: { array, n in
                 for _ in 0..<100 {
                     _ = array.remove(at: 0)
@@ -141,7 +141,7 @@ class ArrayTests: PerformanceTestCase {
     func testSort() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructRandomSizeNArray,
+            setUp: constructRandomSizeNArray,
             trialCode: { array, n in
                 array.sort()
             },
@@ -154,7 +154,7 @@ class ArrayTests: PerformanceTestCase {
     func testPartition() {
         let data = benchmarkClosure(
             mock: [],
-            setupFunction: constructRandomSizeNArray,
+            setUp: constructRandomSizeNArray,
             trialCode: { array, n in
                 _ = array.partition { element in element > 50 }
             },

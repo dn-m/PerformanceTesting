@@ -12,6 +12,7 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: - Associated Types
 
+    public typealias SetUp <C> = (inout C, Double) -> Void
     public typealias Benchmark = [(Double, Double)]
 
     // MARK: - Nested Types
@@ -77,7 +78,7 @@ open class PerformanceTestCase: XCTestCase {
     /// Benchmarks the performance of an closure.
     public func benchmarkClosure <C> (
         mock object: C,
-        setupFunction: (inout C, Double) -> Void,
+        setUp: SetUp<C>,
         trialCode: (inout C, Double) -> Void,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
@@ -86,7 +87,7 @@ open class PerformanceTestCase: XCTestCase {
     {
         return testPoints.map { point in
             var pointMock = object
-            setupFunction(&pointMock, point)
+            setUp(&pointMock, point)
             let average = (0..<trialCount).map { _ in
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
