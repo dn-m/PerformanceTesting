@@ -25,9 +25,6 @@ open class PerformanceTestCase: XCTestCase {
 
         // The default minimum correlation to accept
         public static let defaultMinimumCorrelation: Double = 0.90
-
-        // Default number of trials for performance testing
-        public static let defaultTrialCount: Int = 10
     }
 
     /// Classes of complexity (big-oh style).
@@ -102,7 +99,7 @@ open class PerformanceTestCase: XCTestCase {
         trialCode: RunFunction<C>,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
-        trialCount: Int = Configuration.defaultTrialCount
+        trialCount: Int = 10
     ) -> BenchmarkData
     {
         return testPoints.map { point in
