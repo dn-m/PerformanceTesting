@@ -12,7 +12,6 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: - Associated Types
 
-    public typealias Run<C> = (inout C, Double) -> Void
     public typealias Benchmark = [(Double, Double)]
 
     // MARK: - Nested Types
@@ -79,7 +78,7 @@ open class PerformanceTestCase: XCTestCase {
     public func benchmarkClosure <C> (
         mock object: C,
         setupFunction: (inout C, Double) -> Void,
-        trialCode: Run<C>,
+        trialCode: (inout C, Double) -> Void,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
         trialCount: Int = 10
@@ -104,7 +103,7 @@ open class PerformanceTestCase: XCTestCase {
     private func timeClosure <C> (
         point: Double,
         mock: inout C,
-        closure: Run<C>
+        closure: (inout C, Double) -> Void
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
