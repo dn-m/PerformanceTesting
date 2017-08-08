@@ -91,11 +91,12 @@ open class PerformanceTestCase: XCTestCase {
 
     /// MARK - Public functions.
 
-    /// Benchmarks the performance of a non-mutating operation.
-    public func benchmarkNonMutatingOperation <C> (
+    /// Benchmarks the performance of an operation.
+    public func benchmarkOperation <C> (
         mock object: C,
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
+        isMutating: Bool,
         testPoints: [Double] = Configuration.defaultScale,
         trialCount: Int = Configuration.defaultTrialCount
     ) -> BenchmarkData
@@ -104,13 +105,28 @@ open class PerformanceTestCase: XCTestCase {
             var pointMock = object
             setupFunction(&pointMock, point)
             let average = (0..<trialCount).map { _ in
-                let startTime = CFAbsoluteTimeGetCurrent()
-                trialCode(&pointMock, point)
-                let finishTime = CFAbsoluteTimeGetCurrent()
-                return finishTime - startTime
+                // if the operation is mutating, create a copy before timing the closure
+                if isMutating {
+                    var trialMock = pointMock
+                    return timeOperation(point: point, mock: &trialMock, trialCode: trialCode);
+                } else {
+                    return timeOperation(point: point, mock: &pointMock, trialCode: trialCode);
+                }
             }.reduce(0, +) / Double(trialCount)
             return (point, average)
         }
+    }
+
+    private func timeOperation<C>(
+        point: Double,
+        mock: inout C,
+        trialCode: RunFunction<C>
+    ) -> Double
+    {
+        let startTime = CFAbsoluteTimeGetCurrent()
+        trialCode(&mock, point)
+        let finishTime = CFAbsoluteTimeGetCurrent()
+        return finishTime - startTime
     }
 
     /// Benchmarks the performance of a mutating operation.
@@ -122,18 +138,33 @@ open class PerformanceTestCase: XCTestCase {
         trialCount: Int = Configuration.defaultTrialCount
     ) -> BenchmarkData
     {
-        return testPoints.map { point in
-            var pointMock = object
-            setupFunction(&pointMock, point)
-            let average = (0..<trialCount).map { _ in
-                var trialMock = pointMock
-                let startTime = CFAbsoluteTimeGetCurrent()
-                trialCode(&trialMock, point)
-                let finishTime = CFAbsoluteTimeGetCurrent()
-                return finishTime - startTime
-            }.reduce(0, +) / Double(trialCount)
-            return (point, average)
-        }
+        return benchmarkOperation(
+            mock: object,
+            setupFunction: setupFunction,
+            trialCode: trialCode,
+            isMutating: true,
+            testPoints: testPoints,
+            trialCount: trialCount
+        )
+    }
+
+    /// Benchmarks the performance of a non-mutating operation.
+    public func benchmarkNonMutatingOperation <C> (
+        mock object: C,
+        setupFunction: SetupFunction<C>,
+        trialCode: RunFunction<C>,
+        testPoints: [Double] = Configuration.defaultScale,
+        trialCount: Int = Configuration.defaultTrialCount
+    ) -> BenchmarkData
+    {
+        return benchmarkOperation(
+            mock: object,
+            setupFunction: setupFunction,
+            trialCode: trialCode,
+            isMutating: false,
+            testPoints: testPoints,
+            trialCount: trialCount
+        )
     }
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
