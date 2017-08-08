@@ -115,7 +115,7 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-    private func timeClosure<C>(
+    private func timeClosure <C> (
         point: Double,
         mock: inout C,
         closure: RunFunction<C>
