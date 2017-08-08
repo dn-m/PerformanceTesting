@@ -13,7 +13,7 @@ class SetTests: PerformanceTestCase {
     /// MARK - Helper functions.
 
     // Constructs a set of size `n` with linearly increasing elements.
-    let constructSizeNSet: SetupFunction<Set<Int>> = { set, n in
+    let constructSizeNSet: SetUp<Set<Int>> = { set, n in
         set.reserveCapacity(Int(n))
         for i in 0..<Int(n) {
             set.insert(i)
