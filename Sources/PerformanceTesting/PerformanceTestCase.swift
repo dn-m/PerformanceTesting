@@ -22,9 +22,6 @@ open class PerformanceTestCase: XCTestCase {
 
         // Controls whether any methods in this file print debugging information
         public static let debug: Bool = true
-
-        // The default minimum correlation to accept
-        public static let defaultMinimumCorrelation: Double = 0.90
     }
 
     /// Classes of complexity (big-oh style).
@@ -157,7 +154,7 @@ open class PerformanceTestCase: XCTestCase {
     public func assertPerformanceComplexity(
         _ data: BenchmarkData,
         complexity: Complexity,
-        minimumCorrelation: Double = Configuration.defaultMinimumCorrelation
+        minimumCorrelation: Double = 0.9
     )
     {
         let mappedData = complexity.mapDataForLinearFit(data)
