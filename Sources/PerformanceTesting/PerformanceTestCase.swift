@@ -19,21 +19,8 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: - Nested Types
 
     public struct Configuration {
-
         // Controls whether any methods in this file print debugging information
         public static let debug: Bool = true
-
-        // The default minimum correlation to accept
-        public static let defaultMinimumCorrelation: Double = 0.90
-
-        // Default number of trials for performance testing
-        public static let defaultTrialCount: Int = 10
-
-        // Default accuracy to use when testing the slope of constant-time performance
-        public static let defaultConstantTimeSlopeAccuracy: Double = 0.01
-
-        // Default scale to use for test size
-        public static let defaultScale: [Double] = Scale.medium
     }
 
     /// Classes of complexity (big-oh style).
@@ -75,18 +62,6 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Ranges of values to use for testPoints (values of `n` in `O(f(n))`).
     public struct Scale {
-
-        // Creates an array of Doubles in an exponential series.
-        private static func exponentialSeries(
-            size: Int,
-            from start: Double,
-            to end: Double
-        ) -> [Double]
-        {
-            let base = pow(end - start + 1, 1 / (Double(size)-1))
-            return (0..<size).map { pow(base, Double($0)) + start - 1 }.map(round)
-        }
-
         public static let tiny   = exponentialSeries(size: 10, from: 5,    to: 100)
         public static let small  = exponentialSeries(size: 10, from: 10,   to: 1_000)
         public static let medium = exponentialSeries(size: 10, from: 100,  to: 1_000_000)
@@ -107,8 +82,8 @@ open class PerformanceTestCase: XCTestCase {
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
         isMutating: Bool,
-        testPoints: [Double] = Configuration.defaultScale,
-        trialCount: Int = Configuration.defaultTrialCount
+        testPoints: [Double] = Scale.medium,
+        trialCount: Int = 10
     ) -> BenchmarkData
     {
         return testPoints.map { point in
@@ -127,7 +102,7 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-    private func timeClosure<C>(
+    private func timeClosure <C> (
         point: Double,
         mock: inout C,
         closure: RunFunction<C>
@@ -142,7 +117,7 @@ open class PerformanceTestCase: XCTestCase {
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
     public func assertConstantTimePerformance(
         _ data: BenchmarkData,
-        slopeAccuracy: Double = Configuration.defaultConstantTimeSlopeAccuracy
+        slopeAccuracy: Double = 0.01
     )
     {
         let results = linearRegression(data)
@@ -166,7 +141,7 @@ open class PerformanceTestCase: XCTestCase {
     public func assertPerformanceComplexity(
         _ data: BenchmarkData,
         complexity: Complexity,
-        minimumCorrelation: Double = Configuration.defaultMinimumCorrelation
+        minimumCorrelation: Double = 0.9
     )
     {
         let mappedData = complexity.mapDataForLinearFit(data)
@@ -248,4 +223,10 @@ open class PerformanceTestCase: XCTestCase {
 
         return sqrt(numerator / denominator) * slope
     }
+}
+
+// Creates an array of Doubles in an exponential series.
+private func exponentialSeries(size: Int, from start: Double, to end: Double) -> [Double] {
+    let base = pow(end - start + 1, 1 / (Double(size)-1))
+    return (0..<size).map { pow(base, Double($0)) + start - 1 }.map(round)
 }
