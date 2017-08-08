@@ -33,20 +33,22 @@ class ArrayTests: PerformanceTestCase {
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array.isEmpty }
+            trialCode: { array, _ in _ = array.isEmpty },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array.count }
+            trialCode: { array, _ in _ = array.count },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
@@ -55,30 +57,33 @@ class ArrayTests: PerformanceTestCase {
 
     // `subscript` should be constant-time in the number of elements
     func testSubscript() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array[3] }
+            trialCode: { array, _ in _ = array[3] },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array.first }
+            trialCode: { array, _ in _ = array.first },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
 
     // `last` should be constant-time in the number of elements
     func testLast() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array.last }
+            trialCode: { array, _ in _ = array.last },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
@@ -87,24 +92,26 @@ class ArrayTests: PerformanceTestCase {
 
     // `append` should be (amortized) constant-time in the number of elements
     func testAppend() {
-        let data = benchmarkMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in array.append(6) }
+            trialCode: { array, _ in array.append(6) },
+            isMutating: true
         )
         assertConstantTimePerformance(data)
     }
 
     // `insert` should be O(n) in the number of elements
     func testInsert() {
-        let data = benchmarkMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, _ in
                 for _ in 0..<100 {
                     array.insert(6, at: 0)
                 }
-            }
+            },
+            isMutating: true
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
@@ -113,14 +120,15 @@ class ArrayTests: PerformanceTestCase {
 
     // `remove` should be O(n) in the number of elements
     func testRemove() {
-        let data = benchmarkMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, n in
                 for _ in 0..<100 {
                     _ = array.remove(at: 0)
                 }
-            }
+            },
+            isMutating: true
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
@@ -131,24 +139,26 @@ class ArrayTests: PerformanceTestCase {
     // Technically, it's linearithmic, but we should be able to fit
     // a line to it well enough.
     func testSort() {
-        let data = benchmarkMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructRandomSizeNArray,
             trialCode: { array, n in
                 array.sort()
-            }
+            },
+            isMutating: true
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
 
     // `partition` should be O(n) in the number of elements
     func testPartition() {
-        let data = benchmarkMutatingOperation(
+        let data = benchmarkOperation(
             mock: [],
             setupFunction: constructRandomSizeNArray,
             trialCode: { array, n in
                 _ = array.partition { element in element > 50 }
-            }
+            },
+            isMutating: true
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }

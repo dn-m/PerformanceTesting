@@ -24,30 +24,33 @@ class SetTests: PerformanceTestCase {
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, _ in _ = set.isEmpty }
+            trialCode: { set, _ in _ = set.isEmpty },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, _ in _ = set.count }
+            trialCode: { set, _ in _ = set.count },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, _ in _ = set.first }
+            trialCode: { set, _ in _ = set.first },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
@@ -56,7 +59,7 @@ class SetTests: PerformanceTestCase {
 
     // `contains` should be constant-time in the number of elements
     func testContains() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
             trialCode: { set, n in
@@ -64,7 +67,8 @@ class SetTests: PerformanceTestCase {
                 for _ in 0..<100 {
                     _ = set.contains(randomNumber)
                 }
-            }
+            },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
@@ -73,7 +77,7 @@ class SetTests: PerformanceTestCase {
 
     // `insert` should be constant-time in the number of elements
     func testInsert() {
-        let data = benchmarkMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
             trialCode: { set, n in
@@ -81,7 +85,8 @@ class SetTests: PerformanceTestCase {
                     let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
                     _ = set.insert(randomNumber)
                 }
-            }
+            },
+            isMutating: true
         )
         assertConstantTimePerformance(data)
     }
@@ -90,19 +95,20 @@ class SetTests: PerformanceTestCase {
 
     // `filter` should be linear in the number of elements
     func testFilter() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
             trialCode: { set, n in
                 _ = set.filter { $0 % 5 == 3 }
-            }
+            },
+            isMutating: false
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
 
     // `remove` should be constant-time in the number of elements
     func testRemove() {
-        let data = benchmarkMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
             trialCode: { set, n in
@@ -110,19 +116,21 @@ class SetTests: PerformanceTestCase {
                     let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
                     _ = set.remove(randomNumber)
                 }
-            }
+            },
+            isMutating: true
         )
         assertConstantTimePerformance(data)
     }
 
     // `removeFirst` should be constant-time in the number of elements
     func testRemoveFirst() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
             trialCode: { set, n in
                 _ = set.removeFirst()
-            }
+            },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }
@@ -131,12 +139,13 @@ class SetTests: PerformanceTestCase {
 
     // `union` should be linear in the number of elements inserted
     func testUnion() {
-        let data = benchmarkNonMutatingOperation(
+        let data = benchmarkOperation(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
             trialCode: { set, n in
                 _ = set.union(Set.init(0..<300))
-            }
+            },
+            isMutating: false
         )
         assertConstantTimePerformance(data)
     }

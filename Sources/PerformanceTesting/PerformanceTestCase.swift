@@ -129,44 +129,6 @@ open class PerformanceTestCase: XCTestCase {
         return finishTime - startTime
     }
 
-    /// Benchmarks the performance of a mutating operation.
-    public func benchmarkMutatingOperation <C> (
-        mock object: C,
-        setupFunction: SetupFunction<C>,
-        trialCode: RunFunction<C>,
-        testPoints: [Double] = Configuration.defaultScale,
-        trialCount: Int = Configuration.defaultTrialCount
-    ) -> BenchmarkData
-    {
-        return benchmarkOperation(
-            mock: object,
-            setupFunction: setupFunction,
-            trialCode: trialCode,
-            isMutating: true,
-            testPoints: testPoints,
-            trialCount: trialCount
-        )
-    }
-
-    /// Benchmarks the performance of a non-mutating operation.
-    public func benchmarkNonMutatingOperation <C> (
-        mock object: C,
-        setupFunction: SetupFunction<C>,
-        trialCode: RunFunction<C>,
-        testPoints: [Double] = Configuration.defaultScale,
-        trialCount: Int = Configuration.defaultTrialCount
-    ) -> BenchmarkData
-    {
-        return benchmarkOperation(
-            mock: object,
-            setupFunction: setupFunction,
-            trialCode: trialCode,
-            isMutating: false,
-            testPoints: testPoints,
-            trialCount: trialCount
-        )
-    }
-
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
     public func assertConstantTimePerformance(
         _ data: BenchmarkData,
