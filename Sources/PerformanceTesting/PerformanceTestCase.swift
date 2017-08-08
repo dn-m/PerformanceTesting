@@ -19,7 +19,6 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: - Nested Types
 
     public struct Configuration {
-
         // Controls whether any methods in this file print debugging information
         public static let debug: Bool = true
     }
@@ -63,18 +62,6 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Ranges of values to use for testPoints (values of `n` in `O(f(n))`).
     public struct Scale {
-
-        // Creates an array of Doubles in an exponential series.
-        private static func exponentialSeries(
-            size: Int,
-            from start: Double,
-            to end: Double
-        ) -> [Double]
-        {
-            let base = pow(end - start + 1, 1 / (Double(size)-1))
-            return (0..<size).map { pow(base, Double($0)) + start - 1 }.map(round)
-        }
-
         public static let tiny   = exponentialSeries(size: 10, from: 5,    to: 100)
         public static let small  = exponentialSeries(size: 10, from: 10,   to: 1_000)
         public static let medium = exponentialSeries(size: 10, from: 100,  to: 1_000_000)
@@ -236,4 +223,10 @@ open class PerformanceTestCase: XCTestCase {
 
         return sqrt(numerator / denominator) * slope
     }
+}
+
+// Creates an array of Doubles in an exponential series.
+private func exponentialSeries(size: Int, from start: Double, to end: Double) -> [Double] {
+    let base = pow(end - start + 1, 1 / (Double(size)-1))
+    return (0..<size).map { pow(base, Double($0)) + start - 1 }.map(round)
 }
