@@ -92,7 +92,7 @@ open class PerformanceTestCase: XCTestCase {
     /// MARK - Public functions.
 
     /// Benchmarks the performance of an operation.
-    public func benchmarkOperation <C> (
+    public func benchmarkClosure <C> (
         mock object: C,
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
@@ -108,16 +108,16 @@ open class PerformanceTestCase: XCTestCase {
                 // if the operation is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialMock = pointMock
-                    return timeOperation(point: point, mock: &trialMock, trialCode: trialCode);
+                    return timeClosure(point: point, mock: &trialMock, trialCode: trialCode);
                 } else {
-                    return timeOperation(point: point, mock: &pointMock, trialCode: trialCode);
+                    return timeClosure(point: point, mock: &pointMock, trialCode: trialCode);
                 }
             }.reduce(0, +) / Double(trialCount)
             return (point, average)
         }
     }
 
-    private func timeOperation<C>(
+    private func timeClosure<C>(
         point: Double,
         mock: inout C,
         trialCode: RunFunction<C>
