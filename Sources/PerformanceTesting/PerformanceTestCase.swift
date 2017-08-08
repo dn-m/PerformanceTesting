@@ -108,9 +108,9 @@ open class PerformanceTestCase: XCTestCase {
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialMock = pointMock
-                    return timeClosure(point: point, mock: &trialMock, trialCode: trialCode);
+                    return timeClosure(point: point, mock: &trialMock, closure: trialCode);
                 } else {
-                    return timeClosure(point: point, mock: &pointMock, trialCode: trialCode);
+                    return timeClosure(point: point, mock: &pointMock, closure: trialCode);
                 }
             }.reduce(0, +) / Double(trialCount)
             return (point, average)
@@ -120,11 +120,11 @@ open class PerformanceTestCase: XCTestCase {
     private func timeClosure<C>(
         point: Double,
         mock: inout C,
-        trialCode: RunFunction<C>
+        closure: RunFunction<C>
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
-        trialCode(&mock, point)
+        closure(&mock, point)
         let finishTime = CFAbsoluteTimeGetCurrent()
         return finishTime - startTime
     }
