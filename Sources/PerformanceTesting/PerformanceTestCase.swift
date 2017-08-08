@@ -91,7 +91,7 @@ open class PerformanceTestCase: XCTestCase {
 
     /// MARK - Public functions.
 
-    /// Benchmarks the performance of an operation.
+    /// Benchmarks the performance of an closure.
     public func benchmarkClosure <C> (
         mock object: C,
         setupFunction: SetupFunction<C>,
@@ -105,7 +105,7 @@ open class PerformanceTestCase: XCTestCase {
             var pointMock = object
             setupFunction(&pointMock, point)
             let average = (0..<trialCount).map { _ in
-                // if the operation is mutating, create a copy before timing the closure
+                // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialMock = pointMock
                     return timeClosure(point: point, mock: &trialMock, trialCode: trialCode);
