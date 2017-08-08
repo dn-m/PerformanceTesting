@@ -28,9 +28,6 @@ open class PerformanceTestCase: XCTestCase {
 
         // Default number of trials for performance testing
         public static let defaultTrialCount: Int = 10
-
-        // Default accuracy to use when testing the slope of constant-time performance
-        public static let defaultConstantTimeSlopeAccuracy: Double = 0.01
     }
 
     /// Classes of complexity (big-oh style).
@@ -139,7 +136,7 @@ open class PerformanceTestCase: XCTestCase {
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
     public func assertConstantTimePerformance(
         _ data: BenchmarkData,
-        slopeAccuracy: Double = Configuration.defaultConstantTimeSlopeAccuracy
+        slopeAccuracy: Double = 0.01
     )
     {
         let results = linearRegression(data)
