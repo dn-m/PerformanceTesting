@@ -10,7 +10,7 @@ import XCTest
 
 open class PerformanceTestCase: XCTestCase {
 
-    // MARK - Associated Types
+    // MARK: - Associated Types
 
     public typealias SetupFunction<C> = (inout C, Double) -> ()
     public typealias RunFunction<C> = (inout C, Double) -> ()
