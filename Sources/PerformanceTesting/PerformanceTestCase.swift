@@ -12,8 +12,8 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: - Associated Types
 
-    public typealias SetUp<C> = (inout C, Double) -> ()
-    public typealias Run<C> = (inout C, Double) -> ()
+    public typealias SetUp<C> = (inout C, Double) -> Void
+    public typealias Run<C> = (inout C, Double) -> Void
     public typealias Benchmark = [(Double, Double)]
 
     // MARK: - Nested Types
