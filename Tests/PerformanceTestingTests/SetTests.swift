@@ -127,4 +127,18 @@ class SetTests: PerformanceTestCase {
         assertConstantTimePerformance(data)
     }
 
+    /// MARK - Tests: combining sets
+
+    // `union` should be linear in the number of elements inserted
+    func testUnion() {
+        let data = benchmarkNonMutatingOperation(
+            mock: Set.init(),
+            setupFunction: constructSizeNSet,
+            trialCode: { set, n in
+                _ = set.union(Set.init(0..<300))
+            }
+        )
+        assertConstantTimePerformance(data)
+    }
+
 }
