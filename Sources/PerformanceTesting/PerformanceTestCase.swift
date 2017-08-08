@@ -31,9 +31,6 @@ open class PerformanceTestCase: XCTestCase {
 
         // Default accuracy to use when testing the slope of constant-time performance
         public static let defaultConstantTimeSlopeAccuracy: Double = 0.01
-
-        // Default scale to use for test size
-        public static let defaultScale: [Double] = Scale.medium
     }
 
     /// Classes of complexity (big-oh style).
@@ -107,7 +104,7 @@ open class PerformanceTestCase: XCTestCase {
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
         isMutating: Bool,
-        testPoints: [Double] = Configuration.defaultScale,
+        testPoints: [Double] = Scale.medium,
         trialCount: Int = Configuration.defaultTrialCount
     ) -> BenchmarkData
     {
