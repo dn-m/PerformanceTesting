@@ -10,13 +10,13 @@ import XCTest
 
 open class PerformanceTestCase: XCTestCase {
 
-    /// MARK - Associated types.
+    // MARK: - Associated Types
 
     public typealias SetupFunction<C> = (inout C, Double) -> ()
-
     public typealias RunFunction<C> = (inout C, Double) -> ()
-
     public typealias BenchmarkData = [(Double, Double)]
+
+    // MARK: - Nested Types
 
     public struct Configuration {
 
@@ -77,7 +77,12 @@ open class PerformanceTestCase: XCTestCase {
     public struct Scale {
 
         // Creates an array of Doubles in an exponential series.
-        private static func exponentialSeries(size: Int, from start: Double, to end: Double) -> [Double] {
+        private static func exponentialSeries(
+            size: Int,
+            from start: Double,
+            to end: Double
+        ) -> [Double]
+        {
             let base = pow(end - start + 1, 1 / (Double(size)-1))
             return (0..<size).map { pow(base, Double($0)) + start - 1 }.map(round)
         }
@@ -86,10 +91,15 @@ open class PerformanceTestCase: XCTestCase {
         public static let small  = exponentialSeries(size: 10, from: 10,   to: 1_000)
         public static let medium = exponentialSeries(size: 10, from: 100,  to: 1_000_000)
         public static let large  = exponentialSeries(size: 10, from: 1000, to: 1_000_000_000)
-
     }
 
-    /// MARK - Public functions.
+    private struct RegressionData {
+        public let slope: Double
+        public let intercept: Double
+        public let correlation: Double
+    }
+
+    /// MARK - Instance Methods
 
     /// Benchmarks the performance of an closure.
     public func benchmarkClosure <C> (
@@ -177,24 +187,15 @@ open class PerformanceTestCase: XCTestCase {
             print("\(#function): warning: constant-time complexity is not well-supported. You",
                 "probably mean assertConstantTimePerformance")
         default:
-            () // do nothing
+            break
         }
 
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    /// MARK - Private associated types
-
-    private struct RegressionData {
-        public let slope: Double
-        public let intercept: Double
-        public let correlation: Double
-    }
-
-    /// MARK - Private functions
-
     /// Performs linear regression on the given dataset.
     private func linearRegression(_ data: BenchmarkData) -> RegressionData {
+
         let xs = data.map { $0.0 }
         let ys = data.map { $0.1 }
         let sumOfXs = xs.reduce(0, +)
@@ -208,7 +209,12 @@ open class PerformanceTestCase: XCTestCase {
 
         let intercept = interceptNumerator / denominator
         let slope = slopeNumerator / denominator
-        let correlation = calculateCorrelation(data, sumOfXs: sumOfXs, sumOfYs: sumOfYs, slope: slope)
+
+        let correlation = calculateCorrelation(data,
+           sumOfXs: sumOfXs,
+           sumOfYs: sumOfYs,
+           slope: slope
+        )
 
         return RegressionData(slope: slope, intercept: intercept, correlation: correlation)
     }
@@ -219,7 +225,7 @@ open class PerformanceTestCase: XCTestCase {
         sumOfXs: Double,
         sumOfYs: Double,
         slope: Double
-        ) -> Double
+    ) -> Double
     {
 
         let meanOfYs = sumOfYs / Double(data.count)
