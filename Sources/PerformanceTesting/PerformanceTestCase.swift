@@ -33,7 +33,7 @@ open class PerformanceTestCase: XCTestCase {
         public static let defaultConstantTimeSlopeAccuracy: Double = 0.01
 
         // Default scale to use for test size
-        public static let defaultScale: StrideThrough<Double> = Scale.medium
+        public static let defaultScale: [Double] = Scale.medium
     }
 
     /// Classes of complexity (big-oh style).
@@ -76,10 +76,16 @@ open class PerformanceTestCase: XCTestCase {
     /// Ranges of values to use for testPoints (values of `n` in `O(f(n))`).
     public struct Scale {
 
-        public static let tiny   = stride(from: 1.0,         through : 10.0,         by : 1.0)
-        public static let small  = stride(from: 1000.0,      through : 10_000.0,     by : 1000.0)
-        public static let medium = stride(from: 10_000.0,    through : 100_000.0,    by : 10_000.0)
-        public static let large  = stride(from: 1_000_000.0, through : 10_000_000.0, by : 1_000_000.0)
+        // Creates an array of Doubles in an exponential series.
+        private static func exponentialSeries(size: Int, from start: Double, to end: Double) -> [Double] {
+            let base = pow(end - start + 1, 1 / (Double(size)-1))
+            return (0..<size).map { pow(base, Double($0)) + start - 1 }.map(round)
+        }
+
+        public static let tiny   = exponentialSeries(size: 10, from: 5,    to: 100)
+        public static let small  = exponentialSeries(size: 10, from: 10,   to: 1_000)
+        public static let medium = exponentialSeries(size: 10, from: 100,  to: 1_000_000)
+        public static let large  = exponentialSeries(size: 10, from: 1000, to: 1_000_000_000)
 
     }
 
@@ -90,7 +96,7 @@ open class PerformanceTestCase: XCTestCase {
         mock object: C,
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
-        testPoints: StrideThrough<Double> = Configuration.defaultScale,
+        testPoints: [Double] = Configuration.defaultScale,
         trialCount: Int = Configuration.defaultTrialCount
     ) -> BenchmarkData
     {
@@ -112,7 +118,7 @@ open class PerformanceTestCase: XCTestCase {
         mock object: C,
         setupFunction: SetupFunction<C>,
         trialCode: RunFunction<C>,
-        testPoints: StrideThrough<Double> = Configuration.defaultScale,
+        testPoints: [Double] = Configuration.defaultScale,
         trialCount: Int = Configuration.defaultTrialCount
     ) -> BenchmarkData
     {
