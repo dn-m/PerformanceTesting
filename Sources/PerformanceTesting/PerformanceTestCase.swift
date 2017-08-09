@@ -76,7 +76,7 @@ open class PerformanceTestCase: XCTestCase {
 
     /// MARK - Instance Methods
 
-    /// Benchmarks the performance of an closure.
+    /// Benchmarks the performance of a closure.
     public func benchmarkClosure <C> (
         mock object: C,
         setupFunction: SetupFunction<C>,
