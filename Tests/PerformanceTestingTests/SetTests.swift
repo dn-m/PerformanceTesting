@@ -13,7 +13,7 @@ class SetTests: PerformanceTestCase {
     /// MARK - Helper functions.
 
     // Constructs a set of size `n` with linearly increasing elements.
-    let constructSizeNSet: SetupFunction<Set<Int>> = { set, n in
+    let constructSizeNSet: SetUp<Set<Int>> = { set, n in
         set.reserveCapacity(Int(n))
         for i in 0..<Int(n) {
             set.insert(i)
@@ -26,7 +26,7 @@ class SetTests: PerformanceTestCase {
     func testIsEmpty() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, _ in _ = set.isEmpty },
             isMutating: false
         )
@@ -37,7 +37,7 @@ class SetTests: PerformanceTestCase {
     func testCount() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, _ in _ = set.count },
             isMutating: false
         )
@@ -48,7 +48,7 @@ class SetTests: PerformanceTestCase {
     func testFirst() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, _ in _ = set.first },
             isMutating: false
         )
@@ -61,7 +61,7 @@ class SetTests: PerformanceTestCase {
     func testContains() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, n in
                 let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
                 for _ in 0..<100 {
@@ -79,7 +79,7 @@ class SetTests: PerformanceTestCase {
     func testInsert() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, n in
                 for _ in 0..<10000 {
                     let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
@@ -97,7 +97,7 @@ class SetTests: PerformanceTestCase {
     func testFilter() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, n in
                 _ = set.filter { $0 % 5 == 3 }
             },
@@ -110,7 +110,7 @@ class SetTests: PerformanceTestCase {
     func testRemove() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, n in
                 for _ in 0..<10000 {
                     let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
@@ -126,7 +126,7 @@ class SetTests: PerformanceTestCase {
     func testRemoveFirst() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, n in
                 _ = set.removeFirst()
             },
@@ -141,7 +141,7 @@ class SetTests: PerformanceTestCase {
     func testUnion() {
         let data = benchmarkClosure(
             mock: Set.init(),
-            setupFunction: constructSizeNSet,
+            setUp: constructSizeNSet,
             trialCode: { set, n in
                 _ = set.union(Set.init(0..<300))
             },

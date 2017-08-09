@@ -12,9 +12,8 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: - Associated Types
 
-    public typealias SetupFunction<C> = (inout C, Double) -> ()
-    public typealias RunFunction<C> = (inout C, Double) -> ()
-    public typealias BenchmarkData = [(Double, Double)]
+    public typealias SetUp <C> = (inout C, Double) -> Void
+    public typealias Benchmark = [(Double, Double)]
 
     // MARK: - Nested Types
 
@@ -38,7 +37,7 @@ open class PerformanceTestCase: XCTestCase {
         /// Maps data representing performance of a certain complexity so that it
         /// can be fit with linear regression. This is done by applying the inverse
         /// function of the expected performance function.
-        public func mapDataForLinearFit(_ data: BenchmarkData) -> BenchmarkData {
+        public func mapDataForLinearFit(_ data: Benchmark) -> Benchmark {
             switch self {
             case .constant:
                 return data
@@ -68,7 +67,7 @@ open class PerformanceTestCase: XCTestCase {
         public static let large  = exponentialSeries(size: 10, from: 1000, to: 1_000_000_000)
     }
 
-    private struct RegressionData {
+    private struct Regression {
         public let slope: Double
         public let intercept: Double
         public let correlation: Double
@@ -79,16 +78,16 @@ open class PerformanceTestCase: XCTestCase {
     /// Benchmarks the performance of a closure.
     public func benchmarkClosure <C> (
         mock object: C,
-        setupFunction: SetupFunction<C>,
-        trialCode: RunFunction<C>,
+        setUp: SetUp<C>,
+        trialCode: (inout C, Double) -> Void,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
         trialCount: Int = 10
-    ) -> BenchmarkData
+    ) -> Benchmark
     {
         return testPoints.map { point in
             var pointMock = object
-            setupFunction(&pointMock, point)
+            setUp(&pointMock, point)
             let average = (0..<trialCount).map { _ in
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
@@ -105,7 +104,7 @@ open class PerformanceTestCase: XCTestCase {
     private func timeClosure <C> (
         point: Double,
         mock: inout C,
-        closure: RunFunction<C>
+        closure: (inout C, Double) -> Void
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
@@ -116,7 +115,7 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
     public func assertConstantTimePerformance(
-        _ data: BenchmarkData,
+        _ data: Benchmark,
         slopeAccuracy: Double = 0.01
     )
     {
@@ -139,7 +138,7 @@ open class PerformanceTestCase: XCTestCase {
     /// complexity class. Optional parameter for minimum acceptable correlation.
     /// Use assertConstantTimePerformance for O(1) assertions
     public func assertPerformanceComplexity(
-        _ data: BenchmarkData,
+        _ data: Benchmark,
         complexity: Complexity,
         minimumCorrelation: Double = 0.9
     )
@@ -169,7 +168,7 @@ open class PerformanceTestCase: XCTestCase {
     }
 
     /// Performs linear regression on the given dataset.
-    private func linearRegression(_ data: BenchmarkData) -> RegressionData {
+    private func linearRegression(_ data: Benchmark) -> Regression {
 
         let xs = data.map { $0.0 }
         let ys = data.map { $0.1 }
@@ -191,12 +190,12 @@ open class PerformanceTestCase: XCTestCase {
            slope: slope
         )
 
-        return RegressionData(slope: slope, intercept: intercept, correlation: correlation)
+        return Regression(slope: slope, intercept: intercept, correlation: correlation)
     }
 
     /// Helper function to calculate the regression coefficient ("r") of the given dataset.
     private func calculateCorrelation(
-        _ data: BenchmarkData,
+        _ data: Benchmark,
         sumOfXs: Double,
         sumOfYs: Double,
         slope: Double
