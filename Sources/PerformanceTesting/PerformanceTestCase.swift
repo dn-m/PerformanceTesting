@@ -74,7 +74,7 @@ open class PerformanceTestCase: XCTestCase {
         public let correlation: Double
     }
 
-    /// MARK - Instance Methods
+    // MARK: - Instance Methods
 
     /// Benchmarks the performance of an closure.
     public func benchmarkClosure <C> (
