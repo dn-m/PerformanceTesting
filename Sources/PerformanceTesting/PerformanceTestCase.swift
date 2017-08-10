@@ -23,42 +23,7 @@ open class PerformanceTestCase: XCTestCase {
         public static var verbose: Bool = true
     }
 
-    /// Classes of complexity (big-oh style).
-    public enum Complexity {
-
-        case constant
-        case logarithmic
-        case squareRoot
-        case linear
-        case quadratic
-        case cubic
-        case exponential
-        case customComplexity(inverseFunction: (Double) -> Double)
-
-        /// The inverse function of the function represented by this complexity.
-        /// For example, the inverse of squareRoot is squaring.
-        public var inverse: (Double) -> Double {
-            switch self {
-            case .constant:
-                return { $0 }
-            case .logarithmic:
-                return exp
-            case .squareRoot:
-                return { pow($0, 2) }
-            case .linear:
-                return { $0 }
-            case .quadratic:
-                return sqrt
-            case .cubic:
-                return { pow($0, 1/3) }
-            case .exponential:
-                return log
-            case .customComplexity(let inverseFunction):
-                return inverseFunction
-            }
-        }
-    }
-
+   
     /// Ranges of values to use for testPoints (values of `n` in `O(f(n))`).
     public struct Scale {
         public static let tiny   = exponentialSeries(size: 10, from: 5,    to: 100)
@@ -228,7 +193,7 @@ open class PerformanceTestCase: XCTestCase {
 /// can be fit with linear regression. This is done by applying the inverse
 /// function of the expected performance function.
 extension Array where Array == PerformanceTestCase.Benchmark {
-    public func mappedForLinearFit(complexity: PerformanceTestCase.Complexity) -> Array {
+    public func mappedForLinearFit(complexity: Complexity) -> Array {
         return self.map { ($0, complexity.inverse($1)) }
     }
 }
