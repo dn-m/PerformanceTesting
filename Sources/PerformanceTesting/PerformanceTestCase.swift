@@ -38,24 +38,24 @@ open class PerformanceTestCase: XCTestCase {
         /// Maps data representing performance of a certain complexity so that it
         /// can be fit with linear regression. This is done by applying the inverse
         /// function of the expected performance function.
-        public func mapDataForLinearFit(_ data: Benchmark) -> Benchmark {
+        public var inverse: (Double) -> Double {
             switch self {
             case .constant:
-                return data
+                return { $0 }
             case .logarithmic:
-                return data.map { ($0.0, exp($0.1)) }
+                return exp
             case .squareRoot:
-                return data.map { ($0.0, pow($0.1, 2)) }
+                return { pow($0, 2) }
             case .linear:
-                return data
+                return { $0 }
             case .quadratic:
-                return data.map { ($0.0, sqrt($0.1)) }
+                return sqrt
             case .cubic:
-                return data.map { ($0.0, pow($0.1, 1/3)) }
+                return { pow($0, 1/3) }
             case .exponential:
-                return data.map { ($0.0, log($0.1)) }
+                return log
             case .customComplexity(let inverseFunction):
-                return data.map { ($0.0, inverseFunction($0.1)) }
+                return inverseFunction
             }
         }
     }
@@ -144,7 +144,7 @@ open class PerformanceTestCase: XCTestCase {
         minimumCorrelation: Double = 0.9
     )
     {
-        let mappedData = complexity.mapDataForLinearFit(data)
+        let mappedData = data.mappedForLinearFit(complexity: complexity)
         let results = linearRegression(mappedData)
 
         if Configuration.debug {
@@ -222,6 +222,12 @@ open class PerformanceTestCase: XCTestCase {
         }
 
         return sqrt(numerator / denominator) * slope
+    }
+}
+
+extension Array where Array == PerformanceTestCase.Benchmark {
+    public func mappedForLinearFit(complexity: PerformanceTestCase.Complexity) -> Array {
+        return self.map { ($0, complexity.inverse($1)) }
     }
 }
 
