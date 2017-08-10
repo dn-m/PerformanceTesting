@@ -39,12 +39,8 @@ internal func linearRegression(_ data: Benchmark) -> Regression {
 }
 
 /// Helper function to calculate the regression coefficient ("r") of the given dataset.
-private func correlation(
-    _ data: Benchmark,
-    sumOfXs: Double,
-    sumOfYs: Double,
-    slope: Double
-) -> Double
+private func correlation(_ data: Benchmark, sumOfXs: Double, sumOfYs: Double, slope: Double)
+    -> Double
 {
     let meanOfYs = sumOfYs / Double(data.count)
     let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0,+)
