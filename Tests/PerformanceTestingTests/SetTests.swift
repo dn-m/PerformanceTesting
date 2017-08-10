@@ -27,7 +27,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, _ in _ = set.isEmpty },
+            measuring: { set, _ in _ = set.isEmpty },
             isMutating: false
         )
         assertConstantTimePerformance(data)
@@ -38,7 +38,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, _ in _ = set.count },
+            measuring: { set, _ in _ = set.count },
             isMutating: false
         )
         assertConstantTimePerformance(data)
@@ -49,7 +49,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, _ in _ = set.first },
+            measuring: { set, _ in _ = set.first },
             isMutating: false
         )
         assertConstantTimePerformance(data)
@@ -62,7 +62,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, n in
+            measuring: { set, n in
                 let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
                 for _ in 0..<100 {
                     _ = set.contains(randomNumber)
@@ -80,7 +80,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, n in
+            measuring: { set, n in
                 for _ in 0..<10000 {
                     let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
                     _ = set.insert(randomNumber)
@@ -98,7 +98,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, n in
+            measuring: { set, n in
                 _ = set.filter { $0 % 5 == 3 }
             },
             isMutating: false
@@ -111,7 +111,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, n in
+            measuring: { set, n in
                 for _ in 0..<10000 {
                     let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
                     _ = set.remove(randomNumber)
@@ -127,7 +127,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, n in
+            measuring: { set, n in
                 _ = set.removeFirst()
             },
             isMutating: false
@@ -142,7 +142,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             mock: Set.init(),
             setupFunction: constructSizeNSet,
-            trialCode: { set, n in
+            measuring: { set, n in
                 _ = set.union(Set.init(0..<300))
             },
             isMutating: false

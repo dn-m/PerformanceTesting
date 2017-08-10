@@ -80,7 +80,7 @@ open class PerformanceTestCase: XCTestCase {
     public func benchmark <C> (
         mock object: C,
         setupFunction: Setup<C>,
-        trialCode: Run<C>,
+        measuring closure: Run<C>,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
         trialCount: Int = 10
@@ -93,9 +93,9 @@ open class PerformanceTestCase: XCTestCase {
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialMock = pointMock
-                    return time(point: point, mock: &trialMock, closure: trialCode);
+                    return time(point: point, mock: &trialMock, measuring: closure);
                 } else {
-                    return time(point: point, mock: &pointMock, closure: trialCode);
+                    return time(point: point, mock: &pointMock, measuring: closure);
                 }
             }.reduce(0, +) / Double(trialCount)
             return (point, average)
@@ -105,7 +105,7 @@ open class PerformanceTestCase: XCTestCase {
     private func time <C> (
         point: Double,
         mock: inout C,
-        closure: Run<C>
+        measuring closure: Run<C>
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()

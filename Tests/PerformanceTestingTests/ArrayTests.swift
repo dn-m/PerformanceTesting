@@ -36,7 +36,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array.isEmpty },
+            measuring: { array, _ in _ = array.isEmpty },
             isMutating: false
         )
         assertConstantTimePerformance(data)
@@ -47,7 +47,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array.count },
+            measuring: { array, _ in _ = array.count },
             isMutating: false
         )
         assertConstantTimePerformance(data)
@@ -60,7 +60,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array[3] },
+            measuring: { array, _ in _ = array[3] },
             isMutating: false
         )
         assertConstantTimePerformance(data)
@@ -71,7 +71,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array.first },
+            measuring: { array, _ in _ = array.first },
             isMutating: false
         )
         assertConstantTimePerformance(data)
@@ -82,7 +82,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in _ = array.last },
+            measuring: { array, _ in _ = array.last },
             isMutating: false
         )
         assertConstantTimePerformance(data)
@@ -95,7 +95,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in array.append(6) },
+            measuring: { array, _ in array.append(6) },
             isMutating: true
         )
         assertConstantTimePerformance(data)
@@ -106,7 +106,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, _ in
+            measuring: { array, _ in
                 for _ in 0..<100 {
                     array.insert(6, at: 0)
                 }
@@ -123,7 +123,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
-            trialCode: { array, n in
+            measuring: { array, n in
                 for _ in 0..<100 {
                     _ = array.remove(at: 0)
                 }
@@ -142,7 +142,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructRandomSizeNArray,
-            trialCode: { array, n in
+            measuring: { array, n in
                 array.sort()
             },
             isMutating: true
@@ -155,7 +155,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             mock: [],
             setupFunction: constructRandomSizeNArray,
-            trialCode: { array, n in
+            measuring: { array, n in
                 _ = array.partition { element in element > 50 }
             },
             isMutating: true
