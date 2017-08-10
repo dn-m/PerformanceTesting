@@ -35,9 +35,8 @@ open class PerformanceTestCase: XCTestCase {
         case exponential
         case customComplexity(inverseFunction: (Double) -> Double)
 
-        /// Maps data representing performance of a certain complexity so that it
-        /// can be fit with linear regression. This is done by applying the inverse
-        /// function of the expected performance function.
+        /// The inverse function of the function represented by this complexity.
+        /// For example, the inverse of squareRoot is squaring.
         public var inverse: (Double) -> Double {
             switch self {
             case .constant:
@@ -225,6 +224,9 @@ open class PerformanceTestCase: XCTestCase {
     }
 }
 
+/// Maps data representing performance of a certain complexity so that it
+/// can be fit with linear regression. This is done by applying the inverse
+/// function of the expected performance function.
 extension Array where Array == PerformanceTestCase.Benchmark {
     public func mappedForLinearFit(complexity: PerformanceTestCase.Complexity) -> Array {
         return self.map { ($0, complexity.inverse($1)) }
