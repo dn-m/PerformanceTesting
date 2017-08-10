@@ -28,21 +28,18 @@ internal func linearRegression(_ data: Benchmark) -> Regression {
     let denominator = Double(data.count) * sumOfXsSquared - pow(sumOfXs, 2)
     let interceptNumerator = sumOfYs * sumOfXsSquared - sumOfXs * sumOfXsTimesYs
     let slopeNumerator = Double(data.count) * sumOfXsTimesYs - sumOfXs * sumOfYs
-
     let intercept = interceptNumerator / denominator
     let slope = slopeNumerator / denominator
 
-    let correlation = calculateCorrelation(data,
-       sumOfXs: sumOfXs,
-       sumOfYs: sumOfYs,
-       slope: slope
+    return Regression(
+        slope: slope,
+        intercept: intercept,
+        correlation: correlation(data, sumOfXs: sumOfXs, sumOfYs: sumOfYs, slope: slope)
     )
-
-    return Regression(slope: slope, intercept: intercept, correlation: correlation)
 }
 
 /// Helper function to calculate the regression coefficient ("r") of the given dataset.
-private func calculateCorrelation(
+private func correlation(
     _ data: Benchmark,
     sumOfXs: Double,
     sumOfYs: Double,
