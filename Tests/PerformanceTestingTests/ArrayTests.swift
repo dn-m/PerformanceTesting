@@ -33,7 +33,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, _ in _ = array.isEmpty },
@@ -44,7 +44,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, _ in _ = array.count },
@@ -57,7 +57,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `subscript` should be constant-time in the number of elements
     func testSubscript() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, _ in _ = array[3] },
@@ -68,7 +68,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, _ in _ = array.first },
@@ -79,7 +79,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `last` should be constant-time in the number of elements
     func testLast() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, _ in _ = array.last },
@@ -92,7 +92,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `append` should be (amortized) constant-time in the number of elements
     func testAppend() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, _ in array.append(6) },
@@ -103,7 +103,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `insert` should be O(n) in the number of elements
     func testInsert() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, _ in
@@ -120,7 +120,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `remove` should be O(n) in the number of elements
     func testRemove() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructSizeNArray,
             trialCode: { array, n in
@@ -139,7 +139,7 @@ class ArrayTests: PerformanceTestCase {
     // Technically, it's linearithmic, but we should be able to fit
     // a line to it well enough.
     func testSort() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructRandomSizeNArray,
             trialCode: { array, n in
@@ -152,7 +152,7 @@ class ArrayTests: PerformanceTestCase {
 
     // `partition` should be O(n) in the number of elements
     func testPartition() {
-        let data = benchmarkClosure(
+        let data = benchmark(
             mock: [],
             setupFunction: constructRandomSizeNArray,
             trialCode: { array, n in

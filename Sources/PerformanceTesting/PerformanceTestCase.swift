@@ -77,7 +77,7 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Instance Methods
 
     /// Benchmarks the performance of a closure.
-    public func benchmarkClosure <C> (
+    public func benchmark <C> (
         mock object: C,
         setupFunction: Setup<C>,
         trialCode: Run<C>,
@@ -93,16 +93,16 @@ open class PerformanceTestCase: XCTestCase {
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialMock = pointMock
-                    return timeClosure(point: point, mock: &trialMock, closure: trialCode);
+                    return time(point: point, mock: &trialMock, closure: trialCode);
                 } else {
-                    return timeClosure(point: point, mock: &pointMock, closure: trialCode);
+                    return time(point: point, mock: &pointMock, closure: trialCode);
                 }
             }.reduce(0, +) / Double(trialCount)
             return (point, average)
         }
     }
 
-    private func timeClosure <C> (
+    private func time <C> (
         point: Double,
         mock: inout C,
         closure: Run<C>
