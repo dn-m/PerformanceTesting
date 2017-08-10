@@ -20,10 +20,10 @@ internal func linearRegression(_ data: Benchmark) -> Regression {
 
     let xs = data.map { $0.0 }
     let ys = data.map { $0.1 }
-    let sumOfXs = xs.reduce(0, +)
-    let sumOfYs = ys.reduce(0, +)
-    let sumOfXsSquared = xs.map { pow($0, 2) }.reduce(0, +)
-    let sumOfXsTimesYs = data.map(*).reduce(0, +)
+    let sumOfXs = xs.reduce(0,+)
+    let sumOfYs = ys.reduce(0,+)
+    let sumOfXsSquared = xs.map { pow($0,2) }.reduce(0,+)
+    let sumOfXsTimesYs = data.map(*).reduce(0,+)
 
     let denominator = Double(data.count) * sumOfXsSquared - pow(sumOfXs, 2)
     let interceptNumerator = sumOfYs * sumOfXsSquared - sumOfXs * sumOfXsTimesYs
@@ -48,7 +48,7 @@ private func correlation(
 {
 
     let meanOfYs = sumOfYs / Double(data.count)
-    let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0, +)
+    let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0,+)
     let denominator = squaredErrorOfYs
 
 //    if Configuration.verbose {
@@ -58,7 +58,7 @@ private func correlation(
     guard denominator != 0 else { return 0 }
 
     let meanOfXs = sumOfXs / Double(data.count)
-    let squaredErrorOfXs = data.map { pow($0.0 - meanOfXs, 2) }.reduce(0, +)
+    let squaredErrorOfXs = data.map { pow($0.0 - meanOfXs, 2) }.reduce(0,+)
     let numerator = squaredErrorOfXs
 
 //    if Configuration.verbose {
