@@ -19,8 +19,8 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Nested Types
 
     public struct Configuration {
-        // Controls whether any methods in this file print debugging information
-        public static let debug: Bool = true
+        // Controls whether any methods in this file print verbose (debugging) information
+        public static var verbose: Bool = true
     }
 
     /// Classes of complexity (big-oh style).
@@ -35,9 +35,8 @@ open class PerformanceTestCase: XCTestCase {
         case exponential
         case customComplexity(inverseFunction: (Double) -> Double)
 
-        /// Maps data representing performance of a certain complexity so that it
-        /// can be fit with linear regression. This is done by applying the inverse
-        /// function of the expected performance function.
+        /// The inverse function of the function represented by this complexity.
+        /// For example, the inverse of squareRoot is squaring.
         public var inverse: (Double) -> Double {
             switch self {
             case .constant:
@@ -122,7 +121,7 @@ open class PerformanceTestCase: XCTestCase {
     {
         let results = linearRegression(data)
 
-        if Configuration.debug {
+        if Configuration.verbose {
             print("\(#function): data:")
             for (x, y) in data { print("\t(\(x), \(y))") }
 
@@ -147,7 +146,7 @@ open class PerformanceTestCase: XCTestCase {
         let mappedData = data.mappedForLinearFit(complexity: complexity)
         let results = linearRegression(mappedData)
 
-        if Configuration.debug {
+        if Configuration.verbose {
             print("\(#function): mapped data:")
             for (x, y) in mappedData { print("\t(\(x), \(y))") }
 
@@ -207,7 +206,7 @@ open class PerformanceTestCase: XCTestCase {
         let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0, +)
         let denominator = squaredErrorOfYs
 
-        if Configuration.debug {
+        if Configuration.verbose {
             print("\(#function): denominator: \(denominator)")
         }
 
@@ -217,7 +216,7 @@ open class PerformanceTestCase: XCTestCase {
         let squaredErrorOfXs = data.map { pow($0.0 - meanOfXs, 2) }.reduce(0, +)
         let numerator = squaredErrorOfXs
 
-        if Configuration.debug {
+        if Configuration.verbose {
             print("\(#function): numerator: \(numerator)")
         }
 
@@ -225,6 +224,9 @@ open class PerformanceTestCase: XCTestCase {
     }
 }
 
+/// Maps data representing performance of a certain complexity so that it
+/// can be fit with linear regression. This is done by applying the inverse
+/// function of the expected performance function.
 extension Array where Array == PerformanceTestCase.Benchmark {
     public func mappedForLinearFit(complexity: PerformanceTestCase.Complexity) -> Array {
         return self.map { ($0, complexity.inverse($1)) }
