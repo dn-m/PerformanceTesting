@@ -13,7 +13,7 @@ class ArrayTests: PerformanceTestCase {
     /// MARK - Helper functions.
 
     // Constructs an array of size `n` with linearly increasing elements.
-    let constructSizeNArray: SetupFunction<[Int]> = { array, n in
+    let constructSizeNArray: Setup<[Int]> = { array, n in
         array.reserveCapacity(Int(n))
         for i in 0..<Int(n) {
             array.append(i)
@@ -21,7 +21,7 @@ class ArrayTests: PerformanceTestCase {
     }
 
     // Constructs an array of size `n` with random elements.
-    let constructRandomSizeNArray: SetupFunction<[Int]> = { array, n in
+    let constructRandomSizeNArray: Setup<[Int]> = { array, n in
         array.reserveCapacity(Int(n))
         for i in 0..<Int(n) {
             let randomNumber = Int(arc4random_uniform(UInt32(n)))
