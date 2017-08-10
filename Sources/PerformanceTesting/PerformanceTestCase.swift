@@ -17,6 +17,8 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: Nested Types
 
+    // FIXME: Consider making this `DebugLevel`
+    // FIXME: Further, consider making this a global (internal) enum
     public struct Configuration {
         // Controls whether any methods in this file print verbose (debugging) information
         public static var verbose: Bool = true
