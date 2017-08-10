@@ -19,8 +19,8 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Nested Types
 
     public struct Configuration {
-        // Controls whether any methods in this file print debugging information
-        public static let debug: Bool = true
+        // Controls whether any methods in this file print verbose (debugging) information
+        public static var verbose: Bool = true
     }
 
     /// Classes of complexity (big-oh style).
@@ -122,7 +122,7 @@ open class PerformanceTestCase: XCTestCase {
     {
         let results = linearRegression(data)
 
-        if Configuration.debug {
+        if Configuration.verbose {
             print("\(#function): data:")
             for (x, y) in data { print("\t(\(x), \(y))") }
 
@@ -147,7 +147,7 @@ open class PerformanceTestCase: XCTestCase {
         let mappedData = data.mappedForLinearFit(complexity: complexity)
         let results = linearRegression(mappedData)
 
-        if Configuration.debug {
+        if Configuration.verbose {
             print("\(#function): mapped data:")
             for (x, y) in mappedData { print("\t(\(x), \(y))") }
 
@@ -207,7 +207,7 @@ open class PerformanceTestCase: XCTestCase {
         let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0, +)
         let denominator = squaredErrorOfYs
 
-        if Configuration.debug {
+        if Configuration.verbose {
             print("\(#function): denominator: \(denominator)")
         }
 
@@ -217,7 +217,7 @@ open class PerformanceTestCase: XCTestCase {
         let squaredErrorOfXs = data.map { pow($0.0 - meanOfXs, 2) }.reduce(0, +)
         let numerator = squaredErrorOfXs
 
-        if Configuration.debug {
+        if Configuration.verbose {
             print("\(#function): numerator: \(numerator)")
         }
 
