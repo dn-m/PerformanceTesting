@@ -10,7 +10,7 @@ import PerformanceTesting
 
 class ArrayTests: PerformanceTestCase {
 
-    /// MARK - Helper functions.
+    // MARK: Helper functions.
 
     // Constructs an array of size `n` with linearly increasing elements.
     let constructSizeNArray: Setup<[Int]> = { array, n in
@@ -29,7 +29,7 @@ class ArrayTests: PerformanceTestCase {
         }
     }
 
-    /// MARK - Tests: inspecting
+    // MARK: Tests: inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
@@ -53,7 +53,7 @@ class ArrayTests: PerformanceTestCase {
         assertConstantTimePerformance(data)
     }
 
-    /// MARK - Tests: accessing elements
+    // MARK: Tests: accessing elements
 
     // `subscript` should be constant-time in the number of elements
     func testSubscript() {
@@ -88,7 +88,7 @@ class ArrayTests: PerformanceTestCase {
         assertConstantTimePerformance(data)
     }
 
-    /// MARK - Tests: adding elements
+    // MARK: Tests: adding elements
 
     // `append` should be (amortized) constant-time in the number of elements
     func testAppend() {
@@ -116,7 +116,7 @@ class ArrayTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .linear)
     }
 
-    /// MARK - Tests: removing elements
+    // MARK: Tests: removing elements
 
     // `remove` should be O(n) in the number of elements
     func testRemove() {
@@ -133,7 +133,7 @@ class ArrayTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .linear)
     }
 
-    /// MARK - Tests: sorting an array
+    // MARK: Tests: sorting an array
 
     // `sort` should be roughly O(n) in the number of elements
     // Technically, it's linearithmic, but we should be able to fit

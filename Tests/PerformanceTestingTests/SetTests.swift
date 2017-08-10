@@ -10,7 +10,7 @@ import PerformanceTesting
 
 class SetTests: PerformanceTestCase {
 
-    /// MARK - Helper functions.
+    // MARK: Helper functions.
 
     // Constructs a set of size `n` with linearly increasing elements.
     let constructSizeNSet: Setup<Set<Int>> = { set, n in
@@ -20,7 +20,7 @@ class SetTests: PerformanceTestCase {
         }
     }
 
-    /// MARK - Tests: inspecting
+    // MARK: Tests: inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
@@ -55,7 +55,7 @@ class SetTests: PerformanceTestCase {
         assertConstantTimePerformance(data)
     }
 
-    /// MARK - Tests: membership
+    // MARK: Tests: membership
 
     // `contains` should be constant-time in the number of elements
     func testContains() {
@@ -73,7 +73,7 @@ class SetTests: PerformanceTestCase {
         assertConstantTimePerformance(data)
     }
 
-    /// MARK - Tests: adding elements
+    // MARK: Tests: adding elements
 
     // `insert` should be constant-time in the number of elements
     func testInsert() {
@@ -91,7 +91,7 @@ class SetTests: PerformanceTestCase {
         assertConstantTimePerformance(data)
     }
 
-    /// MARK - Tests: removing elements
+    // MARK: Tests: removing elements
 
     // `filter` should be linear in the number of elements
     func testFilter() {
@@ -135,7 +135,7 @@ class SetTests: PerformanceTestCase {
         assertConstantTimePerformance(data)
     }
 
-    /// MARK - Tests: combining sets
+    // MARK: Tests: combining sets
 
     // `union` should be linear in the number of elements inserted
     func testUnion() {

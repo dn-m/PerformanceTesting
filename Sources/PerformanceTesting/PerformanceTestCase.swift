@@ -10,13 +10,13 @@ import XCTest
 
 open class PerformanceTestCase: XCTestCase {
 
-    // MARK: - Associated Types
+    // MARK: Associated Types
 
     public typealias Setup<C> = (inout C, Double) -> Void
     public typealias Run<C> = (inout C, Double) -> Void
     public typealias Benchmark = [(Double, Double)]
 
-    // MARK: - Nested Types
+    // MARK: Nested Types
 
     public struct Configuration {
         // Controls whether any methods in this file print debugging information
@@ -74,7 +74,7 @@ open class PerformanceTestCase: XCTestCase {
         public let correlation: Double
     }
 
-    // MARK: - Instance Methods
+    // MARK: Instance Methods
 
     /// Benchmarks the performance of a closure.
     public func benchmarkClosure <C> (
