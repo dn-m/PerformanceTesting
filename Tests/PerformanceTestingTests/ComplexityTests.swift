@@ -13,14 +13,14 @@ import PerformanceTesting
 /// - Note: Data is intentionally dirty.
 class PerformanceTestingTests: PerformanceTestCase {
 
-    // - MARK: Constant
+    // MARK: Constant
 
     func testConstant() {
         let data: Benchmark = [(1, 1.01), (2, 1.01), (3, 1.05), (4, 0.99)]
         assertConstantTimePerformance(data)
     }
 
-    // - MARK: Logarithmic
+    // MARK: Logarithmic
 
     func testLogarithmicBaseTwoSlopeOne() {
         let data: Benchmark = [(10, 3.32), (20, 4.32), (30, 4.91), (40, 5.32)]
@@ -42,7 +42,7 @@ class PerformanceTestingTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .logarithmic)
     }
 
-    // - MARK: SquareRoot
+    // MARK: SquareRoot
 
     func testSquareRootSlopeOne() {
         let data: Benchmark = [(10, 3.16), (20, 4.47), (30, 5.47), (40, 6.32)]
@@ -54,7 +54,7 @@ class PerformanceTestingTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .squareRoot)
     }
 
-    // - MARK: Linear
+    // MARK: Linear
 
     func testLinearSlopeOne() {
         let data: Benchmark = [(10, 10), (20, 20.5), (30, 29.5), (40, 39.9)]
@@ -66,7 +66,7 @@ class PerformanceTestingTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .linear)
     }
 
-    // - MARK: Quadratic
+    // MARK: Quadratic
 
     func testQuadraticSlopeOne() {
         let data: Benchmark = [(10, 100), (20, 400), (30, 900), (40, 1640)]
@@ -78,7 +78,7 @@ class PerformanceTestingTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .quadratic)
     }
 
-    // - MARK: Cubic
+    // MARK: Cubic
 
     func testCubicSlopeOne() {
         let data: Benchmark = [(10, 1000), (20, 4000), (30, 9000), (40, 16040)]
@@ -90,7 +90,7 @@ class PerformanceTestingTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .cubic)
     }
 
-    // - MARK: Exponential
+    // MARK: Exponential
 
     func testExponentialBaseTwoSlopeOne() {
         let data: Benchmark = [(10, 1024), (20, 1e6), (30, 1e9), (40, 1e12)]

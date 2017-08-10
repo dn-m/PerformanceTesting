@@ -10,13 +10,13 @@ import XCTest
 
 open class PerformanceTestCase: XCTestCase {
 
-    // MARK: - Associated Types
+    // MARK: Associated Types
 
     public typealias Setup<C> = (inout C, Double) -> Void
     public typealias Run<C> = (inout C, Double) -> Void
     public typealias Benchmark = [(Double, Double)]
 
-    // MARK: - Nested Types
+    // MARK: Nested Types
 
     public struct Configuration {
         // Controls whether any methods in this file print debugging information
@@ -74,13 +74,13 @@ open class PerformanceTestCase: XCTestCase {
         public let correlation: Double
     }
 
-    // MARK: - Instance Methods
+    // MARK: Instance Methods
 
     /// Benchmarks the performance of a closure.
-    public func benchmarkClosure <C> (
+    public func benchmark <C> (
         mock object: C,
         setupFunction: Setup<C>,
-        trialCode: Run<C>,
+        measuring closure: Run<C>,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
         trialCount: Int = 10
@@ -93,19 +93,19 @@ open class PerformanceTestCase: XCTestCase {
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialMock = pointMock
-                    return timeClosure(point: point, mock: &trialMock, closure: trialCode);
+                    return time(point: point, mock: &trialMock, measuring: closure);
                 } else {
-                    return timeClosure(point: point, mock: &pointMock, closure: trialCode);
+                    return time(point: point, mock: &pointMock, measuring: closure);
                 }
             }.reduce(0, +) / Double(trialCount)
             return (point, average)
         }
     }
 
-    private func timeClosure <C> (
+    private func time <C> (
         point: Double,
         mock: inout C,
-        closure: Run<C>
+        measuring closure: Run<C>
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
