@@ -41,14 +41,14 @@ open class PerformanceTestCase: XCTestCase {
         trialCount: Int = 10
     ) -> Benchmark
     {
-        let tests: [Test] = inputSizes.map { testPoint in
+        let tests: [Test] = inputSizes.map { inputSize in
             var testPointCopy = structure
-            setup(&testPointCopy, testPoint)
+            setup(&testPointCopy, inputSize)
             let results: [Double] = (0..<trialCount).map { _ in
                 var trialCopy = testPointCopy
-                return measure(operation, on: &trialCopy, for: testPoint)
+                return measure(operation, on: &trialCopy, for: inputSize)
             }
-            return Test(inputSize: Int(testPoint), results: results)
+            return Test(inputSize: Int(inputSize), results: results)
         }
         return Benchmark(tests: tests)
     }
