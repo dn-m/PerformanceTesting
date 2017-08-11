@@ -7,7 +7,7 @@
 
 import Darwin
 
-public typealias Benchmark = [(Double, Double)]
+
 
 internal struct Regression {
     public let slope: Double
