@@ -12,8 +12,8 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: Associated Types
 
-    public typealias Setup<C> = (inout C, Double) -> Void
-    public typealias Operation<C> = (inout C, Double) -> Void
+    public typealias Setup <Structure> = (inout Structure, Double) -> Void
+    public typealias Operation <Structure> = (inout Structure, Double) -> Void
 
     // MARK: Nested Types
 
@@ -27,10 +27,10 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Instance Methods
 
     /// Benchmarks the performance of a closure.
-    public func benchmark <C> (
-        mock object: C,
-        setup: Setup<C>,
-        measuring operation: Operation<C>,
+    public func benchmark <Structure> (
+        mock object: Structure,
+        setup: Setup<Structure>,
+        measuring operation: Operation<Structure>,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
         trialCount: Int = 10
@@ -106,10 +106,10 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    private func time <C> (
+    private func time <Structure> (
         testPoint: Double,
-        mock: inout C,
-        measuring operation: Operation<C>
+        mock: inout Structure,
+        measuring operation: Operation<Structure>
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
