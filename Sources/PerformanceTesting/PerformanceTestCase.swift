@@ -115,11 +115,11 @@ open class PerformanceTestCase: XCTestCase {
     private func measure <Structure> (
         _ operation: Operation<Structure>,
         on structure: inout Structure,
-        for testPoint: Double
+        for inputSize: Double
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
-        operation(&structure, testPoint)
+        operation(&structure, inputSize)
         let finishTime = CFAbsoluteTimeGetCurrent()
         return finishTime - startTime
     }
