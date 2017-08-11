@@ -43,9 +43,9 @@ open class PerformanceTestCase: XCTestCase {
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialCopy = testPointCopy
-                    return time(testPoint: testPoint, structure: &trialCopy, measuring: operation)
+                    return measure(operation, on: &trialCopy, for: testPoint)
                 } else {
-                    return time(testPoint: testPoint, structure: &testPointCopy, measuring: operation)
+                    return measure(operation, on: &testPointCopy, for: testPoint)
                 }
             }.reduce(0, +) / Double(trialCount)
             return (testPoint, average)
@@ -53,11 +53,8 @@ open class PerformanceTestCase: XCTestCase {
     }
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
-    public func assertConstantTimePerformance(
-        _ benchmark: Benchmark,
-        slopeAccuracy: Double = 0.01
-    )
-    {
+    public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
+
         let results = linearRegression(benchmark)
 
         if Configuration.verbose {
@@ -67,10 +64,10 @@ open class PerformanceTestCase: XCTestCase {
             print("\(#function): slope:       \(results.slope)")
             print("\(#function): intercept:   \(results.intercept)")
             print("\(#function): correlation: \(results.correlation)")
-            print("\(#function): slope acc.:  \(slopeAccuracy)")
+            print("\(#function): slope acc.:  \(accuracy)")
         }
 
-        XCTAssertEqual(results.slope, 0, accuracy: slopeAccuracy)
+        XCTAssertEqual(results.slope, 0, accuracy: accuracy)
     }
 
     /// Assert that the data indicates that performance fits well to the given
@@ -106,10 +103,10 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    private func time <Structure> (
-        testPoint: Double,
-        structure: inout Structure,
-        measuring operation: Operation<Structure>
+    private func measure <Structure> (
+        _ operation: Operation<Structure>,
+        on structure: inout Structure,
+        for testPoint: Double
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
