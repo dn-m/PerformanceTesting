@@ -36,8 +36,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             structure: [],
             setup: constructSizeNArray,
-            measuring: { array, _ in _ = array.isEmpty },
-            isMutating: false
+            measuring: { array, _ in _ = array.isEmpty }
         )
         assertConstantTimePerformance(data)
     }
@@ -47,8 +46,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             structure: [],
             setup: constructSizeNArray,
-            measuring: { array, _ in _ = array.count },
-            isMutating: false
+            measuring: { array, _ in _ = array.count }
         )
         assertConstantTimePerformance(data)
     }
@@ -60,8 +58,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             structure: [],
             setup: constructSizeNArray,
-            measuring: { array, _ in _ = array[3] },
-            isMutating: false
+            measuring: { array, _ in _ = array[3] }
         )
         assertConstantTimePerformance(data)
     }
@@ -71,8 +68,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             structure: [],
             setup: constructSizeNArray,
-            measuring: { array, _ in _ = array.first },
-            isMutating: false
+            measuring: { array, _ in _ = array.first }
         )
         assertConstantTimePerformance(data)
     }
@@ -82,8 +78,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             structure: [],
             setup: constructSizeNArray,
-            measuring: { array, _ in _ = array.last },
-            isMutating: false
+            measuring: { array, _ in _ = array.last }
         )
         assertConstantTimePerformance(data)
     }
@@ -95,8 +90,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark(
             structure: [],
             setup: constructSizeNArray,
-            measuring: { array, _ in array.append(6) },
-            isMutating: true
+            measuring: { array, _ in array.append(6) }
         )
         assertConstantTimePerformance(data)
     }
@@ -110,8 +104,7 @@ class ArrayTests: PerformanceTestCase {
                 for _ in 0..<100 {
                     array.insert(6, at: 0)
                 }
-            },
-            isMutating: true
+            }
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
@@ -127,8 +120,7 @@ class ArrayTests: PerformanceTestCase {
                 for _ in 0..<100 {
                     _ = array.remove(at: 0)
                 }
-            },
-            isMutating: true
+            }
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
@@ -144,8 +136,7 @@ class ArrayTests: PerformanceTestCase {
             setup: constructRandomSizeNArray,
             measuring: { array, n in
                 array.sort()
-            },
-            isMutating: true
+            }
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
@@ -157,8 +148,7 @@ class ArrayTests: PerformanceTestCase {
             setup: constructRandomSizeNArray,
             measuring: { array, n in
                 _ = array.partition { element in element > 50 }
-            },
-            isMutating: true
+            }
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }

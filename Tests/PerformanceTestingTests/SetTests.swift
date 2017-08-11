@@ -27,8 +27,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             structure: Set.init(),
             setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.isEmpty },
-            isMutating: false
+            measuring: { set, _ in _ = set.isEmpty }
         )
         assertConstantTimePerformance(data)
     }
@@ -38,8 +37,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             structure: Set.init(),
             setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.count },
-            isMutating: false
+            measuring: { set, _ in _ = set.count }
         )
         assertConstantTimePerformance(data)
     }
@@ -49,8 +47,7 @@ class SetTests: PerformanceTestCase {
         let data = benchmark(
             structure: Set.init(),
             setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.first },
-            isMutating: false
+            measuring: { set, _ in _ = set.first }
         )
         assertConstantTimePerformance(data)
     }
@@ -67,8 +64,7 @@ class SetTests: PerformanceTestCase {
                 for _ in 0..<100 {
                     _ = set.contains(randomNumber)
                 }
-            },
-            isMutating: false
+            }
         )
         assertConstantTimePerformance(data)
     }
@@ -85,8 +81,7 @@ class SetTests: PerformanceTestCase {
                     let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
                     _ = set.insert(randomNumber)
                 }
-            },
-            isMutating: true
+            }
         )
         assertConstantTimePerformance(data)
     }
@@ -100,8 +95,7 @@ class SetTests: PerformanceTestCase {
             setup: constructSizeNSet,
             measuring: { set, n in
                 _ = set.filter { $0 % 5 == 3 }
-            },
-            isMutating: false
+            }
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
@@ -116,8 +110,7 @@ class SetTests: PerformanceTestCase {
                     let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
                     _ = set.remove(randomNumber)
                 }
-            },
-            isMutating: true
+            }
         )
         assertConstantTimePerformance(data)
     }
@@ -129,8 +122,7 @@ class SetTests: PerformanceTestCase {
             setup: constructSizeNSet,
             measuring: { set, n in
                 _ = set.removeFirst()
-            },
-            isMutating: false
+            }
         )
         assertConstantTimePerformance(data)
     }
@@ -144,8 +136,7 @@ class SetTests: PerformanceTestCase {
             setup: constructSizeNSet,
             measuring: { set, n in
                 _ = set.union(Set.init(0..<300))
-            },
-            isMutating: false
+            }
         )
         assertConstantTimePerformance(data)
     }
