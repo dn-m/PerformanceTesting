@@ -5,25 +5,17 @@
 //  Created by James Bean on 8/11/17.
 //
 
+/// Structure containing one or more tests of a single operation over varying input sizes.
+//
+// TODO: Add structure name info
+// TODO: Add operation info
 public struct Benchmark {
+
+    /// Array of two-tuples containing inputSize and average performance time.
     var data: [(Double,Double)] {
-        return tests.map { test in (Double(test.size), test.average) }
-    }
-    let tests: [PerformanceTest]
-}
-
-/// Storage of the size of a structure, and the amounts of time taken to perform each trial.
-public struct PerformanceTest {
-
-    public var average: Double {
-        return results.average
+        return tests.map { test in (Double(test.inputSize), test.average) }
     }
 
-    // FIXME: Add meta data (structure name, operation name)
-
-    /// The size of the structure over which an operation is performed.
-    let size: Int
-
-    /// The amount of time it took to perform each trial.
-    let results: [Trial]
+    /// Results of tests of an operation over a single input size.
+    let tests: [Test]
 }

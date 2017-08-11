@@ -13,7 +13,7 @@ internal struct Regression {
     public let correlation: Double
 }
 
-/// Performs linear regression on the given dataset.
+/// - Returns: `Regression` info for the given dataset (two-tuple of x,y pairs).
 internal func linearRegression(_ data: [(Double,Double)]) -> Regression {
 
     let xs = data.map { $0.0 }

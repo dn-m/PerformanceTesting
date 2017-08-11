@@ -26,24 +26,29 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: Instance Methods
 
-    /// - Returns: An array of two-tuples containing the size of the structure and the average time
-    /// taken to perform the given `operation`.
+    /// - Parameters:
+    ///   - structure: The structure on which we perform the given `operation`
+    ///   - setup: Preparation of structure which is not measured
+    ///   - operation: The operation to be measures
+    ///   - inputSizes: Array of input sizes for which to measure the given `operation`
+    ///   - trialCount: The amount of trials to be performed for each input size
+    /// - Returns: `Benchmark`
     public func benchmark <Structure> (
         structure: Structure,
         setup: Setup<Structure>,
         measuring operation: Operation<Structure>,
-        testPoints: [Double] = Scale.medium,
+        inputSizes: [Double] = Scale.medium,
         trialCount: Int = 10
     ) -> Benchmark
     {
-        let tests: [PerformanceTest] = testPoints.map { testPoint in
+        let tests: [Test] = inputSizes.map { testPoint in
             var testPointCopy = structure
             setup(&testPointCopy, testPoint)
             let results: [Double] = (0..<trialCount).map { _ in
                 var trialCopy = testPointCopy
                 return measure(operation, on: &trialCopy, for: testPoint)
             }
-            return PerformanceTest(size: Int(testPoint), results: results)
+            return Test(inputSize: Int(testPoint), results: results)
         }
         return Benchmark(tests: tests)
     }
