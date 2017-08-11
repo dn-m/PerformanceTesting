@@ -114,7 +114,20 @@ open class PerformanceTestCase: XCTestCase {
 /// can be fit with linear regression. This is done by applying the inverse
 /// function of the expected performance function.
 extension Array where Element == (Double,Double) {
+    
     public func mappedForLinearFit(complexity: Complexity) -> Array {
         return self.map { ($0, complexity.inverse($1)) }
+    }
+}
+
+extension Array where Element == Double {
+
+    public var sum: Double {
+        return reduce(0,+)
+    }
+
+    public var average: Double {
+        assert(count > 0)
+        return sum / Double(count)
     }
 }
