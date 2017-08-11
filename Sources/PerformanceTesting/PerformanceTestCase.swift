@@ -29,7 +29,7 @@ open class PerformanceTestCase: XCTestCase {
     /// - Parameters:
     ///   - structure: The structure on which we perform the given `operation`
     ///   - setup: Preparation of structure which is not measured
-    ///   - operation: The operation to be measures
+    ///   - operation: The operation to be measured
     ///   - inputSizes: Array of input sizes for which to measure the given `operation`
     ///   - trialCount: The amount of trials to be performed for each input size
     /// - Returns: `Benchmark`
