@@ -43,9 +43,9 @@ open class PerformanceTestCase: XCTestCase {
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialMock = pointMock
-                    return time(testPoint: testPoint, mock: &trialMock, measuring: closure);
+                    return time(testPoint: testPoint, mock: &trialMock, measuring: closure)
                 } else {
-                    return time(testPoint: testPoint, mock: &pointMock, measuring: closure);
+                    return time(testPoint: testPoint, mock: &pointMock, measuring: closure)
                 }
             }.reduce(0, +) / Double(trialCount)
             return (testPoint, average)
