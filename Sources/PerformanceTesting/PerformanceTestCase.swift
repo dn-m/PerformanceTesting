@@ -37,15 +37,15 @@ open class PerformanceTestCase: XCTestCase {
     ) -> Benchmark
     {
         return testPoints.map { testPoint in
-            var pointMock = structure
-            setup(&pointMock, testPoint)
+            var testPointCopy = structure
+            setup(&testPointCopy, testPoint)
             let average = (0..<trialCount).map { _ in
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
-                    var trialMock = pointMock
-                    return time(testPoint: testPoint, structure: &trialMock, measuring: operation)
+                    var trialCopy = testPointCopy
+                    return time(testPoint: testPoint, structure: &trialCopy, measuring: operation)
                 } else {
-                    return time(testPoint: testPoint, structure: &pointMock, measuring: operation)
+                    return time(testPoint: testPoint, structure: &testPointCopy, measuring: operation)
                 }
             }.reduce(0, +) / Double(trialCount)
             return (testPoint, average)
