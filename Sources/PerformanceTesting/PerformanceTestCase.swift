@@ -28,7 +28,7 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Benchmarks the performance of a closure.
     public func benchmark <Structure> (
-        mock object: Structure,
+        structure: Structure,
         setup: Setup<Structure>,
         measuring operation: Operation<Structure>,
         isMutating: Bool,
@@ -37,7 +37,7 @@ open class PerformanceTestCase: XCTestCase {
     ) -> Benchmark
     {
         return testPoints.map { testPoint in
-            var pointMock = object
+            var pointMock = structure
             setup(&pointMock, testPoint)
             let average = (0..<trialCount).map { _ in
                 // if the closure is mutating, create a copy before timing the closure

@@ -25,7 +25,7 @@ class SetTests: PerformanceTestCase {
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, _ in _ = set.isEmpty },
             isMutating: false
@@ -36,7 +36,7 @@ class SetTests: PerformanceTestCase {
     // `count` should be constant-time in the number of elements
     func testCount() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, _ in _ = set.count },
             isMutating: false
@@ -47,7 +47,7 @@ class SetTests: PerformanceTestCase {
     // `first` should be constant-time in the number of elements
     func testFirst() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, _ in _ = set.first },
             isMutating: false
@@ -60,7 +60,7 @@ class SetTests: PerformanceTestCase {
     // `contains` should be constant-time in the number of elements
     func testContains() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, n in
                 let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
@@ -78,7 +78,7 @@ class SetTests: PerformanceTestCase {
     // `insert` should be constant-time in the number of elements
     func testInsert() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, n in
                 for _ in 0..<10000 {
@@ -96,7 +96,7 @@ class SetTests: PerformanceTestCase {
     // `filter` should be linear in the number of elements
     func testFilter() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, n in
                 _ = set.filter { $0 % 5 == 3 }
@@ -109,7 +109,7 @@ class SetTests: PerformanceTestCase {
     // `remove` should be constant-time in the number of elements
     func testRemove() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, n in
                 for _ in 0..<10000 {
@@ -125,7 +125,7 @@ class SetTests: PerformanceTestCase {
     // `removeFirst` should be constant-time in the number of elements
     func testRemoveFirst() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, n in
                 _ = set.removeFirst()
@@ -140,7 +140,7 @@ class SetTests: PerformanceTestCase {
     // `union` should be linear in the number of elements inserted
     func testUnion() {
         let data = benchmark(
-            mock: Set.init(),
+            structure: Set.init(),
             setup: constructSizeNSet,
             measuring: { set, n in
                 _ = set.union(Set.init(0..<300))
