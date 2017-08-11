@@ -13,7 +13,7 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Associated Types
 
     public typealias Setup<C> = (inout C, Double) -> Void
-    public typealias Run<C> = (inout C, Double) -> Void
+    public typealias Operation<C> = (inout C, Double) -> Void
 
     // MARK: Nested Types
 
@@ -30,7 +30,7 @@ open class PerformanceTestCase: XCTestCase {
     public func benchmark <C> (
         mock object: C,
         setup: Setup<C>,
-        measuring closure: Run<C>,
+        measuring operation: Operation<C>,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
         trialCount: Int = 10
@@ -43,9 +43,9 @@ open class PerformanceTestCase: XCTestCase {
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialMock = pointMock
-                    return time(testPoint: testPoint, mock: &trialMock, measuring: closure)
+                    return time(testPoint: testPoint, mock: &trialMock, measuring: operation)
                 } else {
-                    return time(testPoint: testPoint, mock: &pointMock, measuring: closure)
+                    return time(testPoint: testPoint, mock: &pointMock, measuring: operation)
                 }
             }.reduce(0, +) / Double(trialCount)
             return (testPoint, average)
@@ -109,11 +109,11 @@ open class PerformanceTestCase: XCTestCase {
     private func time <C> (
         testPoint: Double,
         mock: inout C,
-        measuring closure: Run<C>
+        measuring operation: Operation<C>
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
-        closure(&mock, testPoint)
+        operation(&mock, testPoint)
         let finishTime = CFAbsoluteTimeGetCurrent()
         return finishTime - startTime
     }
