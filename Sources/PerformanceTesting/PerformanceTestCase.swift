@@ -36,25 +36,30 @@ open class PerformanceTestCase: XCTestCase {
         trialCount: Int = 10
     ) -> Benchmark
     {
-        return testPoints.map { testPoint in
+        let tests: [PerformanceTest] = testPoints.map { testPoint in
             var testPointCopy = structure
             setup(&testPointCopy, testPoint)
             let results: [Double] = (0..<trialCount).map { _ in
                 var trialCopy = testPointCopy
                 return measure(operation, on: &trialCopy, for: testPoint)
             }
-            return (testPoint, results.average)
+            return PerformanceTest(size: Int(testPoint), results: results)
         }
+        return Benchmark(tests: tests)
+    }
+
+    public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
+        assertConstantTimePerformance(benchmark.data)
     }
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
-    public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
+    public func assertConstantTimePerformance(_ data: [(Double,Double)], accuracy: Double = 0.01) {
 
-        let results = linearRegression(benchmark)
+        let results = linearRegression(data)
 
         if Configuration.verbose {
             print("\(#function): data:")
-            for (x, y) in benchmark { print("\t(\(x), \(y))") }
+            for (x, y) in data { print("\t(\(x), \(y))") }
 
             print("\(#function): slope:       \(results.slope)")
             print("\(#function): intercept:   \(results.intercept)")
@@ -65,11 +70,15 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssertEqual(results.slope, 0, accuracy: accuracy)
     }
 
+    public func assertPerformanceComplexity(_ benchmark: Benchmark, complexity: Complexity, minimumCorrelation: Double = 0.9) {
+        assertPerformanceComplexity(benchmark.data, complexity: complexity, minimumCorrelation: minimumCorrelation)
+    }
+
     /// Assert that the data indicates that performance fits well to the given
     /// complexity class. Optional parameter for minimum acceptable correlation.
     /// Use assertConstantTimePerformance for O(1) assertions
     public func assertPerformanceComplexity(
-        _ data: Benchmark,
+        _ data: [(Double,Double)],
         complexity: Complexity,
         minimumCorrelation: Double = 0.9
     )
@@ -114,10 +123,10 @@ open class PerformanceTestCase: XCTestCase {
 /// Maps data representing performance of a certain complexity so that it
 /// can be fit with linear regression. This is done by applying the inverse
 /// function of the expected performance function.
-extension Array where Array == Benchmark {
+extension Array where Array == [(Double,Double)] {
 
     public func mappedForLinearFit(complexity: Complexity) -> Array {
-        return self.map { ($0, complexity.inverse($1)) }
+        return map { ($0, complexity.inverse($1)) }
     }
 }
 
