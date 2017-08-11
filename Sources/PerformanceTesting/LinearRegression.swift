@@ -7,8 +7,6 @@
 
 import Darwin
 
-
-
 internal struct Regression {
     public let slope: Double
     public let intercept: Double
