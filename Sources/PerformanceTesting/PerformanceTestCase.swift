@@ -52,18 +52,6 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-    private func time <C> (
-        testPoint: Double,
-        mock: inout C,
-        measuring closure: Run<C>
-    ) -> Double
-    {
-        let startTime = CFAbsoluteTimeGetCurrent()
-        closure(&mock, testPoint)
-        let finishTime = CFAbsoluteTimeGetCurrent()
-        return finishTime - startTime
-    }
-
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
     public func assertConstantTimePerformance(
         _ benchmark: Benchmark,
@@ -116,6 +104,18 @@ open class PerformanceTestCase: XCTestCase {
         }
 
         XCTAssert(results.correlation >= minimumCorrelation)
+    }
+
+    private func time <C> (
+        testPoint: Double,
+        mock: inout C,
+        measuring closure: Run<C>
+    ) -> Double
+    {
+        let startTime = CFAbsoluteTimeGetCurrent()
+        closure(&mock, testPoint)
+        let finishTime = CFAbsoluteTimeGetCurrent()
+        return finishTime - startTime
     }
 }
 
