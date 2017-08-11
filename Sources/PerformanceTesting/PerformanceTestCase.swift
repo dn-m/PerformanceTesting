@@ -12,8 +12,8 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: Associated Types
 
-    public typealias Setup<C> = (inout C, Double) -> Void
-    public typealias Operation<C> = (inout C, Double) -> Void
+    public typealias Setup <Structure> = (inout Structure, Double) -> Void
+    public typealias Operation <Structure> = (inout Structure, Double) -> Void
 
     // MARK: Nested Types
 
@@ -27,25 +27,25 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Instance Methods
 
     /// Benchmarks the performance of a closure.
-    public func benchmark <C> (
-        mock object: C,
-        setup: Setup<C>,
-        measuring operation: Operation<C>,
+    public func benchmark <Structure> (
+        structure: Structure,
+        setup: Setup<Structure>,
+        measuring operation: Operation<Structure>,
         isMutating: Bool,
         testPoints: [Double] = Scale.medium,
         trialCount: Int = 10
     ) -> Benchmark
     {
         return testPoints.map { testPoint in
-            var pointMock = object
-            setup(&pointMock, testPoint)
+            var testPointCopy = structure
+            setup(&testPointCopy, testPoint)
             let average = (0..<trialCount).map { _ in
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
-                    var trialMock = pointMock
-                    return time(testPoint: testPoint, mock: &trialMock, measuring: operation)
+                    var trialCopy = testPointCopy
+                    return time(testPoint: testPoint, structure: &trialCopy, measuring: operation)
                 } else {
-                    return time(testPoint: testPoint, mock: &pointMock, measuring: operation)
+                    return time(testPoint: testPoint, structure: &testPointCopy, measuring: operation)
                 }
             }.reduce(0, +) / Double(trialCount)
             return (testPoint, average)
@@ -106,14 +106,14 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    private func time <C> (
+    private func time <Structure> (
         testPoint: Double,
-        mock: inout C,
-        measuring operation: Operation<C>
+        structure: inout Structure,
+        measuring operation: Operation<Structure>
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
-        operation(&mock, testPoint)
+        operation(&structure, testPoint)
         let finishTime = CFAbsoluteTimeGetCurrent()
         return finishTime - startTime
     }
