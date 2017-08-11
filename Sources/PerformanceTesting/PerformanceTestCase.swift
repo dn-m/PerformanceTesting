@@ -43,9 +43,9 @@ open class PerformanceTestCase: XCTestCase {
                 // if the closure is mutating, create a copy before timing the closure
                 if isMutating {
                     var trialCopy = testPointCopy
-                    return time(testPoint: testPoint, structure: &trialCopy, measuring: operation)
+                    return measure(operation, on: &trialCopy, for: testPoint)
                 } else {
-                    return time(testPoint: testPoint, structure: &testPointCopy, measuring: operation)
+                    return measure(operation, on: &testPointCopy, for: testPoint)
                 }
             }.reduce(0, +) / Double(trialCount)
             return (testPoint, average)
@@ -103,10 +103,10 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    private func time <Structure> (
-        testPoint: Double,
-        structure: inout Structure,
-        measuring operation: Operation<Structure>
+    private func measure <Structure> (
+        _ operation: Operation<Structure>,
+        on structure: inout Structure,
+        for testPoint: Double
     ) -> Double
     {
         let startTime = CFAbsoluteTimeGetCurrent()
