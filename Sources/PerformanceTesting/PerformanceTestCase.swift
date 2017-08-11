@@ -31,7 +31,6 @@ open class PerformanceTestCase: XCTestCase {
         structure: Structure,
         setup: Setup<Structure>,
         measuring operation: Operation<Structure>,
-        isMutating: Bool,
         testPoints: [Double] = Scale.medium,
         trialCount: Int = 10
     ) -> Benchmark
@@ -40,13 +39,8 @@ open class PerformanceTestCase: XCTestCase {
             var testPointCopy = structure
             setup(&testPointCopy, testPoint)
             let average = (0..<trialCount).map { _ in
-                // if the closure is mutating, create a copy before timing the closure
-                if isMutating {
-                    var trialCopy = testPointCopy
-                    return measure(operation, on: &trialCopy, for: testPoint)
-                } else {
-                    return measure(operation, on: &testPointCopy, for: testPoint)
-                }
+                var trialCopy = testPointCopy
+                return measure(operation, on: &trialCopy, for: testPoint)
             }.reduce(0, +) / Double(trialCount)
             return (testPoint, average)
         }
