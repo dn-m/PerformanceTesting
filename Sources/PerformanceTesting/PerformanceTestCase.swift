@@ -66,15 +66,15 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
     public func assertConstantTimePerformance(
-        _ data: Benchmark,
+        _ benchmark: Benchmark,
         slopeAccuracy: Double = 0.01
     )
     {
-        let results = linearRegression(data)
+        let results = linearRegression(benchmark)
 
         if Configuration.verbose {
             print("\(#function): data:")
-            for (x, y) in data { print("\t(\(x), \(y))") }
+            for (x, y) in benchmark { print("\t(\(x), \(y))") }
 
             print("\(#function): slope:       \(results.slope)")
             print("\(#function): intercept:   \(results.intercept)")
