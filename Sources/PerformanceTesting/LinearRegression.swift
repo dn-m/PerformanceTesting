@@ -13,8 +13,8 @@ internal struct Regression {
     public let correlation: Double
 }
 
-/// Performs linear regression on the given dataset.
-internal func linearRegression(_ data: Benchmark) -> Regression {
+/// - Returns: `Regression` info for the given dataset (two-tuple of x,y pairs).
+internal func linearRegression(_ data: [(Double,Double)]) -> Regression {
 
     let xs = data.map { $0.0 }
     let ys = data.map { $0.1 }
@@ -37,15 +37,15 @@ internal func linearRegression(_ data: Benchmark) -> Regression {
 }
 
 /// Helper function to calculate the regression coefficient ("r") of the given dataset.
-private func correlation(_ benchmark: Benchmark, sumOfXs: Double, sumOfYs: Double, slope: Double)
+private func correlation(_ data: [(Double,Double)], sumOfXs: Double, sumOfYs: Double, slope: Double)
     -> Double
 {
-    let meanOfYs = sumOfYs / Double(benchmark.count)
-    let squaredErrorOfYs = benchmark.map { pow($0.1 - meanOfYs, 2) }.reduce(0,+)
+    let meanOfYs = sumOfYs / Double(data.count)
+    let squaredErrorOfYs = data.map { pow($0.1 - meanOfYs, 2) }.reduce(0,+)
     let denominator = squaredErrorOfYs
     guard denominator != 0 else { return 0 }
-    let meanOfXs = sumOfXs / Double(benchmark.count)
-    let squaredErrorOfXs = benchmark.map { pow($0.0 - meanOfXs, 2) }.reduce(0,+)
+    let meanOfXs = sumOfXs / Double(data.count)
+    let squaredErrorOfXs = data.map { pow($0.0 - meanOfXs, 2) }.reduce(0,+)
     let numerator = squaredErrorOfXs
     return sqrt(numerator / denominator) * slope
 }
