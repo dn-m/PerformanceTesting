@@ -26,7 +26,8 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: Instance Methods
 
-    /// Benchmarks the performance of a closure.
+    /// - Returns: An array of two-tuples containing the input size and the average time taken to
+    /// perform the given `operation`.
     public func benchmark <Structure> (
         structure: Structure,
         setup: Setup<Structure>,
@@ -38,11 +39,11 @@ open class PerformanceTestCase: XCTestCase {
         return testPoints.map { testPoint in
             var testPointCopy = structure
             setup(&testPointCopy, testPoint)
-            let average = (0..<trialCount).map { _ in
+            let results: [Double] = (0..<trialCount).map { _ in
                 var trialCopy = testPointCopy
                 return measure(operation, on: &trialCopy, for: testPoint)
-            }.reduce(0, +) / Double(trialCount)
-            return (testPoint, average)
+            }
+            return (testPoint, results.average)
         }
     }
 
@@ -114,7 +115,20 @@ open class PerformanceTestCase: XCTestCase {
 /// can be fit with linear regression. This is done by applying the inverse
 /// function of the expected performance function.
 extension Array where Array == Benchmark {
+
     public func mappedForLinearFit(complexity: Complexity) -> Array {
         return self.map { ($0, complexity.inverse($1)) }
+    }
+}
+
+extension Array where Element == Double {
+
+    public var sum: Double {
+        return reduce(0,+)
+    }
+
+    public var average: Double {
+        assert(count > 0)
+        return sum / Double(count)
     }
 }
