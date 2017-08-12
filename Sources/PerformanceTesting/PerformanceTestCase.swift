@@ -26,8 +26,8 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: Instance Methods
 
-    /// - Returns: An array of two-tuples containing the size of the structure and the average time
-    /// taken to perform the given `operation`.
+    /// - Returns: An array of two-tuples containing the input size and the average time taken to
+    /// perform the given `operation`.
     public func benchmark <Structure> (
         structure: Structure,
         setup: Setup<Structure>,
