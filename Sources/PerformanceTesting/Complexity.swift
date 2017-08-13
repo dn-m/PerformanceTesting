@@ -17,7 +17,7 @@ public enum Complexity {
     case quadratic
     case cubic
     case exponential
-    case customComplexity(inverseFunction: (Double) -> Double)
+    case custom(inverse: (Double) -> Double)
 
     /// The inverse function of the function represented by this complexity.
     /// For example, the inverse of squareRoot is squaring.
@@ -37,8 +37,8 @@ public enum Complexity {
             return { pow($0, 1/3) }
         case .exponential:
             return log
-        case .customComplexity(let inverseFunction):
-            return inverseFunction
+        case .custom(let inverse):
+            return inverse
         }
     }
 }
