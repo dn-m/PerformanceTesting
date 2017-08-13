@@ -43,7 +43,7 @@ class ArrayTests: PerformanceTestCase {
         }
         assertConstantTimePerformance(data)
     }
-
+/*
     // `count` should be constant-time in the number of elements
     func testCount() {
         let data = benchmark(
@@ -155,5 +155,5 @@ class ArrayTests: PerformanceTestCase {
         )
         assertPerformanceComplexity(data, complexity: .linear)
     }
-
+*/
 }

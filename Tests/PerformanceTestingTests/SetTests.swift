@@ -9,7 +9,7 @@ import XCTest
 import PerformanceTesting
 
 class SetTests: PerformanceTestCase {
-
+/*
     // MARK: Helper functions.
 
     // Constructs a set of size `n` with linearly increasing elements.
@@ -140,5 +140,5 @@ class SetTests: PerformanceTestCase {
         )
         assertConstantTimePerformance(data)
     }
-
+*/
 }
