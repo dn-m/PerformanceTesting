@@ -10,11 +10,6 @@ import XCTest
 
 open class PerformanceTestCase: XCTestCase {
 
-    // MARK: Associated Types
-
-    public typealias Setup <Structure> = (inout Structure, Double) -> Void
-    public typealias Operation = (Double) -> Double
-
     // MARK: Nested Types
 
     // FIXME: Consider making this `DebugLevel`
@@ -28,7 +23,7 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Benchmarks the performance of a closure.
     public func benchmark (
-        _ operation: Operation
+        _ operation: (Double) -> Double
     ) -> Benchmark
     {
         let testPoints = Scale.medium
