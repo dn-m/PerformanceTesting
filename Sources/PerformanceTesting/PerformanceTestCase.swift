@@ -47,6 +47,9 @@ open class PerformanceTestCase: XCTestCase {
         }
 
         XCTAssertEqual(results.slope, 0, accuracy: accuracy)
+        XCTAssert(results.correlation < 0.9,
+            "Constant-time performance should not have a linearly correlated slope"
+        )
     }
 
     /// Assert that the data indicates that performance fits well to the given
