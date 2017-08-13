@@ -13,7 +13,7 @@ class ArrayTests: PerformanceTestCase {
     // MARK: Helper functions.
 
     // Constructs an array of size `n` with linearly increasing elements.
-    func constructSizeNArray(size n: Int) -> [Int] {
+    func constructArray(size n: Int) -> [Int] {
         var array: [Int] = []
         array.reserveCapacity(Int(n))
         for i in 0..<Int(n) {
@@ -23,7 +23,7 @@ class ArrayTests: PerformanceTestCase {
     }
 
     // Constructs an array of size `n` with random elements.
-    func constructRandomSizeNArray(size n: Int) -> [Int] {
+    func constructRandomArray(size n: Int) -> [Int] {
         var array: [Int] = []
         array.reserveCapacity(Int(n))
         for _ in 0..<Int(n) {
@@ -38,22 +38,22 @@ class ArrayTests: PerformanceTestCase {
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
         let data = benchmark { testPoint in
-            let array = constructSizeNArray(size: Int(testPoint))
+            let array = constructArray(size: Int(testPoint))
             return measure { _ = array.isEmpty }
         }
         assertConstantTimePerformance(data)
     }
-/*
+
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let data = benchmark(
-            structure: [],
-            setup: constructSizeNArray,
-            measuring: { array, _ in _ = array.count }
+        let data = benchmark { testPoint in
+            let array = constructArray(size: Int(testPoint))
+            return measure { _ = array.count }
         )
         assertConstantTimePerformance(data)
     }
 
+/*
     // MARK: Tests: accessing elements
 
     // `subscript` should be constant-time in the number of elements
