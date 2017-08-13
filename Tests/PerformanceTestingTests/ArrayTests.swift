@@ -13,31 +13,34 @@ class ArrayTests: PerformanceTestCase {
     // MARK: Helper functions.
 
     // Constructs an array of size `n` with linearly increasing elements.
-    let constructSizeNArray: Setup<[Int]> = { array, n in
+    func constructSizeNArray(size n: Int) -> [Int] {
+        var array: [Int] = []
         array.reserveCapacity(Int(n))
         for i in 0..<Int(n) {
             array.append(i)
         }
+        return array
     }
 
     // Constructs an array of size `n` with random elements.
-    let constructRandomSizeNArray: Setup<[Int]> = { array, n in
+    func constructRandomSizeNArray(size n: Int) -> [Int] {
+        var array: [Int] = []
         array.reserveCapacity(Int(n))
-        for i in 0..<Int(n) {
+        for _ in 0..<Int(n) {
             let randomNumber = Int(arc4random_uniform(UInt32(n)))
             array.append(randomNumber)
         }
+        return array
     }
 
     // MARK: Tests: inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let data = benchmark(
-            structure: [],
-            setup: constructSizeNArray,
-            measuring: { array, _ in _ = array.isEmpty }
-        )
+        let data = benchmark { testPoint in
+            let array = constructSizeNArray(size: Int(testPoint))
+            return measure { _ = array.isEmpty }
+        }
         assertConstantTimePerformance(data)
     }
 
