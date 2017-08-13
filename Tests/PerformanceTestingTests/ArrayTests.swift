@@ -37,35 +37,31 @@ class ArrayTests: PerformanceTestCase {
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let data = benchmark { testPoint in
+        assertPerformance(.constant) { testPoint in
             let array = constructArray(size: Int(testPoint))
             return measure { _ = array.isEmpty }
         }
-        assertConstantTimePerformance(data)
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let data = benchmark { testPoint in
+        assertPerformance(.constant) { testPoint in
             let array = constructArray(size: Int(testPoint))
             return measure { _ = array.count }
         }
-        assertConstantTimePerformance(data)
     }
 
-/*
     // MARK: Tests: accessing elements
 
     // `subscript` should be constant-time in the number of elements
     func testSubscript() {
-        let data = benchmark(
-            structure: [],
-            setup: constructSizeNArray,
-            measuring: { array, _ in _ = array[3] }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let array = constructArray(size: Int(testPoint))
+            return measure { _ = array[3] }
+        }
     }
 
+/*
     // `first` should be constant-time in the number of elements
     func testFirst() {
         let data = benchmark(
@@ -112,20 +108,19 @@ class ArrayTests: PerformanceTestCase {
         assertPerformanceComplexity(data, complexity: .linear)
     }
 
+*/
+
     // MARK: Tests: removing elements
 
-    // `remove` should be O(n) in the number of elements
+
+    // `remove` should be constant-time in the number of elements
     func testRemove() {
-        let data = benchmark(
-            structure: [],
-            setup: constructSizeNArray,
-            measuring: { array, n in
-                for _ in 0..<100 {
-                    _ = array.remove(at: 0)
-                }
+        assertPerformance(.linear) { testPoint in
+            return measureMutable {
+                var array = constructRandomArray(size: Int(testPoint))
+                return time { array.remove(at: 0) }
             }
-        )
-        assertPerformanceComplexity(data, complexity: .linear)
+        }
     }
 
     // MARK: Tests: sorting an array
@@ -134,26 +129,23 @@ class ArrayTests: PerformanceTestCase {
     // Technically, it's linearithmic, but we should be able to fit
     // a line to it well enough.
     func testSort() {
-        let data = benchmark(
-            structure: [],
-            setup: constructRandomSizeNArray,
-            measuring: { array, n in
-                array.sort()
+        assertPerformance(.linear) { testPoint in
+            return measureMutable {
+                var array = constructRandomArray(size: Int(testPoint))
+                return time { array.sort() }
             }
-        )
-        assertPerformanceComplexity(data, complexity: .linear)
+        }
     }
 
     // `partition` should be O(n) in the number of elements
     func testPartition() {
-        let data = benchmark(
-            structure: [],
-            setup: constructRandomSizeNArray,
-            measuring: { array, n in
-                _ = array.partition { element in element > 50 }
+        assertPerformance(.linear) { testPoint in
+            return measureMutable {
+                var array = constructRandomArray(size: Int(testPoint))
+                return time {
+                    _ = array.partition { element in element > 50 }
+                }
             }
-        )
-        assertPerformanceComplexity(data, complexity: .linear)
+        }
     }
-*/
 }
