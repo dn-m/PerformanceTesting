@@ -13,7 +13,7 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Associated Types
 
     public typealias Setup <Structure> = (inout Structure, Double) -> Void
-    public typealias Operation <Structure> = (inout Structure, Double) -> Void
+    public typealias Operation = (Double) -> Double
 
     // MARK: Nested Types
 
@@ -26,25 +26,14 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: Instance Methods
 
-    /// - Returns: An array of two-tuples containing the input size and the average time taken to
-    /// perform the given `operation`.
-    public func benchmark <Structure> (
-        structure: Structure,
-        setup: Setup<Structure>,
-        measuring operation: Operation<Structure>,
-        testPoints: [Double] = Scale.medium,
-        trialCount: Int = 10
+    /// Benchmarks the performance of a closure.
+    public func benchmark (
+        _ operation: Operation
     ) -> Benchmark
     {
-        return testPoints.map { testPoint in
-            var testPointCopy = structure
-            setup(&testPointCopy, testPoint)
-            let results: [Double] = (0..<trialCount).map { _ in
-                var trialCopy = testPointCopy
-                return measure(operation, on: &trialCopy, for: testPoint)
-            }
-            return (testPoint, results.average)
-        }
+        let testPoints = Scale.medium
+        let results = testPoints.map { operation($0) }
+        return Array(zip(testPoints, results))
     }
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
@@ -98,16 +87,17 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    private func measure <Structure> (
-        _ operation: Operation<Structure>,
-        on structure: inout Structure,
-        for testPoint: Double
+    public func measure(
+        _ closure: () -> Void
     ) -> Double
     {
-        let startTime = CFAbsoluteTimeGetCurrent()
-        operation(&structure, testPoint)
-        let finishTime = CFAbsoluteTimeGetCurrent()
-        return finishTime - startTime
+        let measures: [Double] = (0..<10).map { _ in
+            let startTime: Double = CFAbsoluteTimeGetCurrent()
+            closure()
+            let finishTime: Double = CFAbsoluteTimeGetCurrent()
+            return finishTime - startTime
+        }
+        return measures.average
     }
 }
 
