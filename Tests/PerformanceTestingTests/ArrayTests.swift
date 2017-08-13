@@ -49,7 +49,7 @@ class ArrayTests: PerformanceTestCase {
         let data = benchmark { testPoint in
             let array = constructArray(size: Int(testPoint))
             return measure { _ = array.count }
-        )
+        }
         assertConstantTimePerformance(data)
     }
 
