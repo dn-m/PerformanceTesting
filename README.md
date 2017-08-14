@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/dn-m/PerformanceTesting.svg?branch=master)](https://travis-ci.org/dn-m/PerformanceTesting)
-
 PerformanceTesting
 ==================
+
+![Swift](https://img.shields.io/badge/%20in-swift%204.0-orange.svg) [![Build Status](https://travis-ci.org/dn-m/PerformanceTesting.svg?branch=master)](https://travis-ci.org/dn-m/PerformanceTesting)
 
 **PerformanceTesting** is a small, dependency-less Swift 4.0 library that extends `XCTestCase` to
 give tools for checking the asymptotic complexity arbitrary algorithms and collections. In other
