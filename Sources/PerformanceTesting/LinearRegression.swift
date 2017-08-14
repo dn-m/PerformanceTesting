@@ -18,10 +18,10 @@ internal func linearRegression(_ data: Benchmark) -> Regression {
 
     let xs = data.map { $0.0 }
     let ys = data.map { $0.1 }
-    let sumOfXs = xs.reduce(0,+)
-    let sumOfYs = ys.reduce(0,+)
-    let sumOfXsSquared = xs.map { pow($0,2) }.reduce(0,+)
-    let sumOfXsTimesYs = data.map(*).reduce(0,+)
+    let sumOfXs = xs.sum
+    let sumOfYs = ys.sum
+    let sumOfXsSquared = xs.map { pow($0,2) }.sum
+    let sumOfXsTimesYs = data.map(*).sum
 
     let denominator = Double(data.count) * sumOfXsSquared - pow(sumOfXs, 2)
     let interceptNumerator = sumOfYs * sumOfXsSquared - sumOfXs * sumOfXsTimesYs
@@ -41,11 +41,11 @@ private func correlation(_ benchmark: Benchmark, sumOfXs: Double, sumOfYs: Doubl
     -> Double
 {
     let meanOfYs = sumOfYs / Double(benchmark.count)
-    let squaredErrorOfYs = benchmark.map { pow($0.1 - meanOfYs, 2) }.reduce(0,+)
+    let squaredErrorOfYs = benchmark.map { pow($0.1 - meanOfYs, 2) }.sum
     let denominator = squaredErrorOfYs
     guard denominator != 0 else { return 0 }
     let meanOfXs = sumOfXs / Double(benchmark.count)
-    let squaredErrorOfXs = benchmark.map { pow($0.0 - meanOfXs, 2) }.reduce(0,+)
+    let squaredErrorOfXs = benchmark.map { pow($0.0 - meanOfXs, 2) }.sum
     let numerator = squaredErrorOfXs
     return sqrt(numerator / denominator) * slope
 }
