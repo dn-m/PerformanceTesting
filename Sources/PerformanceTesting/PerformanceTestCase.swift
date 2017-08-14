@@ -148,11 +148,11 @@ open class PerformanceTestCase: XCTestCase {
 
 }
 
-/// Maps data representing performance of a certain complexity so that it
-/// can be fit with linear regression. This is done by applying the inverse
-/// function of the expected performance function.
 extension Array where Array == Benchmark {
 
+    /// Maps data representing performance of a certain complexity so that it
+    /// can be fit with linear regression. This is done by applying the inverse
+    /// function of the expected performance function.
     public func mappedForLinearFit(complexity: Complexity) -> Array {
         return self.map { ($0, complexity.inverse($1)) }
     }
