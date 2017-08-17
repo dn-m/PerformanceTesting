@@ -22,7 +22,7 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Instance Methods
 
     /// Benchmarks the performance of a closure.
-    public func benchmark (
+    public func benchmark(
         _ operation: (Double) -> Double
     ) -> Benchmark
     {
