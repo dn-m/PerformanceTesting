@@ -61,54 +61,55 @@ class ArrayTests: PerformanceTestCase {
         }
     }
 
-/*
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        let data = benchmark(
-            structure: [],
-            setup: constructSizeNArray,
-            measuring: { array, _ in _ = array.first }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let array = constructArray(size: Int(testPoint))
+            return measure { _ = array.first }
+        }
     }
 
     // `last` should be constant-time in the number of elements
     func testLast() {
-        let data = benchmark(
-            structure: [],
-            setup: constructSizeNArray,
-            measuring: { array, _ in _ = array.last }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let array = constructArray(size: Int(testPoint))
+            return measure { _ = array.last }
+        }
     }
 
     // MARK: Tests: adding elements
 
     // `append` should be (amortized) constant-time in the number of elements
     func testAppend() {
-        let data = benchmark(
-            structure: [],
-            setup: constructSizeNArray,
-            measuring: { array, _ in array.append(6) }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            return measureMutable {
+                var array = constructArray(size: Int(testPoint))
+                return time { array.append(6) }
+            }
+        }
+    }
+
+    // `append` should be (amortized) linear-time in the number of appends
+    func testAppendAmortized() {
+        assertPerformance(.linear) { testPoint in
+            return measureMutable {
+                var array: [Int] = []
+                return time {
+                    for _ in 0..<Int(testPoint) { array.append(6) }
+                }
+            }
+        }
     }
 
     // `insert` should be O(n) in the number of elements
     func testInsert() {
-        let data = benchmark(
-            structure: [],
-            setup: constructSizeNArray,
-            measuring: { array, _ in
-                for _ in 0..<100 {
-                    array.insert(6, at: 0)
-                }
+        assertPerformance(.linear) { testPoint in
+            return measureMutable {
+                var array = constructArray(size: Int(testPoint))
+                return time { array.insert(6, at: 0) }
             }
-        )
-        assertPerformanceComplexity(data, complexity: .linear)
+        }
     }
-
-*/
 
     // MARK: Tests: removing elements
 
