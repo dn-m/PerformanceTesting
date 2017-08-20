@@ -8,6 +8,13 @@
 import Foundation
 import XCTest
 
+// for fflush(stdout)
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
+
 open class PerformanceTestCase: XCTestCase {
 
     // MARK: Nested Types
@@ -27,7 +34,24 @@ open class PerformanceTestCase: XCTestCase {
     ) -> Benchmark
     {
         let testPoints = Scale.medium
-        let benchmarkResults = testPoints.map { operation($0) }
+        let benchmarkResults = testPoints.map { testPoint -> Double in
+            var result = 3.0
+            if Configuration.verbose {
+                // So we know exactly where we're hanging. Swift seems to only
+                // flush at newlines, so manually flush here
+                print("\(#function): (\(testPoint), ", terminator:"")
+                fflush(stdout)
+            }
+
+            result = operation(testPoint)
+
+            if Configuration.verbose {
+                print("\(result))")
+            }
+
+            return result
+        }
+
         let doubleTestPoints: [Double] = testPoints.map(Double.init)
         return Array(zip(doubleTestPoints, benchmarkResults))
     }
