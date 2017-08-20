@@ -23,12 +23,13 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Benchmarks the performance of a closure.
     public func benchmark(
-        _ operation: (Double) -> Double
+        _ operation: (Int) -> Double
     ) -> Benchmark
     {
         let testPoints = Scale.medium
-        let results = testPoints.map { operation($0) }
-        return Array(zip(testPoints, results))
+        let benchmarkResults = testPoints.map { operation($0) }
+        let doubleTestPoints: [Double] = testPoints.map(Double.init)
+        return Array(zip(doubleTestPoints, benchmarkResults))
     }
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
@@ -87,7 +88,7 @@ open class PerformanceTestCase: XCTestCase {
 
     public func assertPerformance(
         _ complexity: Complexity,
-        _ operation: (Double) -> Double
+        _ operation: (Int) -> Double
     )
     {
         let data = benchmark(operation)
