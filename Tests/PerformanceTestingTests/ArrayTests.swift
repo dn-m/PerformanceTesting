@@ -13,7 +13,7 @@ class ArrayTests: PerformanceTestCase {
     // MARK: Helper functions.
 
     // Constructs an array of size `n` with linearly increasing elements.
-    func constructArray(size n: Int) -> [Int] {
+    func makeArray(size n: Int) -> [Int] {
         var array: [Int] = []
         array.reserveCapacity(n)
         for i in 0..<n {
@@ -23,7 +23,7 @@ class ArrayTests: PerformanceTestCase {
     }
 
     // Constructs an array of size `n` with random elements.
-    func constructRandomArray(size n: Int) -> [Int] {
+    func makeRandomArray(size n: Int) -> [Int] {
         var array: [Int] = []
         array.reserveCapacity(n)
         for _ in 0..<n {
@@ -38,7 +38,7 @@ class ArrayTests: PerformanceTestCase {
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
         assertPerformance(.constant) { testPoint in
-            let array = constructArray(size: testPoint)
+            let array = makeArray(size: testPoint)
             return measure { _ = array.isEmpty }
         }
     }
@@ -46,7 +46,7 @@ class ArrayTests: PerformanceTestCase {
     // `count` should be constant-time in the number of elements
     func testCount() {
         assertPerformance(.constant) { testPoint in
-            let array = constructArray(size: testPoint)
+            let array = makeArray(size: testPoint)
             return measure { _ = array.count }
         }
     }
@@ -56,7 +56,7 @@ class ArrayTests: PerformanceTestCase {
     // `subscript` should be constant-time in the number of elements
     func testSubscript() {
         assertPerformance(.constant) { testPoint in
-            let array = constructArray(size: testPoint)
+            let array = makeArray(size: testPoint)
             return measure { _ = array[3] }
         }
     }
@@ -64,7 +64,7 @@ class ArrayTests: PerformanceTestCase {
     // `first` should be constant-time in the number of elements
     func testFirst() {
         assertPerformance(.constant) { testPoint in
-            let array = constructArray(size: testPoint)
+            let array = makeArray(size: testPoint)
             return measure { _ = array.first }
         }
     }
@@ -72,7 +72,7 @@ class ArrayTests: PerformanceTestCase {
     // `last` should be constant-time in the number of elements
     func testLast() {
         assertPerformance(.constant) { testPoint in
-            let array = constructArray(size: testPoint)
+            let array = makeArray(size: testPoint)
             return measure { _ = array.last }
         }
     }
@@ -83,7 +83,7 @@ class ArrayTests: PerformanceTestCase {
     func testAppend() {
         assertPerformance(.constant) { testPoint in
             return measureMutable {
-                var array = constructArray(size: testPoint)
+                var array = makeArray(size: testPoint)
                 return time { array.append(6) }
             }
         }
@@ -105,7 +105,7 @@ class ArrayTests: PerformanceTestCase {
     func testInsert() {
         assertPerformance(.linear) { testPoint in
             return measureMutable {
-                var array = constructArray(size: testPoint)
+                var array = makeArray(size: testPoint)
                 return time { array.insert(6, at: 0) }
             }
         }
@@ -118,7 +118,7 @@ class ArrayTests: PerformanceTestCase {
     func testRemove() {
         assertPerformance(.linear) { testPoint in
             return measureMutable {
-                var array = constructRandomArray(size: testPoint)
+                var array = makeRandomArray(size: testPoint)
                 return time { array.remove(at: 0) }
             }
         }
@@ -132,7 +132,7 @@ class ArrayTests: PerformanceTestCase {
     func testSort() {
         assertPerformance(.linear) { testPoint in
             return measureMutable {
-                var array = constructRandomArray(size: testPoint)
+                var array = makeRandomArray(size: testPoint)
                 return time { array.sort() }
             }
         }
@@ -142,7 +142,7 @@ class ArrayTests: PerformanceTestCase {
     func testPartition() {
         assertPerformance(.linear) { testPoint in
             return measureMutable {
-                var array = constructRandomArray(size: testPoint)
+                var array = makeRandomArray(size: testPoint)
                 return time {
                     _ = array.partition { element in element > 50 }
                 }

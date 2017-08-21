@@ -13,7 +13,7 @@ class SetTests: PerformanceTestCase {
     // MARK: Helper functions.
 
     // Constructs a set of size `n` with linearly increasing elements.
-    func constructSet(size n: Int) -> Set<Int> {
+    func makeSet(size n: Int) -> Set<Int> {
         var set = Set<Int>()
         set.reserveCapacity(n)
         for i in 0..<n {
@@ -32,7 +32,7 @@ class SetTests: PerformanceTestCase {
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
         assertPerformance(.constant) { testPoint in
-            let set = constructSet(size: testPoint)
+            let set = makeSet(size: testPoint)
             return measure { _ = set.isEmpty }
         }
     }
@@ -40,7 +40,7 @@ class SetTests: PerformanceTestCase {
     // `count` should be constant-time in the number of elements
     func testCount() {
         assertPerformance(.constant) { testPoint in
-            let set = constructSet(size: testPoint)
+            let set = makeSet(size: testPoint)
             return measure { _ = set.count }
         }
     }
@@ -48,7 +48,7 @@ class SetTests: PerformanceTestCase {
     // `first` should be constant-time in the number of elements
     func testFirst() {
         assertPerformance(.constant) { testPoint in
-            let set = constructSet(size: testPoint)
+            let set = makeSet(size: testPoint)
             return measure { _ = set.first }
         }
     }
@@ -58,7 +58,7 @@ class SetTests: PerformanceTestCase {
     // `contains` should be constant-time in the number of elements
     func testContains() {
         assertPerformance(.constant) { testPoint in
-            let set = constructSet(size: testPoint)
+            let set = makeSet(size: testPoint)
             return measure { _ = set.contains(randomInteger(testPoint*2)) }
         }
     }
@@ -69,7 +69,7 @@ class SetTests: PerformanceTestCase {
     func testInsert() {
         assertPerformance(.constant) { testPoint in
             return measureMutable {
-                var set = constructSet(size: testPoint)
+                var set = makeSet(size: testPoint)
                 return time {
                     // ensure an accurate reading, too noisy with just one iteration
                     for _ in 0..<100 {
@@ -85,7 +85,7 @@ class SetTests: PerformanceTestCase {
     // `filter` should be linear in the number of elements
     func testFilter() {
         assertPerformance(.linear) { testPoint in
-            let set = constructSet(size: testPoint)
+            let set = makeSet(size: testPoint)
             return measure {
                 _ = set.filter { $0 % 5 == 3 }
             }
@@ -96,7 +96,7 @@ class SetTests: PerformanceTestCase {
     func testRemove() {
         assertPerformance(.constant) { testPoint in
             return measureMutable {
-                var set = constructSet(size: testPoint)
+                var set = makeSet(size: testPoint)
                 return time { set.remove(randomInteger(testPoint*2)) }
             }
         }
@@ -106,7 +106,7 @@ class SetTests: PerformanceTestCase {
     func testRemoveFirst() {
         assertPerformance(.constant) { testPoint in
             return measureMutable {
-                var set = constructSet(size: testPoint)
+                var set = makeSet(size: testPoint)
                 return time { set.removeFirst() }
             }
         }
@@ -119,7 +119,7 @@ class SetTests: PerformanceTestCase {
     func testUnionWithConstantSizedOther() {
         assertPerformance(.constant) { testPoint in
             return measureMutable {
-                let benchSet = constructSet(size: testPoint)
+                let benchSet = makeSet(size: testPoint)
                 let otherSet = Set.init(0..<100)
                 return time { _ = benchSet.union(otherSet) }
             }
@@ -131,7 +131,7 @@ class SetTests: PerformanceTestCase {
     func testUnionWithLinearSizedOther() {
         assertPerformance(.linear) { testPoint in
             return measureMutable {
-                let benchSet = constructSet(size: testPoint)
+                let benchSet = makeSet(size: testPoint)
                 let otherSet = Set.init(0..<100)
                 return time { _ = otherSet.union(benchSet) }
             }
