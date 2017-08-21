@@ -13,12 +13,13 @@ class SetTests: PerformanceTestCase {
     // MARK: Helper functions.
 
     // Constructs a set of size `n` with linearly increasing elements.
-    let constructSet(size n: Int) -> [Int] {
-        var set: [Int] = []
+    func constructSet(size n: Int) -> Set<Int> {
+        var set = Set<Int>()
         set.reserveCapacity(n)
         for i in 0..<n {
             set.insert(i)
         }
+        return set;
     }
 
     // MARK: Tests: inspecting
@@ -27,7 +28,7 @@ class SetTests: PerformanceTestCase {
     func testIsEmpty() {
         assertPerformance(.constant) { testPoint in
             let set = constructSet(size: testPoint)
-            return measure { _ = array.isEmpty }
+            return measure { _ = set.isEmpty }
         }
     }
 
@@ -35,7 +36,7 @@ class SetTests: PerformanceTestCase {
     func testCount() {
         assertPerformance(.constant) { testPoint in
             let set = constructSet(size: testPoint)
-            return measure { _ = array.count }
+            return measure { _ = set.count }
         }
     }
 
@@ -43,15 +44,7 @@ class SetTests: PerformanceTestCase {
     func testFirst() {
         assertPerformance(.constant) { testPoint in
             let set = constructSet(size: testPoint)
-            return measure { _ = array.first }
-        }
-    }
-
-    // `last` should be constant-time in the number of elements
-    func testFirst() {
-        assertPerformance(.constant) { testPoint in
-            let set = constructSet(size: testPoint)
-            return measure { _ = array.last }
+            return measure { _ = set.first }
         }
     }
 
