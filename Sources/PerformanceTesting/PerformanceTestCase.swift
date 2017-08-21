@@ -110,11 +110,7 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    public func assertPerformance(
-        _ complexity: Complexity,
-        _ operation: (Int) -> Double
-    )
-    {
+    public func assertPerformance(_ complexity: Complexity, _ operation: (Int) -> Double) {
         let data = benchmark(operation)
         switch complexity {
         case .constant:
@@ -124,8 +120,7 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-    public func measure(_ closure: () -> Void) -> Double
-    {
+    public func measure(_ closure: () -> Void) -> Double {
         let measures: [Double] = (0..<10).map { _ in
             let startTime: Double = CFAbsoluteTimeGetCurrent()
             closure()
@@ -135,13 +130,11 @@ open class PerformanceTestCase: XCTestCase {
         return measures.average
     }
 
-    public func measureMutable(_ closure: () -> Double) -> Double
-    {
+    public func measureMutable(_ closure: () -> Double) -> Double {
         return (0..<10).map { _ in closure() }.average
     }
 
-    public func time(_ closure: () -> Void) -> Double
-    {
+    public func time(_ closure: () -> Void) -> Double {
         let startTime = CFAbsoluteTimeGetCurrent()
         closure()
         let finishTime = CFAbsoluteTimeGetCurrent()
