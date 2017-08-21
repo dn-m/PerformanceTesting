@@ -39,7 +39,7 @@ class ArrayTests: PerformanceTestCase {
     func testIsEmpty() {
         assertPerformance(.constant) { testPoint in
             let array = makeArray(size: testPoint)
-            return measure { _ = array.isEmpty }
+            return meanExecutionTime { _ = array.isEmpty }
         }
     }
 
@@ -47,7 +47,7 @@ class ArrayTests: PerformanceTestCase {
     func testCount() {
         assertPerformance(.constant) { testPoint in
             let array = makeArray(size: testPoint)
-            return measure { _ = array.count }
+            return meanExecutionTime { _ = array.count }
         }
     }
 
@@ -57,7 +57,7 @@ class ArrayTests: PerformanceTestCase {
     func testSubscript() {
         assertPerformance(.constant) { testPoint in
             let array = makeArray(size: testPoint)
-            return measure { _ = array[3] }
+            return meanExecutionTime { _ = array[3] }
         }
     }
 
@@ -65,7 +65,7 @@ class ArrayTests: PerformanceTestCase {
     func testFirst() {
         assertPerformance(.constant) { testPoint in
             let array = makeArray(size: testPoint)
-            return measure { _ = array.first }
+            return meanExecutionTime { _ = array.first }
         }
     }
 
@@ -73,7 +73,7 @@ class ArrayTests: PerformanceTestCase {
     func testLast() {
         assertPerformance(.constant) { testPoint in
             let array = makeArray(size: testPoint)
-            return measure { _ = array.last }
+            return meanExecutionTime { _ = array.last }
         }
     }
 
@@ -82,7 +82,7 @@ class ArrayTests: PerformanceTestCase {
     // `append` should be (amortized) constant-time in the number of elements
     func testAppend() {
         assertPerformance(.constant) { testPoint in
-            return measureMutable {
+            return meanOutcome {
                 var array = makeArray(size: testPoint)
                 return time { array.append(6) }
             }
@@ -92,7 +92,7 @@ class ArrayTests: PerformanceTestCase {
     // `append` should be (amortized) linear-time in the number of appends
     func testAppendAmortized() {
         assertPerformance(.linear) { testPoint in
-            return measureMutable {
+            return meanOutcome {
                 var array: [Int] = []
                 return time {
                     for _ in 0..<testPoint { array.append(6) }
@@ -104,7 +104,7 @@ class ArrayTests: PerformanceTestCase {
     // `insert` should be O(n) in the number of elements
     func testInsert() {
         assertPerformance(.linear) { testPoint in
-            return measureMutable {
+            return meanOutcome {
                 var array = makeArray(size: testPoint)
                 return time { array.insert(6, at: 0) }
             }
@@ -117,7 +117,7 @@ class ArrayTests: PerformanceTestCase {
     // `remove` should be constant-time in the number of elements
     func testRemove() {
         assertPerformance(.linear) { testPoint in
-            return measureMutable {
+            return meanOutcome {
                 var array = makeRandomArray(size: testPoint)
                 return time { array.remove(at: 0) }
             }
@@ -131,7 +131,7 @@ class ArrayTests: PerformanceTestCase {
     // a line to it well enough.
     func testSort() {
         assertPerformance(.linear) { testPoint in
-            return measureMutable {
+            return meanOutcome {
                 var array = makeRandomArray(size: testPoint)
                 return time { array.sort() }
             }
@@ -141,7 +141,7 @@ class ArrayTests: PerformanceTestCase {
     // `partition` should be O(n) in the number of elements
     func testPartition() {
         assertPerformance(.linear) { testPoint in
-            return measureMutable {
+            return meanOutcome {
                 var array = makeRandomArray(size: testPoint)
                 return time {
                     _ = array.partition { element in element > 50 }

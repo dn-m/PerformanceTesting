@@ -120,17 +120,11 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-    public func measure(_ closure: () -> Void) -> Double {
-        let measures: [Double] = (0..<10).map { _ in
-            let startTime: Double = CFAbsoluteTimeGetCurrent()
-            closure()
-            let finishTime: Double = CFAbsoluteTimeGetCurrent()
-            return finishTime - startTime
-        }
-        return measures.average
+    public func meanExecutionTime(_ closure: () -> Void) -> Double {
+        return meanOutcome { time(closure) }
     }
 
-    public func measureMutable(_ closure: () -> Double) -> Double {
+    public func meanOutcome(_ closure: () -> Double) -> Double {
         return (0..<10).map { _ in closure() }.average
     }
 
