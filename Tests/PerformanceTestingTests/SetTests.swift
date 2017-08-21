@@ -102,31 +102,40 @@ class SetTests: PerformanceTestCase {
         }
     }
 
-    /*
     // `removeFirst` should be constant-time in the number of elements
     func testRemoveFirst() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, n in
-                _ = set.removeFirst()
+        assertPerformance(.constant) { testPoint in
+            return measureMutable {
+                var set = constructSet(size: testPoint)
+                return time { set.removeFirst() }
             }
-        )
-        assertConstantTimePerformance(data)
+        }
     }
 
     // MARK: Tests: combining sets
 
     // `union` should be linear in the number of elements inserted
-    func testUnion() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, n in
-                _ = set.union(Set.init(0..<300))
+    // Since we are inserting a constant-size set, this is constant time.
+    func testUnionWithConstantSizedOther() {
+        assertPerformance(.constant) { testPoint in
+            return measureMutable {
+                let benchSet = constructSet(size: testPoint)
+                let otherSet = Set.init(0..<100)
+                return time { _ = benchSet.union(otherSet) }
             }
-        )
-        assertConstantTimePerformance(data)
+        }
     }
-*/
+
+    // `union` should be linear in the number of elements inserted
+    // Since we are inserting a size-n set, this is linear time.
+    func testUnionWithLinearSizedOther() {
+        assertPerformance(.linear) { testPoint in
+            return measureMutable {
+                let benchSet = constructSet(size: testPoint)
+                let otherSet = Set.init(0..<100)
+                return time { _ = otherSet.union(benchSet) }
+            }
+        }
+    }
+
 }
