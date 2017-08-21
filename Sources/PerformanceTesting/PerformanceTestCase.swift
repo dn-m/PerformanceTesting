@@ -137,8 +137,7 @@ open class PerformanceTestCase: XCTestCase {
 
     public func measureMutable(_ closure: () -> Double) -> Double
     {
-        let measures: [Double] = (0..<10).map { _ in closure() }
-        return measures.average
+        return (0..<10).map { _ in closure() }.average
     }
 
     public func time(_ closure: () -> Void) -> Double
