@@ -15,8 +15,8 @@ class ArrayTests: PerformanceTestCase {
     // Constructs an array of size `n` with linearly increasing elements.
     func constructArray(size n: Int) -> [Int] {
         var array: [Int] = []
-        array.reserveCapacity(Int(n))
-        for i in 0..<Int(n) {
+        array.reserveCapacity(n)
+        for i in 0..<n {
             array.append(i)
         }
         return array
@@ -25,8 +25,8 @@ class ArrayTests: PerformanceTestCase {
     // Constructs an array of size `n` with random elements.
     func constructRandomArray(size n: Int) -> [Int] {
         var array: [Int] = []
-        array.reserveCapacity(Int(n))
-        for _ in 0..<Int(n) {
+        array.reserveCapacity(n)
+        for _ in 0..<n {
             let randomNumber = Int(arc4random_uniform(UInt32(n)))
             array.append(randomNumber)
         }
