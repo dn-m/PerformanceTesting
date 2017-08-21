@@ -154,23 +154,6 @@ open class PerformanceTestCase: XCTestCase {
         let finishTime: Double = CFAbsoluteTimeGetCurrent()
         return finishTime - startTime
     }
-
-/* TODO: not sure if this is needed yet
-    public func time(
-        repetitions: Int,
-        _ closure: () -> Void
-    ) -> Double
-    {
-        assert(repetitions > 0)
-        let startTime: Double = CFAbsoluteTimeGetCurrent()
-        for _ in 0..<repetitions {
-            closure()
-        }
-        let finishTime: Double = CFAbsoluteTimeGetCurrent()
-        return finishTime - startTime
-    }
-*/
-
 }
 
 extension Array where Array == Benchmark {
