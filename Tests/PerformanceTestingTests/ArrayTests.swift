@@ -27,8 +27,7 @@ class ArrayTests: PerformanceTestCase {
         var array: [Int] = []
         array.reserveCapacity(n)
         for _ in 0..<n {
-            let randomNumber = Int(arc4random_uniform(UInt32(n)))
-            array.append(randomNumber)
+            array.append(n.random())
         }
         return array
     }

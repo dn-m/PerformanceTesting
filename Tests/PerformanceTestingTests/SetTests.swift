@@ -19,12 +19,7 @@ class SetTests: PerformanceTestCase {
         for i in 0..<n {
             set.insert(i)
         }
-        return set;
-    }
-
-    // Random number in [0, upperLimit)
-    func randomInteger(_ upperLimit: Int = 1000) -> Int {
-        return Int(arc4random_uniform(UInt32(upperLimit)))
+        return set
     }
 
     // MARK: Tests: inspecting
@@ -56,10 +51,20 @@ class SetTests: PerformanceTestCase {
     // MARK: Tests: membership
 
     // `contains` should be constant-time in the number of elements
-    func testContains() {
+    // if the element in question is in the set
+    func testContainsHit() {
         assertPerformance(.constant) { testPoint in
             let set = makeSet(size: testPoint)
-            return meanExecutionTime { _ = set.contains(randomInteger(testPoint*2)) }
+            return meanExecutionTime { _ = set.contains(testPoint.random()) }
+        }
+    }
+
+    // `contains` should be constant-time in the number of elements
+    // if the element in question is in the set
+    func testContainsMiss() {
+        assertPerformance(.constant) { testPoint in
+            let set = makeSet(size: testPoint)
+            return meanExecutionTime { _ = set.contains(testPoint+1) }
         }
     }
 
@@ -73,7 +78,7 @@ class SetTests: PerformanceTestCase {
                 return time {
                     // ensure an accurate reading, too noisy with just one iteration
                     for _ in 0..<100 {
-                        set.insert(randomInteger())
+                        set.insert((testPoint*2).random())
                     }
                 }
             }
@@ -92,12 +97,24 @@ class SetTests: PerformanceTestCase {
         }
     }
 
-    // `remove` should be constant-time in the number of elements
-    func testRemove() {
+    // `remove` should be constant-time in the number of elements,
+    // if the element to be removed is in the set
+    func testRemoveHit() {
         assertPerformance(.constant) { testPoint in
             return meanOutcome {
                 var set = makeSet(size: testPoint)
-                return time { set.remove(randomInteger(testPoint*2)) }
+                return time { set.remove(testPoint.random()) }
+            }
+        }
+    }
+
+    // `remove` should be constant-time in the number of elements,
+    // if the element to be removed is not in the set
+    func testRemoveMiss() {
+        assertPerformance(.constant) { testPoint in
+            return meanOutcome {
+                var set = makeSet(size: testPoint)
+                return time { set.remove(testPoint+1) }
             }
         }
     }
