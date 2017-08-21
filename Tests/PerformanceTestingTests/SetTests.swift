@@ -9,13 +9,14 @@ import XCTest
 import PerformanceTesting
 
 class SetTests: PerformanceTestCase {
-/*
+
     // MARK: Helper functions.
 
     // Constructs a set of size `n` with linearly increasing elements.
-    let constructSizeNSet: Setup<Set<Int>> = { set, n in
-        set.reserveCapacity(Int(n))
-        for i in 0..<Int(n) {
+    let constructSet(size n: Int) -> [Int] {
+        var set: [Int] = []
+        set.reserveCapacity(n)
+        for i in 0..<n {
             set.insert(i)
         }
     }
@@ -24,36 +25,39 @@ class SetTests: PerformanceTestCase {
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.isEmpty }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let set = constructSet(size: testPoint)
+            return measure { _ = array.isEmpty }
+        }
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.count }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let set = constructSet(size: testPoint)
+            return measure { _ = array.count }
+        }
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.first }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let set = constructSet(size: testPoint)
+            return measure { _ = array.first }
+        }
+    }
+
+    // `last` should be constant-time in the number of elements
+    func testFirst() {
+        assertPerformance(.constant) { testPoint in
+            let set = constructSet(size: testPoint)
+            return measure { _ = array.last }
+        }
     }
 
     // MARK: Tests: membership
 
+/*
     // `contains` should be constant-time in the number of elements
     func testContains() {
         let data = benchmark(
