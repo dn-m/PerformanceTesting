@@ -110,7 +110,7 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    public func assertPerformance(_ complexity: Complexity, _ operation: (Int) -> Double) {
+    public func assertPerformance(_ complexity: Complexity, of operation: (Int) -> Double) {
         let data = benchmark(operation)
         switch complexity {
         case .constant:
