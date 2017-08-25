@@ -112,4 +112,20 @@ class AlgorithmComplexityTests: PerformanceTestCase {
         }
     }
 
+    // MARK: Exponential tests: recursive Fibonacci generator.
+
+    func fibonacci(_ index: Int) -> Int {
+        assert(index >= 0)
+        guard index > 1 else { return index == 0 ? 0 : 1 }
+        return fibonacci(index-1) + fibonacci(index-2)
+    }
+
+    func testExponential_RecursiveFibonacci() {
+        // hardcoded; anything larger takes too long, and using `exponentialSeries`
+        // generates duplicate test points, which is not a problem, but we like variety
+        let testPoints = [5, 8, 11, 14, 17, 20, 23, 26, 30, 35]
+        assertPerformance(.exponential, testPoints: testPoints) { testPoint in
+            meanExecutionTime { _ = fibonacci(testPoint) }
+        }
+    }
 }
