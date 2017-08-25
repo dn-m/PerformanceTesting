@@ -104,10 +104,10 @@ class AlgorithmComplexityTests: PerformanceTestCase {
 
     func testQuadratic_MatrixMultiply() {
         assertPerformance(.cubic, testPoints: Scale.tiny) { testPoint in
-            meanExecutionTime {
+            meanOutcome {
                 let first = makeRandomSquareMatrix(size: testPoint)
                 let second = makeRandomSquareMatrix(size: testPoint)
-                _ = squareMatrixMultiply(first, second)
+                return time { _ = squareMatrixMultiply(first, second) }
             }
         }
     }
