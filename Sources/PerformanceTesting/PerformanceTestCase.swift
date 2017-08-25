@@ -8,12 +8,14 @@
 import Foundation
 import XCTest
 
+// for fflush(stdout)
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
+
 open class PerformanceTestCase: XCTestCase {
-
-    // MARK: Associated Types
-
-    public typealias Setup <Structure> = (inout Structure, Double) -> Void
-    public typealias Operation = (Double) -> Double
 
     // MARK: Nested Types
 
@@ -27,13 +29,31 @@ open class PerformanceTestCase: XCTestCase {
     // MARK: Instance Methods
 
     /// Benchmarks the performance of a closure.
-    public func benchmark (
-        _ operation: Operation
+    public func benchmark(
+        _ operation: (Int) -> Double
     ) -> Benchmark
     {
         let testPoints = Scale.medium
-        let results = testPoints.map { operation($0) }
-        return Array(zip(testPoints, results))
+        let benchmarkResults = testPoints.map { testPoint -> Double in
+            var result = 3.0
+            if Configuration.verbose {
+                // So we know exactly where we're hanging. Swift seems to only
+                // flush at newlines, so manually flush here
+                print("\(#function): (\(testPoint), ", terminator:"")
+                fflush(stdout)
+            }
+
+            result = operation(testPoint)
+
+            if Configuration.verbose {
+                print("\(result))")
+            }
+
+            return result
+        }
+
+        let doubleTestPoints: [Double] = testPoints.map(Double.init)
+        return Array(zip(doubleTestPoints, benchmarkResults))
     }
 
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
@@ -52,6 +72,9 @@ open class PerformanceTestCase: XCTestCase {
         }
 
         XCTAssertEqual(results.slope, 0, accuracy: accuracy)
+        XCTAssert(results.correlation < 0.9,
+            "Constant-time performance should not have a linearly correlated slope"
+        )
     }
 
     /// Assert that the data indicates that performance fits well to the given
@@ -87,38 +110,39 @@ open class PerformanceTestCase: XCTestCase {
         XCTAssert(results.correlation >= minimumCorrelation)
     }
 
-    public func measure(
-        _ closure: () -> Void
-    ) -> Double
-    {
-        let measures: [Double] = (0..<10).map { _ in
-            let startTime: Double = CFAbsoluteTimeGetCurrent()
-            closure()
-            let finishTime: Double = CFAbsoluteTimeGetCurrent()
-            return finishTime - startTime
+    public func assertPerformance(_ complexity: Complexity, of operation: (Int) -> Double) {
+        let data = benchmark(operation)
+        switch complexity {
+        case .constant:
+            assertConstantTimePerformance(data)
+        default:
+            assertPerformanceComplexity(data, complexity: complexity)
         }
-        return measures.average
+    }
+
+    public func meanExecutionTime(_ closure: () -> Void) -> Double {
+        return meanOutcome { time(closure) }
+    }
+
+    public func meanOutcome(_ closure: () -> Double) -> Double {
+        return (0..<10).map { _ in closure() }.average
+    }
+
+    public func time(_ closure: () -> Void) -> Double {
+        let startTime = CFAbsoluteTimeGetCurrent()
+        closure()
+        let finishTime = CFAbsoluteTimeGetCurrent()
+        return finishTime - startTime
     }
 }
 
-/// Maps data representing performance of a certain complexity so that it
-/// can be fit with linear regression. This is done by applying the inverse
-/// function of the expected performance function.
 extension Array where Array == Benchmark {
 
+    /// Maps data representing performance of a certain complexity so that it
+    /// can be fit with linear regression. This is done by applying the inverse
+    /// function of the expected performance function.
     public func mappedForLinearFit(complexity: Complexity) -> Array {
         return self.map { ($0, complexity.inverse($1)) }
     }
 }
 
-extension Array where Element == Double {
-
-    public var sum: Double {
-        return reduce(0,+)
-    }
-
-    public var average: Double {
-        assert(count > 0)
-        return sum / Double(count)
-    }
-}

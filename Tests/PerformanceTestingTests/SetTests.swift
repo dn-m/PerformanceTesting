@@ -9,136 +9,150 @@ import XCTest
 import PerformanceTesting
 
 class SetTests: PerformanceTestCase {
-/*
+
     // MARK: Helper functions.
 
     // Constructs a set of size `n` with linearly increasing elements.
-    let constructSizeNSet: Setup<Set<Int>> = { set, n in
-        set.reserveCapacity(Int(n))
-        for i in 0..<Int(n) {
+    func makeSet(size n: Int) -> Set<Int> {
+        var set = Set<Int>()
+        set.reserveCapacity(n)
+        for i in 0..<n {
             set.insert(i)
         }
+        return set
     }
 
     // MARK: Tests: inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.isEmpty }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let set = makeSet(size: testPoint)
+            return meanExecutionTime { _ = set.isEmpty }
+        }
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.count }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let set = makeSet(size: testPoint)
+            return meanExecutionTime { _ = set.count }
+        }
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, _ in _ = set.first }
-        )
-        assertConstantTimePerformance(data)
+        assertPerformance(.constant) { testPoint in
+            let set = makeSet(size: testPoint)
+            return meanExecutionTime { _ = set.first }
+        }
     }
 
     // MARK: Tests: membership
 
     // `contains` should be constant-time in the number of elements
-    func testContains() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, n in
-                let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
-                for _ in 0..<100 {
-                    _ = set.contains(randomNumber)
-                }
-            }
-        )
-        assertConstantTimePerformance(data)
+    // if the element in question is in the set
+    func testContainsHit() {
+        assertPerformance(.constant) { testPoint in
+            let set = makeSet(size: testPoint)
+            return meanExecutionTime { _ = set.contains(testPoint.random()) }
+        }
+    }
+
+    // `contains` should be constant-time in the number of elements
+    // if the element in question is in the set
+    func testContainsMiss() {
+        assertPerformance(.constant) { testPoint in
+            let set = makeSet(size: testPoint)
+            return meanExecutionTime { _ = set.contains(testPoint+1) }
+        }
     }
 
     // MARK: Tests: adding elements
 
     // `insert` should be constant-time in the number of elements
     func testInsert() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, n in
-                for _ in 0..<10000 {
-                    let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
-                    _ = set.insert(randomNumber)
+        assertPerformance(.constant) { testPoint in
+            return meanOutcome {
+                var set = makeSet(size: testPoint)
+                return time {
+                    // ensure an accurate reading, too noisy with just one iteration
+                    for _ in 0..<100 {
+                        set.insert((testPoint*2).random())
+                    }
                 }
             }
-        )
-        assertConstantTimePerformance(data)
+        }
     }
 
     // MARK: Tests: removing elements
 
     // `filter` should be linear in the number of elements
     func testFilter() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, n in
+        assertPerformance(.linear) { testPoint in
+            let set = makeSet(size: testPoint)
+            return meanExecutionTime {
                 _ = set.filter { $0 % 5 == 3 }
             }
-        )
-        assertPerformanceComplexity(data, complexity: .linear)
+        }
     }
 
-    // `remove` should be constant-time in the number of elements
-    func testRemove() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, n in
-                for _ in 0..<10000 {
-                    let randomNumber = Int(arc4random_uniform(UInt32(n*2)))
-                    _ = set.remove(randomNumber)
-                }
+    // `remove` should be constant-time in the number of elements,
+    // if the element to be removed is in the set
+    func testRemoveHit() {
+        assertPerformance(.constant) { testPoint in
+            return meanOutcome {
+                var set = makeSet(size: testPoint)
+                return time { set.remove(testPoint.random()) }
             }
-        )
-        assertConstantTimePerformance(data)
+        }
+    }
+
+    // `remove` should be constant-time in the number of elements,
+    // if the element to be removed is not in the set
+    func testRemoveMiss() {
+        assertPerformance(.constant) { testPoint in
+            return meanOutcome {
+                var set = makeSet(size: testPoint)
+                return time { set.remove(testPoint+1) }
+            }
+        }
     }
 
     // `removeFirst` should be constant-time in the number of elements
     func testRemoveFirst() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, n in
-                _ = set.removeFirst()
+        assertPerformance(.constant) { testPoint in
+            return meanOutcome {
+                var set = makeSet(size: testPoint)
+                return time { set.removeFirst() }
             }
-        )
-        assertConstantTimePerformance(data)
+        }
     }
 
     // MARK: Tests: combining sets
 
     // `union` should be linear in the number of elements inserted
-    func testUnion() {
-        let data = benchmark(
-            structure: Set.init(),
-            setup: constructSizeNSet,
-            measuring: { set, n in
-                _ = set.union(Set.init(0..<300))
+    // Since we are inserting a constant-size set, this is constant time.
+    func testUnionWithConstantSizedOther() {
+        assertPerformance(.constant) { testPoint in
+            return meanOutcome {
+                let benchSet = makeSet(size: testPoint)
+                let otherSet = Set.init(0..<100)
+                return time { _ = benchSet.union(otherSet) }
             }
-        )
-        assertConstantTimePerformance(data)
+        }
     }
-*/
+
+    // `union` should be linear in the number of elements inserted
+    // Since we are inserting a size-n set, this is linear time.
+    func testUnionWithLinearSizedOther() {
+        assertPerformance(.linear) { testPoint in
+            return meanOutcome {
+                let benchSet = makeSet(size: testPoint)
+                let otherSet = Set.init(0..<100)
+                return time { _ = otherSet.union(benchSet) }
+            }
+        }
+    }
+
 }
