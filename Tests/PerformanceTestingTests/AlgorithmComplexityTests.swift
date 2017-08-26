@@ -128,4 +128,28 @@ class AlgorithmComplexityTests: PerformanceTestCase {
             meanExecutionTime { _ = fibonacci(testPoint) }
         }
     }
+
+    // MARK: Square root tests: prime testing
+
+    func isPrime(_ number: Int) -> Bool {
+        assert(number > 1)
+        for factor in 2..<Int(sqrt(Double(number))) {
+            if (number % factor == 0) {
+                return true
+            }
+        }
+        return false
+    }
+
+    // primality test should have `big theta sqrt(n)` performance
+    func testSquareRoot_Primality() {
+        assertPerformance(.squareRoot) { testPoint in
+            meanExecutionTime {
+                // make sure to get enough primes that performance rounds out as expected
+                for number in 0..<100 {
+                    _ = isPrime(testPoint + number*2 + 1)
+                }
+            }
+        }
+    }
 }
