@@ -30,10 +30,10 @@ open class PerformanceTestCase: XCTestCase {
 
     /// Benchmarks the performance of a closure.
     public func benchmark(
-        _ operation: (Int) -> Double
+        _ operation: (Int) -> Double,
+        testPoints: [Int] = Scale.medium
     ) -> Benchmark
     {
-        let testPoints = Scale.medium
         let benchmarkResults = testPoints.map { testPoint -> Double in
             var result = 3.0
             if Configuration.verbose {
@@ -112,6 +112,21 @@ open class PerformanceTestCase: XCTestCase {
 
     public func assertPerformance(_ complexity: Complexity, of operation: (Int) -> Double) {
         let data = benchmark(operation)
+        switch complexity {
+        case .constant:
+            assertConstantTimePerformance(data)
+        default:
+            assertPerformanceComplexity(data, complexity: complexity)
+        }
+    }
+
+    public func assertPerformance(
+        _ complexity: Complexity,
+        testPoints: [Int],
+        of operation: (Int) -> Double
+    )
+    {
+        let data = benchmark(operation, testPoints: testPoints)
         switch complexity {
         case .constant:
             assertConstantTimePerformance(data)
