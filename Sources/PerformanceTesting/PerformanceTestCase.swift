@@ -161,3 +161,40 @@ extension Array where Array == Benchmark {
     }
 }
 
+extension Array {
+
+    /// Fills the array using a generator function. The function
+    /// is passed the index of the current element as an argument.
+    public init(count: Int, fillingWith generator: (Int) -> Element) {
+        self.init()
+        reserveCapacity(count)
+        for i in 0..<count { append(generator(i)) }
+    }
+
+}
+
+extension Set {
+
+    /// Fills the array using a generator function. The function
+    /// is passed the index of the current element as an argument.
+    public init(count: Int, fillingWith generator: (Int) -> Element) {
+        self.init()
+        reserveCapacity(count)
+        for i in 0..<count { insert(generator(i)) }
+    }
+
+}
+
+extension Dictionary {
+
+    /// Fills the array using a generator function. The function
+    /// is passed the index of the current element as an argument.
+    public init(count: Int, fillingWith generator: (Int) -> Element) {
+        self.init(minimumCapacity: count)
+        for i in 0..<count {
+            let element = generator(i)
+            updateValue(element.value, forKey: element.key)
+        }
+    }
+
+}

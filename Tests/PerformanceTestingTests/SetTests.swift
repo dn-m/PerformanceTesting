@@ -14,12 +14,7 @@ class SetTests: PerformanceTestCase {
 
     // Constructs a set of size `n` with linearly increasing elements.
     func makeSet(size n: Int) -> Set<Int> {
-        var set = Set<Int>()
-        set.reserveCapacity(n)
-        for i in 0..<n {
-            set.insert(i)
-        }
-        return set
+        return Set(count: n) { $0 }
     }
 
     // MARK: Tests: inspecting

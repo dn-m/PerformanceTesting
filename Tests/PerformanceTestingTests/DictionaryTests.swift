@@ -15,11 +15,7 @@ class DictionaryTests: PerformanceTestCase {
     // Constructs a dictionary of size `n` with linearly increasing elements
     // associated with linearly decreasing elements
     func makeDictionary(size n: Int) -> Dictionary<Int, Int> {
-        var dictionary = Dictionary<Int, Int>(minimumCapacity: n)
-        for i in 0..<n {
-            dictionary.updateValue(n-i, forKey: i)
-        }
-        return dictionary
+        return Dictionary(count: n) { (key: $0, value: $0) }
     }
 
     // MARK: Tests: inspecting
