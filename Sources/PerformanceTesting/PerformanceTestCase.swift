@@ -172,3 +172,15 @@ extension Array {
     }
 
 }
+
+extension Set {
+
+    /// Fills the array using a generator function. The function
+    /// is passed the index of the current element as an argument.
+    public init(count: Int, fillingWith elementGenerator: (Int) -> Element) {
+        self.init()
+        reserveCapacity(count)
+        for i in 0..<count { insert(elementGenerator(i)) }
+    }
+
+}
