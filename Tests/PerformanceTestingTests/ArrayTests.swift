@@ -14,12 +14,12 @@ class ArrayTests: PerformanceTestCase {
 
     // Constructs an array of size `n` with linearly increasing elements.
     func makeArray(size n: Int) -> [Int] {
-        return Array<Int>(count: n) { $0 }
+        return Array(count: n) { $0 }
     }
 
     // Constructs an array of size `n` with random elements.
     func makeRandomArray(size n: Int) -> [Int] {
-        return Array<Int>(count: n) { _ in n.random() }
+        return Array(count: n) { _ in n.random() }
     }
 
     // MARK: Tests: inspecting
