@@ -47,15 +47,13 @@ public func assertPerformance(
 }
 
 /// Assert that the data indicates that performance is constant-time ( O(1) ).
-public func assertConstantTimePerformance(
+internal func assertConstantTimePerformance(
     _ benchmark: Benchmark,
     accuracy: Double = 0.01,
     logging: Logging = .none
 )
 {
-
     let results = linearRegression(benchmark)
-
     if logging == .detailed {
         print("\(#function): data:")
         for (x, y) in benchmark { print("\t(\(x), \(y))") }
@@ -64,7 +62,6 @@ public func assertConstantTimePerformance(
         print("\(#function): correlation: \(results.correlation)")
         print("\(#function): slope acc.:  \(accuracy)")
     }
-
     XCTAssertEqual(results.slope, 0, accuracy: accuracy)
     XCTAssert(results.correlation < 0.9,
               "Constant-time performance should not have a linearly correlated slope"
@@ -74,7 +71,7 @@ public func assertConstantTimePerformance(
 /// Assert that the data indicates that performance fits well to the given
 /// complexity class. Optional parameter for minimum acceptable correlation.
 /// Use assertConstantTimePerformance for O(1) assertions
-public func assertPerformanceComplexity(
+internal func assertPerformanceComplexity(
     _ data: Benchmark,
     complexity: Complexity,
     minimumCorrelation: Double = 0.9,

@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import PerformanceTesting
+@testable import PerformanceTesting
 
 /// Tests to check correctness of PerformanceComplexityAssertion functions.
 ///
