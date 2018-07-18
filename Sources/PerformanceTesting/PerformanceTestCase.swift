@@ -142,13 +142,13 @@ open class PerformanceTestCase: XCTestCase {
     public func meanOutcome(_ closure: () -> Double) -> Double {
         return (0..<10).map { _ in closure() }.average
     }
+}
 
-    public func time(_ closure: () -> Void) -> Double {
-        let start = CFAbsoluteTimeGetCurrent()
-        closure()
-        let finish = CFAbsoluteTimeGetCurrent()
-        return finish - start
-    }
+public func time(_ closure: () -> Void) -> Double {
+    let start = CFAbsoluteTimeGetCurrent()
+    closure()
+    let finish = CFAbsoluteTimeGetCurrent()
+    return finish - start
 }
 
 extension Array where Array == Benchmark {
