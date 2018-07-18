@@ -98,34 +98,31 @@ open class PerformanceTestCase: XCTestCase {
 
         XCTAssert(results.correlation >= minimumCorrelation)
     }
+}
 
-    /// Benchmarks the performance of a closure.
-    public func benchmark(
-        _ operation: (Int) -> Double,
-        testPoints: [Int] = Scale.medium
-    ) -> Benchmark
-    {
-        let benchmarkResults = testPoints.map { testPoint -> Double in
-            var result = 3.0
-            if Configuration.verbose {
-                // So we know exactly where we're hanging. Swift seems to only
-                // flush at newlines, so manually flush here
-                print("\(#function): (\(testPoint), ", terminator:"")
-                fflush(stdout)
-            }
+/// Benchmarks the performance of a closure.
+public func benchmark(_ operation: (Int) -> Double, testPoints: [Int] = Scale.medium) -> Benchmark {
 
-            result = operation(testPoint)
-
-            if Configuration.verbose {
-                print("\(result))")
-            }
-
-            return result
+    let benchmarkResults = testPoints.map { testPoint -> Double in
+        var result = 3.0
+        if PerformanceTestCase.Configuration.verbose {
+            // So we know exactly where we're hanging. Swift seems to only
+            // flush at newlines, so manually flush here
+            print("\(#function): (\(testPoint), ", terminator:"")
+            fflush(stdout)
         }
 
-        let doubleTestPoints: [Double] = testPoints.map(Double.init)
-        return Array(zip(doubleTestPoints, benchmarkResults))
+        result = operation(testPoint)
+
+        if PerformanceTestCase.Configuration.verbose {
+            print("\(result))")
+        }
+
+        return result
     }
+
+    let doubleTestPoints: [Double] = testPoints.map(Double.init)
+    return Array(zip(doubleTestPoints, benchmarkResults))
 }
 
 /// - Returns: The mean execution of ten iterations of the given `closure`.
