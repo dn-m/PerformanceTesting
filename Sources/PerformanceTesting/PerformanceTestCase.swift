@@ -15,16 +15,17 @@ import XCTest
     import Darwin.C
 #endif
 
-open class PerformanceTestCase: XCTestCase {
+/// The amount of information to be emitted.
+public enum Logging {
 
-    // MARK: Nested Types
+    /// No information will be emitted.
+    case none
 
-    // FIXME: Consider making this `DebugLevel`
-    // FIXME: Further, consider making this a global (internal) enum
-    public struct Configuration {
-        // Controls whether any methods in this file print verbose (debugging) information
-        public static var verbose: Bool = true
-    }
+    /// High-level information for a performance test of a single operation.
+    case overview
+
+    /// Information for each trial of a performance tests of a single operation.
+    case detailed
 }
 
 /// Assert that the given `operation` scales over the given `testPoints` (i.e., `N`) within the
@@ -32,94 +33,77 @@ open class PerformanceTestCase: XCTestCase {
 public func assertPerformance(
     _ complexity: Complexity,
     testPoints: [Int] = Scale.medium,
+    logging: Logging = .none,
     of operation: (Int) -> Double
 )
 {
     let data = benchmark(operation, testPoints: testPoints)
     switch complexity {
     case .constant:
-        assertConstantTimePerformance(data)
+        assertConstantTimePerformance(data, logging: logging)
     default:
-        assertPerformanceComplexity(data, complexity: complexity)
+        assertPerformanceComplexity(data, complexity: complexity, logging: logging)
     }
 }
 
 /// Assert that the data indicates that performance is constant-time ( O(1) ).
-public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
-
+internal func assertConstantTimePerformance(
+    _ benchmark: Benchmark,
+    tolerance: Double = 0.01,
+    logging: Logging = .none
+)
+{
     let results = linearRegression(benchmark)
 
-    if PerformanceTestCase.Configuration.verbose {
-        print("\(#function): data:")
-        for (x, y) in benchmark { print("\t(\(x), \(y))") }
-
-        print("\(#function): slope:       \(results.slope)")
-        print("\(#function): intercept:   \(results.intercept)")
-        print("\(#function): correlation: \(results.correlation)")
-        print("\(#function): slope acc.:  \(accuracy)")
+    if logging == .detailed {
+        for (trial,info) in benchmark.enumerated() {
+            let (size,time) = info
+            print("trial \(trial + 1): size: \(size), time: \(time)")
+        }
+        print("slope: \(results.slope) (tolerance: \(tolerance))")
+        print("intercept: \(results.intercept)")
+        print("correlation: \(results.correlation)")
     }
-
-    XCTAssertEqual(results.slope, 0, accuracy: accuracy)
-    XCTAssert(results.correlation < 0.9,
-              "Constant-time performance should not have a linearly correlated slope"
+    XCTAssertEqual(results.slope, 0, accuracy: tolerance)
+    XCTAssert(
+        results.correlation < 0.9,
+        "Constant-time performance should not have a linearly correlated slope"
     )
 }
 
 /// Assert that the data indicates that performance fits well to the given
 /// complexity class. Optional parameter for minimum acceptable correlation.
 /// Use assertConstantTimePerformance for O(1) assertions
-public func assertPerformanceComplexity(
+internal func assertPerformanceComplexity(
     _ data: Benchmark,
     complexity: Complexity,
-    minimumCorrelation: Double = 0.9
+    minimumCorrelation: Double = 0.9,
+    logging: Logging = .none
 )
 {
     let mappedData = data.mappedForLinearFit(complexity: complexity)
     let results = linearRegression(mappedData)
-
-    if PerformanceTestCase.Configuration.verbose {
-        print("\(#function): mapped data:")
-        for (x, y) in mappedData { print("\t(\(x), \(y))") }
-
-        print("\(#function): slope:       \(results.slope)")
-        print("\(#function): intercept:   \(results.intercept)")
-        print("\(#function): correlation: \(results.correlation)")
-        print("\(#function): min corr.:   \(minimumCorrelation)")
+    if logging == .detailed  {
+        for (trial,info) in mappedData.enumerated() {
+            let (size,time) = info
+            print("trial: \(trial + 1): size: \(size), time: \(time)")
+        }
+        print("slope: \(results.slope)")
+        print("intercept: \(results.intercept)")
+        print("correlation: \(results.correlation) (minimum: \(minimumCorrelation))")
     }
-
-    switch complexity {
-    case .constant:
-        print("\(#function): warning: constant-time complexity is not well-supported. You",
-            "probably mean assertConstantTimePerformance")
-    default:
-        break
-    }
-
     XCTAssert(results.correlation >= minimumCorrelation)
 }
 
 /// Benchmarks the performance of a closure.
-public func benchmark(_ operation: (Int) -> Double, testPoints: [Int] = Scale.medium) -> Benchmark {
-
-    let benchmarkResults = testPoints.map { testPoint -> Double in
-        var result = 3.0
-        if PerformanceTestCase.Configuration.verbose {
-            // So we know exactly where we're hanging. Swift seems to only
-            // flush at newlines, so manually flush here
-            print("\(#function): (\(testPoint), ", terminator:"")
-            fflush(stdout)
-        }
-
-        result = operation(testPoint)
-
-        if PerformanceTestCase.Configuration.verbose {
-            print("\(result))")
-        }
-
-        return result
-    }
-
-    let doubleTestPoints: [Double] = testPoints.map(Double.init)
+public func benchmark(
+    _ operation: (Int) -> Double,
+    testPoints: [Int] = Scale.medium,
+    logging: Logging = .none
+) -> Benchmark
+{
+    let benchmarkResults = testPoints.map { testPoint in operation(testPoint) }
+    let doubleTestPoints = testPoints.map(Double.init)
     return Array(zip(doubleTestPoints, benchmarkResults))
 }
 

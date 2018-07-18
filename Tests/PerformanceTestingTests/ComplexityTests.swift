@@ -6,12 +6,12 @@
 //
 
 import XCTest
-import PerformanceTesting
+@testable import PerformanceTesting
 
 /// Tests to check correctness of PerformanceComplexityAssertion functions.
 ///
 /// - Note: Data is intentionally dirty.
-class PerformanceTestingTests: PerformanceTestCase {
+class PerformanceTestingTests: XCTestCase {
 
     // MARK: Constant
 
