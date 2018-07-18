@@ -53,34 +53,6 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-    /// Benchmarks the performance of a closure.
-    public func benchmark(
-        _ operation: (Int) -> Double,
-        testPoints: [Int] = Scale.medium
-    ) -> Benchmark
-    {
-        let benchmarkResults = testPoints.map { testPoint -> Double in
-            var result = 3.0
-            if Configuration.verbose {
-                // So we know exactly where we're hanging. Swift seems to only
-                // flush at newlines, so manually flush here
-                print("\(#function): (\(testPoint), ", terminator:"")
-                fflush(stdout)
-            }
-
-            result = operation(testPoint)
-
-            if Configuration.verbose {
-                print("\(result))")
-            }
-
-            return result
-        }
-
-        let doubleTestPoints: [Double] = testPoints.map(Double.init)
-        return Array(zip(doubleTestPoints, benchmarkResults))
-    }
-
     /// Assert that the data indicates that performance is constant-time ( O(1) ).
     public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
 
@@ -98,7 +70,7 @@ open class PerformanceTestCase: XCTestCase {
 
         XCTAssertEqual(results.slope, 0, accuracy: accuracy)
         XCTAssert(results.correlation < 0.9,
-            "Constant-time performance should not have a linearly correlated slope"
+                  "Constant-time performance should not have a linearly correlated slope"
         )
     }
 
@@ -133,6 +105,34 @@ open class PerformanceTestCase: XCTestCase {
         }
 
         XCTAssert(results.correlation >= minimumCorrelation)
+    }
+
+    /// Benchmarks the performance of a closure.
+    public func benchmark(
+        _ operation: (Int) -> Double,
+        testPoints: [Int] = Scale.medium
+    ) -> Benchmark
+    {
+        let benchmarkResults = testPoints.map { testPoint -> Double in
+            var result = 3.0
+            if Configuration.verbose {
+                // So we know exactly where we're hanging. Swift seems to only
+                // flush at newlines, so manually flush here
+                print("\(#function): (\(testPoint), ", terminator:"")
+                fflush(stdout)
+            }
+
+            result = operation(testPoint)
+
+            if Configuration.verbose {
+                print("\(result))")
+            }
+
+            return result
+        }
+
+        let doubleTestPoints: [Double] = testPoints.map(Double.init)
+        return Array(zip(doubleTestPoints, benchmarkResults))
     }
 }
 
