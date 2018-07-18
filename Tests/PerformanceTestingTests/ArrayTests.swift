@@ -26,7 +26,7 @@ class ArrayTests: XCTestCase {
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        assertPerformance(.constant) { testPoint in
+        assertPerformance(.constant, logging: .detailed) { testPoint in
             let array = makeArray(size: testPoint)
             return meanExecutionTime { _ = array.isEmpty }
         }

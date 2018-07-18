@@ -40,9 +40,9 @@ public func assertPerformance(
     let data = benchmark(operation, testPoints: testPoints)
     switch complexity {
     case .constant:
-        assertConstantTimePerformance(data)
+        assertConstantTimePerformance(data, logging: logging)
     default:
-        assertPerformanceComplexity(data, complexity: complexity)
+        assertPerformanceComplexity(data, complexity: complexity, logging: logging)
     }
 }
 
