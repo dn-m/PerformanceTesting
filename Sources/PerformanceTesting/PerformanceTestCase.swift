@@ -43,6 +43,16 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
+    public func assertPerformance(_ complexity: Complexity, of operation: (Int) -> Double) {
+        let data = benchmark(operation)
+        switch complexity {
+        case .constant:
+            assertConstantTimePerformance(data)
+        default:
+            assertPerformanceComplexity(data, complexity: complexity)
+        }
+    }
+
     /// Benchmarks the performance of a closure.
     public func benchmark(
         _ operation: (Int) -> Double,
@@ -123,16 +133,6 @@ open class PerformanceTestCase: XCTestCase {
         }
 
         XCTAssert(results.correlation >= minimumCorrelation)
-    }
-
-    public func assertPerformance(_ complexity: Complexity, of operation: (Int) -> Double) {
-        let data = benchmark(operation)
-        switch complexity {
-        case .constant:
-            assertConstantTimePerformance(data)
-        default:
-            assertPerformanceComplexity(data, complexity: complexity)
-        }
     }
 }
 
