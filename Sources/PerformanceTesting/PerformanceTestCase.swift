@@ -28,6 +28,21 @@ open class PerformanceTestCase: XCTestCase {
 
     // MARK: Instance Methods
 
+    public func assertPerformance(
+        _ complexity: Complexity,
+        testPoints: [Int],
+        of operation: (Int) -> Double
+    )
+    {
+        let data = benchmark(operation, testPoints: testPoints)
+        switch complexity {
+        case .constant:
+            assertConstantTimePerformance(data)
+        default:
+            assertPerformanceComplexity(data, complexity: complexity)
+        }
+    }
+
     /// Benchmarks the performance of a closure.
     public func benchmark(
         _ operation: (Int) -> Double,
@@ -120,20 +135,7 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-    public func assertPerformance(
-        _ complexity: Complexity,
-        testPoints: [Int],
-        of operation: (Int) -> Double
-    )
-    {
-        let data = benchmark(operation, testPoints: testPoints)
-        switch complexity {
-        case .constant:
-            assertConstantTimePerformance(data)
-        default:
-            assertPerformanceComplexity(data, complexity: complexity)
-        }
-    }
+
 
     public func meanExecutionTime(_ closure: () -> Void) -> Double {
         return meanOutcome { time(closure) }
