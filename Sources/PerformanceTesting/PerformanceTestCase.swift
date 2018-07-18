@@ -144,6 +144,7 @@ open class PerformanceTestCase: XCTestCase {
     }
 }
 
+/// - Returns: The amount of time (in Seconds) that it takes to perform the given `closure`.
 public func time(_ closure: () -> Void) -> Double {
     let start = CFAbsoluteTimeGetCurrent()
     closure()
