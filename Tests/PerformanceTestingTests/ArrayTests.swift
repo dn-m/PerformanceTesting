@@ -8,7 +8,7 @@
 import XCTest
 import PerformanceTesting
 
-class ArrayTests: PerformanceTestCase {
+class ArrayTests: XCTestCase {
 
     // MARK: Helper functions.
 

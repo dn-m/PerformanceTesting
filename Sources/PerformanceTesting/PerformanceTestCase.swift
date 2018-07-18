@@ -15,18 +15,6 @@ import XCTest
     import Darwin.C
 #endif
 
-open class PerformanceTestCase: XCTestCase {
-
-    // MARK: Nested Types
-
-    // FIXME: Consider making this `DebugLevel`
-    // FIXME: Further, consider making this a global (internal) enum
-    public struct Configuration {
-        // Controls whether any methods in this file print verbose (debugging) information
-        public static var verbose: Bool = true
-    }
-}
-
 /// The amount of information to be emitted.
 public enum Logging {
 
@@ -37,7 +25,7 @@ public enum Logging {
     case overview
 
     /// Information for each trial of a performance tests of a single operation.
-    case detail
+    case detailed
 }
 
 /// Assert that the given `operation` scales over the given `testPoints` (i.e., `N`) within the
@@ -45,6 +33,7 @@ public enum Logging {
 public func assertPerformance(
     _ complexity: Complexity,
     testPoints: [Int] = Scale.medium,
+    logging: Logging = .none,
     of operation: (Int) -> Double
 )
 {
@@ -58,14 +47,18 @@ public func assertPerformance(
 }
 
 /// Assert that the data indicates that performance is constant-time ( O(1) ).
-public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
+public func assertConstantTimePerformance(
+    _ benchmark: Benchmark,
+    accuracy: Double = 0.01,
+    logging: Logging = .none
+)
+{
 
     let results = linearRegression(benchmark)
 
-    if PerformanceTestCase.Configuration.verbose {
+    if logging == .detailed {
         print("\(#function): data:")
         for (x, y) in benchmark { print("\t(\(x), \(y))") }
-
         print("\(#function): slope:       \(results.slope)")
         print("\(#function): intercept:   \(results.intercept)")
         print("\(#function): correlation: \(results.correlation)")
@@ -84,13 +77,14 @@ public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Doub
 public func assertPerformanceComplexity(
     _ data: Benchmark,
     complexity: Complexity,
-    minimumCorrelation: Double = 0.9
+    minimumCorrelation: Double = 0.9,
+    logging: Logging = .none
 )
 {
     let mappedData = data.mappedForLinearFit(complexity: complexity)
     let results = linearRegression(mappedData)
 
-    if PerformanceTestCase.Configuration.verbose {
+    if logging == .detailed  {
         print("\(#function): mapped data:")
         for (x, y) in mappedData { print("\t(\(x), \(y))") }
 
@@ -112,11 +106,16 @@ public func assertPerformanceComplexity(
 }
 
 /// Benchmarks the performance of a closure.
-public func benchmark(_ operation: (Int) -> Double, testPoints: [Int] = Scale.medium) -> Benchmark {
+public func benchmark(
+    _ operation: (Int) -> Double,
+    testPoints: [Int] = Scale.medium,
+    logging: Logging = .none
+) -> Benchmark
+{
 
     let benchmarkResults = testPoints.map { testPoint -> Double in
         var result = 3.0
-        if PerformanceTestCase.Configuration.verbose {
+        if logging == .detailed {
             // So we know exactly where we're hanging. Swift seems to only
             // flush at newlines, so manually flush here
             print("\(#function): (\(testPoint), ", terminator:"")
@@ -125,7 +124,7 @@ public func benchmark(_ operation: (Int) -> Double, testPoints: [Int] = Scale.me
 
         result = operation(testPoint)
 
-        if PerformanceTestCase.Configuration.verbose {
+        if logging == .detailed {
             print("\(result))")
         }
 

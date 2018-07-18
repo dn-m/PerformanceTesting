@@ -11,7 +11,7 @@
 import XCTest
 import PerformanceTesting
 
-class AlgorithmComplexityTests: PerformanceTestCase {
+class AlgorithmComplexityTests: XCTestCase {
 
     // MARK: Helper functions.
 

@@ -8,7 +8,7 @@
 import XCTest
 import PerformanceTesting
 
-class DictionaryTests: PerformanceTestCase {
+class DictionaryTests: XCTestCase {
 
     // MARK: Helper functions.
 
