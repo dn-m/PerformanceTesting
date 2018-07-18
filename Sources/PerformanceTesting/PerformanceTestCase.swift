@@ -8,13 +8,6 @@
 import Foundation
 import XCTest
 
-// for fflush(stdout)
-#if os(Linux)
-    import Glibc
-#else
-    import Darwin.C
-#endif
-
 /// The amount of information to be emitted.
 public enum Logging {
 
