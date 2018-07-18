@@ -146,10 +146,10 @@ open class PerformanceTestCase: XCTestCase {
     }
 
     public func time(_ closure: () -> Void) -> Double {
-        let startTime = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         closure()
-        let finishTime = CFAbsoluteTimeGetCurrent()
-        return finishTime - startTime
+        let finish = CFAbsoluteTimeGetCurrent()
+        return finish - start
     }
 }
 
