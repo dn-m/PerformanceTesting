@@ -23,6 +23,8 @@ public enum Logging {
 
 /// Assert that the given `operation` scales over the given `testPoints` (i.e., `N`) within the
 /// given `complexity` class.
+///
+/// - TODO: Add injection point (and default) for number of trials
 public func assertPerformance(
     _ complexity: Complexity,
     testPoints: [Int] = Scale.medium,
