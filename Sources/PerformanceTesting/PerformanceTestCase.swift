@@ -25,130 +25,125 @@ open class PerformanceTestCase: XCTestCase {
         // Controls whether any methods in this file print verbose (debugging) information
         public static var verbose: Bool = true
     }
+}
 
-    // MARK: Instance Methods
+/// Assert that the given `operation` scales over the given `testPoints` (i.e., `N`) within the
+/// given `complexity` class.
+public func assertPerformance(
+    _ complexity: Complexity,
+    testPoints: [Int] = Scale.medium,
+    of operation: (Int) -> Double
+)
+{
+    let data = benchmark(operation, testPoints: testPoints)
+    switch complexity {
+    case .constant:
+        assertConstantTimePerformance(data)
+    default:
+        assertPerformanceComplexity(data, complexity: complexity)
+    }
+}
 
-    /// Benchmarks the performance of a closure.
-    public func benchmark(
-        _ operation: (Int) -> Double,
-        testPoints: [Int] = Scale.medium
-    ) -> Benchmark
-    {
-        let benchmarkResults = testPoints.map { testPoint -> Double in
-            var result = 3.0
-            if Configuration.verbose {
-                // So we know exactly where we're hanging. Swift seems to only
-                // flush at newlines, so manually flush here
-                print("\(#function): (\(testPoint), ", terminator:"")
-                fflush(stdout)
-            }
+/// Assert that the data indicates that performance is constant-time ( O(1) ).
+public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
 
-            result = operation(testPoint)
+    let results = linearRegression(benchmark)
 
-            if Configuration.verbose {
-                print("\(result))")
-            }
+    if PerformanceTestCase.Configuration.verbose {
+        print("\(#function): data:")
+        for (x, y) in benchmark { print("\t(\(x), \(y))") }
 
-            return result
-        }
-
-        let doubleTestPoints: [Double] = testPoints.map(Double.init)
-        return Array(zip(doubleTestPoints, benchmarkResults))
+        print("\(#function): slope:       \(results.slope)")
+        print("\(#function): intercept:   \(results.intercept)")
+        print("\(#function): correlation: \(results.correlation)")
+        print("\(#function): slope acc.:  \(accuracy)")
     }
 
-    /// Assert that the data indicates that performance is constant-time ( O(1) ).
-    public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
-
-        let results = linearRegression(benchmark)
-
-        if Configuration.verbose {
-            print("\(#function): data:")
-            for (x, y) in benchmark { print("\t(\(x), \(y))") }
-
-            print("\(#function): slope:       \(results.slope)")
-            print("\(#function): intercept:   \(results.intercept)")
-            print("\(#function): correlation: \(results.correlation)")
-            print("\(#function): slope acc.:  \(accuracy)")
-        }
-
-        XCTAssertEqual(results.slope, 0, accuracy: accuracy)
-        XCTAssert(results.correlation < 0.9,
-            "Constant-time performance should not have a linearly correlated slope"
-        )
-    }
-
-    /// Assert that the data indicates that performance fits well to the given
-    /// complexity class. Optional parameter for minimum acceptable correlation.
-    /// Use assertConstantTimePerformance for O(1) assertions
-    public func assertPerformanceComplexity(
-        _ data: Benchmark,
-        complexity: Complexity,
-        minimumCorrelation: Double = 0.9
+    XCTAssertEqual(results.slope, 0, accuracy: accuracy)
+    XCTAssert(results.correlation < 0.9,
+              "Constant-time performance should not have a linearly correlated slope"
     )
-    {
-        let mappedData = data.mappedForLinearFit(complexity: complexity)
-        let results = linearRegression(mappedData)
+}
 
-        if Configuration.verbose {
-            print("\(#function): mapped data:")
-            for (x, y) in mappedData { print("\t(\(x), \(y))") }
+/// Assert that the data indicates that performance fits well to the given
+/// complexity class. Optional parameter for minimum acceptable correlation.
+/// Use assertConstantTimePerformance for O(1) assertions
+public func assertPerformanceComplexity(
+    _ data: Benchmark,
+    complexity: Complexity,
+    minimumCorrelation: Double = 0.9
+)
+{
+    let mappedData = data.mappedForLinearFit(complexity: complexity)
+    let results = linearRegression(mappedData)
 
-            print("\(#function): slope:       \(results.slope)")
-            print("\(#function): intercept:   \(results.intercept)")
-            print("\(#function): correlation: \(results.correlation)")
-            print("\(#function): min corr.:   \(minimumCorrelation)")
+    if PerformanceTestCase.Configuration.verbose {
+        print("\(#function): mapped data:")
+        for (x, y) in mappedData { print("\t(\(x), \(y))") }
+
+        print("\(#function): slope:       \(results.slope)")
+        print("\(#function): intercept:   \(results.intercept)")
+        print("\(#function): correlation: \(results.correlation)")
+        print("\(#function): min corr.:   \(minimumCorrelation)")
+    }
+
+    switch complexity {
+    case .constant:
+        print("\(#function): warning: constant-time complexity is not well-supported. You",
+            "probably mean assertConstantTimePerformance")
+    default:
+        break
+    }
+
+    XCTAssert(results.correlation >= minimumCorrelation)
+}
+
+/// Benchmarks the performance of a closure.
+public func benchmark(_ operation: (Int) -> Double, testPoints: [Int] = Scale.medium) -> Benchmark {
+
+    let benchmarkResults = testPoints.map { testPoint -> Double in
+        var result = 3.0
+        if PerformanceTestCase.Configuration.verbose {
+            // So we know exactly where we're hanging. Swift seems to only
+            // flush at newlines, so manually flush here
+            print("\(#function): (\(testPoint), ", terminator:"")
+            fflush(stdout)
         }
 
-        switch complexity {
-        case .constant:
-            print("\(#function): warning: constant-time complexity is not well-supported. You",
-                "probably mean assertConstantTimePerformance")
-        default:
-            break
+        result = operation(testPoint)
+
+        if PerformanceTestCase.Configuration.verbose {
+            print("\(result))")
         }
 
-        XCTAssert(results.correlation >= minimumCorrelation)
+        return result
     }
 
-    public func assertPerformance(_ complexity: Complexity, of operation: (Int) -> Double) {
-        let data = benchmark(operation)
-        switch complexity {
-        case .constant:
-            assertConstantTimePerformance(data)
-        default:
-            assertPerformanceComplexity(data, complexity: complexity)
-        }
-    }
+    let doubleTestPoints: [Double] = testPoints.map(Double.init)
+    return Array(zip(doubleTestPoints, benchmarkResults))
+}
 
-    public func assertPerformance(
-        _ complexity: Complexity,
-        testPoints: [Int],
-        of operation: (Int) -> Double
-    )
-    {
-        let data = benchmark(operation, testPoints: testPoints)
-        switch complexity {
-        case .constant:
-            assertConstantTimePerformance(data)
-        default:
-            assertPerformanceComplexity(data, complexity: complexity)
-        }
-    }
+/// - Returns: The mean execution of ten iterations of the given `closure`.
+///
+/// - FIXME: Inject the iteraction count.
+public func meanExecutionTime(_ closure: () -> Void) -> Double {
+    return meanOutcome { time(closure) }
+}
 
-    public func meanExecutionTime(_ closure: () -> Void) -> Double {
-        return meanOutcome { time(closure) }
-    }
+/// - Returns: The mean value of ten iterations of the given `closure`.
+///
+/// - FIXME: Perhaps these values should just be mapped into a single array first?
+/// - FIXME: Maybe `10` should not be hard-coded here.
+public func meanOutcome(_ closure: () -> Double) -> Double {
+    return (0..<10).map { _ in closure() }.average
+}
 
-    public func meanOutcome(_ closure: () -> Double) -> Double {
-        return (0..<10).map { _ in closure() }.average
-    }
-
-    public func time(_ closure: () -> Void) -> Double {
-        let startTime = CFAbsoluteTimeGetCurrent()
-        closure()
-        let finishTime = CFAbsoluteTimeGetCurrent()
-        return finishTime - startTime
-    }
+/// - Returns: The amount of time (in Seconds) that it takes to perform the given `closure`.
+public func time(_ closure: () -> Void) -> Double {
+    let start = CFAbsoluteTimeGetCurrent()
+    closure()
+    let finish = CFAbsoluteTimeGetCurrent()
+    return finish - start
 }
 
 extension Array where Array == Benchmark {
@@ -170,7 +165,6 @@ extension Array {
         reserveCapacity(count)
         for i in 0..<count { append(generator(i)) }
     }
-
 }
 
 extension Set {
@@ -182,7 +176,6 @@ extension Set {
         reserveCapacity(count)
         for i in 0..<count { insert(generator(i)) }
     }
-
 }
 
 extension Dictionary {
@@ -196,5 +189,4 @@ extension Dictionary {
             updateValue(element.value, forKey: element.key)
         }
     }
-
 }
