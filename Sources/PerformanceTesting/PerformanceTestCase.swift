@@ -109,7 +109,7 @@ public func benchmark(
 
 /// - Returns: The mean execution of ten iterations of the given `closure`.
 ///
-/// - FIXME: Inject the iteraction count.
+/// - FIXME: Inject the iteration count.
 public func meanExecutionTime(_ closure: () -> Void) -> Double {
     return meanOutcome { time(closure) }
 }
