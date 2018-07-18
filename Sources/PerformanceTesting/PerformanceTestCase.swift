@@ -134,10 +134,13 @@ open class PerformanceTestCase: XCTestCase {
             assertPerformanceComplexity(data, complexity: complexity)
         }
     }
+}
 
-    public func meanExecutionTime(_ closure: () -> Void) -> Double {
-        return meanOutcome { time(closure) }
-    }
+/// - Returns: The mean execution of ten iterations of the given `closure`.
+///
+/// - FIXME: Inject the iteraction count.
+public func meanExecutionTime(_ closure: () -> Void) -> Double {
+    return meanOutcome { time(closure) }
 }
 
 /// - Returns: The mean value of ten iterations of the given `closure`.
