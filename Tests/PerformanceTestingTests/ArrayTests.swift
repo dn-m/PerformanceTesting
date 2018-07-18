@@ -22,7 +22,7 @@ class ArrayTests: XCTestCase {
         return Array(count: n) { _ in n.random() }
     }
 
-    // MARK: Tests: inspecting
+    // MARK: Tests: Inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
@@ -40,7 +40,7 @@ class ArrayTests: XCTestCase {
         }
     }
 
-    // MARK: Tests: accessing elements
+    // MARK: Tests: Accessing elements
 
     // `subscript` should be constant-time in the number of elements
     func testSubscript() {
@@ -92,7 +92,7 @@ class ArrayTests: XCTestCase {
 
     // `insert` should be O(n) in the number of elements
     func testInsert() {
-        assertPerformance(.linear) { testPoint in
+        assertPerformance(.linear, logging: .detailed) { testPoint in
             return meanOutcome {
                 var array = makeArray(size: testPoint)
                 return time { array.insert(6, at: 0) }
@@ -100,7 +100,7 @@ class ArrayTests: XCTestCase {
         }
     }
 
-    // MARK: Tests: removing elements
+    // MARK: Tests: Removing elements
 
     // `remove` should be constant-time in the number of elements
     func testRemove() {
@@ -112,7 +112,7 @@ class ArrayTests: XCTestCase {
         }
     }
 
-    // MARK: Tests: sorting an array
+    // MARK: Tests: Sorting an array
 
     // `sort` should be roughly O(n) in the number of elements
     // Technically, it's linearithmic, but we should be able to fit

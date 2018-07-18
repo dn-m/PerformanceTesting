@@ -49,22 +49,25 @@ public func assertPerformance(
 /// Assert that the data indicates that performance is constant-time ( O(1) ).
 internal func assertConstantTimePerformance(
     _ benchmark: Benchmark,
-    accuracy: Double = 0.01,
+    tolerance: Double = 0.01,
     logging: Logging = .none
 )
 {
     let results = linearRegression(benchmark)
+
     if logging == .detailed {
-        print("\(#function): data:")
-        for (x, y) in benchmark { print("\t(\(x), \(y))") }
-        print("\(#function): slope:       \(results.slope)")
-        print("\(#function): intercept:   \(results.intercept)")
-        print("\(#function): correlation: \(results.correlation)")
-        print("\(#function): slope acc.:  \(accuracy)")
+        for (trial,info) in benchmark.enumerated() {
+            let (size,time) = info
+            print("trial \(trial + 1): size: \(size), time: \(time)")
+        }
+        print("slope: \(results.slope) (tolerance: \(tolerance))")
+        print("intercept: \(results.intercept)")
+        print("correlation: \(results.correlation)")
     }
-    XCTAssertEqual(results.slope, 0, accuracy: accuracy)
-    XCTAssert(results.correlation < 0.9,
-              "Constant-time performance should not have a linearly correlated slope"
+    XCTAssertEqual(results.slope, 0, accuracy: tolerance)
+    XCTAssert(
+        results.correlation < 0.9,
+        "Constant-time performance should not have a linearly correlated slope"
     )
 }
 
@@ -80,25 +83,15 @@ internal func assertPerformanceComplexity(
 {
     let mappedData = data.mappedForLinearFit(complexity: complexity)
     let results = linearRegression(mappedData)
-
     if logging == .detailed  {
-        print("\(#function): mapped data:")
-        for (x, y) in mappedData { print("\t(\(x), \(y))") }
-
-        print("\(#function): slope:       \(results.slope)")
-        print("\(#function): intercept:   \(results.intercept)")
-        print("\(#function): correlation: \(results.correlation)")
-        print("\(#function): min corr.:   \(minimumCorrelation)")
+        for (trial,info) in mappedData.enumerated() {
+            let (size,time) = info
+            print("trial: \(trial + 1): size: \(size), time: \(time)")
+        }
+        print("slope: \(results.slope)")
+        print("intercept: \(results.intercept)")
+        print("correlation: \(results.correlation) (minimum: \(minimumCorrelation))")
     }
-
-    switch complexity {
-    case .constant:
-        print("\(#function): warning: constant-time complexity is not well-supported. You",
-            "probably mean assertConstantTimePerformance")
-    default:
-        break
-    }
-
     XCTAssert(results.correlation >= minimumCorrelation)
 }
 
@@ -109,26 +102,8 @@ public func benchmark(
     logging: Logging = .none
 ) -> Benchmark
 {
-
-    let benchmarkResults = testPoints.map { testPoint -> Double in
-        var result = 3.0
-        if logging == .detailed {
-            // So we know exactly where we're hanging. Swift seems to only
-            // flush at newlines, so manually flush here
-            print("\(#function): (\(testPoint), ", terminator:"")
-            fflush(stdout)
-        }
-
-        result = operation(testPoint)
-
-        if logging == .detailed {
-            print("\(result))")
-        }
-
-        return result
-    }
-
-    let doubleTestPoints: [Double] = testPoints.map(Double.init)
+    let benchmarkResults = testPoints.map { testPoint in operation(testPoint) }
+    let doubleTestPoints = testPoints.map(Double.init)
     return Array(zip(doubleTestPoints, benchmarkResults))
 }
 
