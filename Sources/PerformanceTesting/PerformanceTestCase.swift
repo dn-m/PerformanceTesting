@@ -44,60 +44,60 @@ open class PerformanceTestCase: XCTestCase {
             assertPerformanceComplexity(data, complexity: complexity)
         }
     }
+}
 
-    /// Assert that the data indicates that performance is constant-time ( O(1) ).
-    public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
+/// Assert that the data indicates that performance is constant-time ( O(1) ).
+public func assertConstantTimePerformance(_ benchmark: Benchmark, accuracy: Double = 0.01) {
 
-        let results = linearRegression(benchmark)
+    let results = linearRegression(benchmark)
 
-        if Configuration.verbose {
-            print("\(#function): data:")
-            for (x, y) in benchmark { print("\t(\(x), \(y))") }
+    if PerformanceTestCase.Configuration.verbose {
+        print("\(#function): data:")
+        for (x, y) in benchmark { print("\t(\(x), \(y))") }
 
-            print("\(#function): slope:       \(results.slope)")
-            print("\(#function): intercept:   \(results.intercept)")
-            print("\(#function): correlation: \(results.correlation)")
-            print("\(#function): slope acc.:  \(accuracy)")
-        }
-
-        XCTAssertEqual(results.slope, 0, accuracy: accuracy)
-        XCTAssert(results.correlation < 0.9,
-                  "Constant-time performance should not have a linearly correlated slope"
-        )
+        print("\(#function): slope:       \(results.slope)")
+        print("\(#function): intercept:   \(results.intercept)")
+        print("\(#function): correlation: \(results.correlation)")
+        print("\(#function): slope acc.:  \(accuracy)")
     }
 
-    /// Assert that the data indicates that performance fits well to the given
-    /// complexity class. Optional parameter for minimum acceptable correlation.
-    /// Use assertConstantTimePerformance for O(1) assertions
-    public func assertPerformanceComplexity(
-        _ data: Benchmark,
-        complexity: Complexity,
-        minimumCorrelation: Double = 0.9
+    XCTAssertEqual(results.slope, 0, accuracy: accuracy)
+    XCTAssert(results.correlation < 0.9,
+              "Constant-time performance should not have a linearly correlated slope"
     )
-    {
-        let mappedData = data.mappedForLinearFit(complexity: complexity)
-        let results = linearRegression(mappedData)
+}
 
-        if Configuration.verbose {
-            print("\(#function): mapped data:")
-            for (x, y) in mappedData { print("\t(\(x), \(y))") }
+/// Assert that the data indicates that performance fits well to the given
+/// complexity class. Optional parameter for minimum acceptable correlation.
+/// Use assertConstantTimePerformance for O(1) assertions
+public func assertPerformanceComplexity(
+    _ data: Benchmark,
+    complexity: Complexity,
+    minimumCorrelation: Double = 0.9
+)
+{
+    let mappedData = data.mappedForLinearFit(complexity: complexity)
+    let results = linearRegression(mappedData)
 
-            print("\(#function): slope:       \(results.slope)")
-            print("\(#function): intercept:   \(results.intercept)")
-            print("\(#function): correlation: \(results.correlation)")
-            print("\(#function): min corr.:   \(minimumCorrelation)")
-        }
+    if PerformanceTestCase.Configuration.verbose {
+        print("\(#function): mapped data:")
+        for (x, y) in mappedData { print("\t(\(x), \(y))") }
 
-        switch complexity {
-        case .constant:
-            print("\(#function): warning: constant-time complexity is not well-supported. You",
-                "probably mean assertConstantTimePerformance")
-        default:
-            break
-        }
-
-        XCTAssert(results.correlation >= minimumCorrelation)
+        print("\(#function): slope:       \(results.slope)")
+        print("\(#function): intercept:   \(results.intercept)")
+        print("\(#function): correlation: \(results.correlation)")
+        print("\(#function): min corr.:   \(minimumCorrelation)")
     }
+
+    switch complexity {
+    case .constant:
+        print("\(#function): warning: constant-time complexity is not well-supported. You",
+            "probably mean assertConstantTimePerformance")
+    default:
+        break
+    }
+
+    XCTAssert(results.correlation >= minimumCorrelation)
 }
 
 /// Benchmarks the performance of a closure.
