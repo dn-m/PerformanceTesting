@@ -30,21 +30,11 @@ open class PerformanceTestCase: XCTestCase {
 
     public func assertPerformance(
         _ complexity: Complexity,
-        testPoints: [Int],
+        testPoints: [Int] = Scale.medium,
         of operation: (Int) -> Double
     )
     {
         let data = benchmark(operation, testPoints: testPoints)
-        switch complexity {
-        case .constant:
-            assertConstantTimePerformance(data)
-        default:
-            assertPerformanceComplexity(data, complexity: complexity)
-        }
-    }
-
-    public func assertPerformance(_ complexity: Complexity, of operation: (Int) -> Double) {
-        let data = benchmark(operation)
         switch complexity {
         case .constant:
             assertConstantTimePerformance(data)
