@@ -102,7 +102,6 @@ class ArrayTests: PerformanceTestCase {
 
     // MARK: Tests: removing elements
 
-
     // `remove` should be constant-time in the number of elements
     func testRemove() {
         assertPerformance(.linear) { testPoint in
