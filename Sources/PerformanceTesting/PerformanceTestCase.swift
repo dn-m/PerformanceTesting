@@ -27,6 +27,19 @@ open class PerformanceTestCase: XCTestCase {
     }
 }
 
+/// The amount of information to be emitted.
+public enum Logging {
+
+    /// No information will be emitted.
+    case none
+
+    /// High-level information for a performance test of a single operation.
+    case overview
+
+    /// Information for each trial of a performance tests of a single operation.
+    case detail
+}
+
 /// Assert that the given `operation` scales over the given `testPoints` (i.e., `N`) within the
 /// given `complexity` class.
 public func assertPerformance(
