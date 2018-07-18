@@ -138,10 +138,14 @@ open class PerformanceTestCase: XCTestCase {
     public func meanExecutionTime(_ closure: () -> Void) -> Double {
         return meanOutcome { time(closure) }
     }
+}
 
-    public func meanOutcome(_ closure: () -> Double) -> Double {
-        return (0..<10).map { _ in closure() }.average
-    }
+/// - Returns: The mean value of ten iterations of the given `closure`.
+///
+/// - FIXME: Perhaps these values should just be mapped into a single array first?
+/// - FIXME: Maybe `10` should not be hard-coded here.
+public func meanOutcome(_ closure: () -> Double) -> Double {
+    return (0..<10).map { _ in closure() }.average
 }
 
 /// - Returns: The amount of time (in Seconds) that it takes to perform the given `closure`.
