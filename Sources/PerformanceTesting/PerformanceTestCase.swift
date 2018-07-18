@@ -25,24 +25,22 @@ open class PerformanceTestCase: XCTestCase {
         // Controls whether any methods in this file print verbose (debugging) information
         public static var verbose: Bool = true
     }
+}
 
-    // MARK: Instance Methods
-
-    /// Assert that the given `operation` scales over the given `testPoints` (i.e., `N`) within the
-    /// given `complexity` class.
-    public func assertPerformance(
-        _ complexity: Complexity,
-        testPoints: [Int] = Scale.medium,
-        of operation: (Int) -> Double
-    )
-    {
-        let data = benchmark(operation, testPoints: testPoints)
-        switch complexity {
-        case .constant:
-            assertConstantTimePerformance(data)
-        default:
-            assertPerformanceComplexity(data, complexity: complexity)
-        }
+/// Assert that the given `operation` scales over the given `testPoints` (i.e., `N`) within the
+/// given `complexity` class.
+public func assertPerformance(
+    _ complexity: Complexity,
+    testPoints: [Int] = Scale.medium,
+    of operation: (Int) -> Double
+)
+{
+    let data = benchmark(operation, testPoints: testPoints)
+    switch complexity {
+    case .constant:
+        assertConstantTimePerformance(data)
+    default:
+        assertPerformanceComplexity(data, complexity: complexity)
     }
 }
 
