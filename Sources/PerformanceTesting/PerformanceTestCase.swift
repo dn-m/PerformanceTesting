@@ -135,8 +135,6 @@ open class PerformanceTestCase: XCTestCase {
         }
     }
 
-
-
     public func meanExecutionTime(_ closure: () -> Void) -> Double {
         return meanOutcome { time(closure) }
     }
@@ -172,7 +170,6 @@ extension Array {
         reserveCapacity(count)
         for i in 0..<count { append(generator(i)) }
     }
-
 }
 
 extension Set {
@@ -184,7 +181,6 @@ extension Set {
         reserveCapacity(count)
         for i in 0..<count { insert(generator(i)) }
     }
-
 }
 
 extension Dictionary {
@@ -198,5 +194,4 @@ extension Dictionary {
             updateValue(element.value, forKey: element.key)
         }
     }
-
 }
