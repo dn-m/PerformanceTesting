@@ -10,7 +10,7 @@ import PerformanceTesting
 
 class ArrayTests: XCTestCase {
 
-    // MARK: Tests: Inspecting
+    // MARK: Inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
@@ -47,7 +47,7 @@ class ArrayTests: XCTestCase {
         assertPerformance(.constant, of: benchmark)
     }
 
-    // MARK: Tests: adding elements
+    // MARK: Adding elements
 
     // `append` should be (amortized) constant-time in the number of elements.
     func testAppend() {
@@ -75,7 +75,7 @@ class ArrayTests: XCTestCase {
         assertPerformance(.linear, of: benchmark)
     }
 
-    // MARK: Tests: Removing elements
+    // MARK: Removing elements
 
     // `remove` should be linear-time in the number of elements.
     func testRemove() {
@@ -83,7 +83,7 @@ class ArrayTests: XCTestCase {
         assertPerformance(.linear, of: benchmark)
     }
 
-    // MARK: Tests: Sorting an array
+    // MARK: Sorting an array
 
     // `sort` should be roughly O(n) in the number of elements
     // Technically, it's linearithmic, but we should be able to fit
