@@ -10,26 +10,15 @@ import PerformanceTesting
 
 class ArrayTests: XCTestCase {
 
-    // MARK: Helper functions.
-
-    // Constructs an array of size `n` with linearly increasing elements.
-    func makeArray(size n: Int) -> [Int] {
-        return Array(count: n) { $0 }
-    }
-
-    // Constructs an array of size `n` with random elements.
-    func makeRandomArray(size n: Int) -> [Int] {
-        return Array(count: n) { _ in n.random() }
-    }
-
     // MARK: Tests: Inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        assertPerformance(.constant, logging: .detailed) { testPoint in
-            let array = makeArray(size: testPoint)
-            return meanExecutionTime { _ = array.isEmpty }
-        }
+        let benchmark = Benchmark<[Int]>.nonMutating(
+            setup: { size in makeArray(size: size) },
+            measuring: { array in _ = array.isEmpty }
+        )
+        assertPerformance(.constant, of: benchmark)
     }
 
     // `count` should be constant-time in the number of elements
@@ -76,6 +65,11 @@ class ArrayTests: XCTestCase {
                 return time { array.append(6) }
             }
         }
+
+//        let measure = Benchmark<[Int]>.mutating(
+//            setup: { size in [5,4,3,2,1] },
+//            measuring: { array in _ = array.append(8) }
+//        )
     }
 
     // `append` should be (amortized) linear-time in the number of appends
@@ -137,4 +131,14 @@ class ArrayTests: XCTestCase {
             }
         }
     }
+}
+
+// Constructs an array of size `n` with linearly increasing elements.
+func makeArray(size n: Int) -> [Int] {
+    return Array(count: n) { $0 }
+}
+
+// Constructs an array of size `n` with random elements.
+func makeRandomArray(size n: Int) -> [Int] {
+    return Array(count: n) { _ in n.random() }
 }

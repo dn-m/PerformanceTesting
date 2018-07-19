@@ -5,7 +5,6 @@
 //  Created by James Bean on 8/6/17.
 //
 
-import Foundation
 import XCTest
 
 /// The amount of information to be emitted.
@@ -21,8 +20,23 @@ public enum Logging {
     case detailed
 }
 
-/// Assert that the given `operation` scales over the given `testPoints` (i.e., `N`) within the
-/// given `complexity` class.
+public func assertPerformance <Subject> (
+    _ complexity: Complexity,
+    of benchmark: Benchmark<Subject>
+)
+{
+    #warning("Refactor `Benchmark.data`")
+    let data = benchmark.data
+    switch complexity {
+    case .constant:
+        assertConstantTimePerformance(data, logging: .detailed)
+    default:
+        assertPerformanceComplexity(data, complexity: complexity, logging: .detailed)
+    }
+}
+
+/// Assert that the computed average time complexity of `operation` is in the stated complexity
+/// class on the scale of inputs denoted by `testPoints`.
 ///
 /// - TODO: Add injection point (and default) for number of trials
 public func assertPerformance(
@@ -43,7 +57,7 @@ public func assertPerformance(
 
 /// Assert that the data indicates that performance is constant-time ( O(1) ).
 internal func assertConstantTimePerformance(
-    _ benchmark: Benchmark,
+    _ benchmark: [(Double,Double)],
     tolerance: Double = 0.01,
     logging: Logging = .none
 )
@@ -70,7 +84,7 @@ internal func assertConstantTimePerformance(
 /// complexity class. Optional parameter for minimum acceptable correlation.
 /// Use assertConstantTimePerformance for O(1) assertions
 internal func assertPerformanceComplexity(
-    _ data: Benchmark,
+    _ data: [(Double,Double)],
     complexity: Complexity,
     minimumCorrelation: Double = 0.9,
     logging: Logging = .none
@@ -95,7 +109,7 @@ public func benchmark(
     _ operation: (Int) -> Double,
     testPoints: [Int] = Scale.medium,
     logging: Logging = .none
-) -> Benchmark
+) -> [(Double,Double)]
 {
     let benchmarkResults = testPoints.map { testPoint in operation(testPoint) }
     let doubleTestPoints = testPoints.map(Double.init)
@@ -125,7 +139,7 @@ public func time(_ closure: () -> Void) -> Double {
     return finish - start
 }
 
-extension Array where Array == Benchmark {
+extension Array where Array == [(Double,Double)] {
 
     /// Maps data representing performance of a certain complexity so that it
     /// can be fit with linear regression. This is done by applying the inverse
