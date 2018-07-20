@@ -32,28 +32,6 @@ public func assertPerformance <Subject> (_ complexity: Complexity, of benchmark:
     }
 }
 
-/// Assert that the computed average time complexity of `operation` is in the stated complexity
-/// class on the scale of inputs denoted by `testPoints`.
-///
-/// - TODO: Add injection point (and default) for number of trials
-#warning("assertPerformance():testPoints:logging:of:) is only a dependent of a few remaining tests.")
-#warning("TODO: Work to remove.")
-public func assertPerformance(
-    _ complexity: Complexity,
-    testPoints: [Int] = Scale.medium,
-    logging: Logging = .none,
-    of operation: (Int) -> Double
-)
-{
-    let data = benchmark(operation, testPoints: testPoints)
-    switch complexity {
-    case .constant:
-        assertConstantTimePerformance(data, logging: logging)
-    default:
-        assertPerformanceComplexity(data, complexity: complexity, logging: logging)
-    }
-}
-
 /// Assert that the data indicates that performance is constant-time ( O(1) ).
 internal func assertConstantTimePerformance(
     _ benchmark: [(Double,Double)],
@@ -101,20 +79,6 @@ internal func assertPerformanceComplexity(
         print("correlation: \(results.correlation) (minimum: \(minimumCorrelation))")
     }
     XCTAssert(results.correlation >= minimumCorrelation)
-}
-
-/// Benchmarks the performance of a closure.
-#warning("benchmark(_:testPoints:logging:) is only required by assertPerformance():testPoints:logging:of:).")
-#warning("Remove when the other is let go.")
-public func benchmark(
-    _ operation: (Int) -> Double,
-    testPoints: [Int] = Scale.medium,
-    logging: Logging = .none
-) -> [(Double,Double)]
-{
-    let benchmarkResults = testPoints.map { testPoint in operation(testPoint) }
-    let doubleTestPoints = testPoints.map(Double.init)
-    return Array(zip(doubleTestPoints, benchmarkResults))
 }
 
 /// - Returns: The mean execution of ten iterations of the given `closure`.

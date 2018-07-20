@@ -38,25 +38,7 @@ class AlgorithmComplexityTests: XCTestCase {
         assertPerformance(.quadratic, of: benchmark)
     }
 
-    // Adding two square matrices should be quadratic in side length
-    func testQuadratic_MatrixAddManual() {
-        assertPerformance(.quadratic, testPoints: Scale.small) { testPoint in
-            meanOutcome {
-                let first = makeRandomSquareMatrix(size: testPoint)
-                let second = makeRandomSquareMatrix(size: testPoint)
-                var sum = makeZeroMatrix(size: testPoint)
-                return time {
-                    for row in 0..<first.count {
-                        for column in 0..<first.count {
-                            sum[row][column] = first[row][column] + second[row][column]
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: Cubic tests.
+    // MARK: Cubic.
 
     func testQuadratic_MatrixMultiply() {
         let benchmark = Benchmark<(Matrix<Int>,Matrix<Int>)>.nonMutating(
