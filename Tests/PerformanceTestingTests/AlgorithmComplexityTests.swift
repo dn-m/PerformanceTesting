@@ -63,12 +63,9 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // primality test should have `big theta sqrt(n)` performance
     func testSquareRoot_Primality() {
-        let benchmark = Benchmark<Int>.nonMutating(
-            setup: { $0 },
+        let benchmark = Benchmark<Int>.algorithm(
             measuring: { size in
-                for number in 0..<10_000 {
-                    _ = isPrime(size + number * 2 + 1)
-                }
+                for number in 0..<10_000 { _ = isPrime(size + number * 2 + 1) }
             }
         )
         assertPerformance(.squareRoot, of: benchmark)
