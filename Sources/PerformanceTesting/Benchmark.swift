@@ -19,15 +19,11 @@ public struct Benchmark <Subject> {
         measuring operation: @escaping (Int) -> Void
     ) -> Benchmark
     {
-        return Benchmark(
-            testPoints: testPoints.map { size in
-                return TestPoint(
-                    size: size,
-                    trials: (0..<trialCount).map { _ in
-                        return measure { operation(size) }
-                    }
-                )
-            }
+        return .nonMutating(
+            trialCount: trialCount,
+            testPoints: testPoints,
+            setup: { $0 },
+            measuring: operation
         )
     }
 
