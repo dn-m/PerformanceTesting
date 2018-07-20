@@ -119,20 +119,18 @@ class DictionaryTests: XCTestCase {
     // `==` should be linear in the number of elements inserted
     // if the dictionaries are actually equal
     func testEqualityOperator() {
-        let benchmark = Benchmark.nonMutating(
-            setup: { (makeDictionary(size: $0), makeDictionary(size: $0)) },
-            measuring: { (a,b) in _ = a == b }
-        )
+        let benchmark = Benchmark.nonMutating(setup: dictPair(.increasing)) { (a,b) in
+            _ = a == b
+        }
         assertPerformance(.linear, of: benchmark)
     }
 
     // `!=` should be linear in the number of elements inserted
     // if the dictionaries are equal
     func testInequalityOperator() {
-        let benchmark = Benchmark.nonMutating(
-            setup: { (makeDictionary(size: $0), makeDictionary(size: $0)) },
-            measuring: { (a,b) in _ = a != b }
-        )
+        let benchmark = Benchmark.nonMutating(setup: dictPair(.increasing)) { (a,b) in
+            _ = a != b
+        }
         assertPerformance(.linear, of: benchmark)
     }
 }
@@ -143,6 +141,15 @@ func dict (_ strategy: FillStrategy) -> (_ size: Int) -> Dictionary<Int,Int> {
         return makeDictionary
     case .random:
         return makeRandomDictionary
+    }
+}
+
+func dictPair (_ strategy: FillStrategy)
+    -> (_ size: Int)
+    -> (Dictionary<Int,Int>,Dictionary<Int,Int>)
+{
+    return { size in
+        (dict(strategy)(size),dict(strategy)(size))
     }
 }
 
