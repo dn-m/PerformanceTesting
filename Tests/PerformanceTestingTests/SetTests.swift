@@ -69,7 +69,9 @@ class SetTests: XCTestCase {
     // `remove` should be constant-time in the number of elements,
     // if the element to be removed is in the set
     func testRemoveHit() {
-        let benchmark = Benchmark.mutating(setup: set(.increasing)) { $0.remove(Int.random(in: 0..<$0.count)) }
+        let benchmark = Benchmark.mutating(setup: set(.increasing)) {
+            $0.remove(Int.random(in: 0..<$0.count))
+        }
         assertPerformance(.constant, of: benchmark)
     }
 
