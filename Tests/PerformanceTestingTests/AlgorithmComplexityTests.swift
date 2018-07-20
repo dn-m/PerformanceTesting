@@ -19,7 +19,7 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // Filling a square matrix should be quadratic in side length
     func testQuadratic_MatrixFill() {
-        #warning("Implement algorithm benchmark which just forwards size")
+        #warning("Implement Structure-less algorithm benchmark which forwards size")
         let benchmark = Benchmark<Int>.nonMutating(
             testPoints: Scale.small,
             setup: { $0 },
@@ -59,30 +59,26 @@ class AlgorithmComplexityTests: XCTestCase {
     // MARK: Cubic tests.
 
     func testQuadratic_MatrixMultiply() {
-        assertPerformance(.cubic, testPoints: Scale.tiny) { testPoint in
-            meanOutcome {
-                let first = makeRandomSquareMatrix(size: testPoint)
-                let second = makeRandomSquareMatrix(size: testPoint)
-                return time { _ = squareMatrixMultiply(first, second) }
-            }
-        }
+        let benchmark = Benchmark<(Matrix<Int>,Matrix<Int>)>.nonMutating(
+            testPoints: Scale.tiny,
+            setup: { (makeRandomSquareMatrix(size: $0), makeRandomSquareMatrix(size: $0)) },
+            measuring: { (a,b) in _ = squareMatrixMultiply(a,b) }
+        )
+        assertPerformance(.cubic, of: benchmark)
     }
 
-    // MARK: Exponential tests: recursive Fibonacci generator.
+    // MARK: Exponential: Recursive Fibonacci generator.
 
-    func fibonacci(_ index: Int) -> Int {
-        assert(index >= 0)
-        guard index > 1 else { return index == 0 ? 0 : 1 }
-        return fibonacci(index-1) + fibonacci(index-2)
-    }
-
+    #warning("Implement Structure-less algorithm benchmark which forwards size")
     func testExponential_RecursiveFibonacci() {
         // hardcoded; anything larger takes too long, and using `exponentialSeries`
         // generates duplicate test points, which is not a problem, but we like variety
-        let testPoints = [5, 8, 11, 14, 17, 20, 23, 26, 30, 35]
-        assertPerformance(.exponential, testPoints: testPoints) { testPoint in
-            meanExecutionTime { _ = fibonacci(testPoint) }
-        }
+        let benchmark = Benchmark<Int>.nonMutating(
+            testPoints: [5, 8, 11, 14, 17, 20, 23, 26, 30, 35],
+            setup: { $0 },
+            measuring: { _ = fibonacci($0) }
+        )
+        assertPerformance(.exponential, of: benchmark)
     }
 
     // MARK: Prime testing
@@ -152,4 +148,10 @@ func isPrime(_ number: Int) -> Bool {
         }
     }
     return false
+}
+
+func fibonacci(_ index: Int) -> Int {
+    assert(index >= 0)
+    guard index > 1 else { return index == 0 ? 0 : 1 }
+    return fibonacci(index-1) + fibonacci(index-2)
 }
