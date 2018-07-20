@@ -30,13 +30,12 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // Adding two square matrices should be quadratic in side length
     func testQuadratic_MatrixAdd() {
-        assertPerformance(.quadratic, testPoints: Scale.small) { testPoint in
-            meanOutcome {
-                let first = makeRandomSquareMatrix(size: testPoint)
-                let second = makeRandomSquareMatrix(size: testPoint)
-                return time { _ = squareMatrixAdd(first, second) }
-            }
-        }
+        let benchmark = Benchmark<(Matrix<Int>,Matrix<Int>)>.nonMutating(
+            testPoints: Scale.small,
+            setup: { (makeRandomSquareMatrix(size: $0), makeRandomSquareMatrix(size: $0)) },
+            measuring: { (a,b) in _ = squareMatrixAdd(a,b) }
+        )
+        assertPerformance(.quadratic, of: benchmark)
     }
 
     // Adding two square matrices should be quadratic in side length
