@@ -118,6 +118,12 @@ func set (_ strategy: FillStrategy) -> (_ size: Int) -> Set<Int> {
     }
 }
 
+func setPair (_ strategy: FillStrategy) -> (_ size: Int) -> (Set<Int>,Set<Int>) {
+    return { size in
+        (set(strategy)(size),set(strategy)(size))
+    }
+}
+
 // Constructs a set of size `n` with linearly increasing elements.
 func makeSet(size n: Int) -> Set<Int> {
     return Set(count: n) { $0 }
