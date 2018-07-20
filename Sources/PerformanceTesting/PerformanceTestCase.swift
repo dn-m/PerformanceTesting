@@ -20,6 +20,8 @@ public enum Logging {
     case detailed
 }
 
+/// Assert that the computed average time complexity of a `benchmark` is in the stated complexity
+/// class on the scale of inputs.
 public func assertPerformance <Subject> (_ complexity: Complexity, of benchmark: Benchmark<Subject>) {
     let data = benchmark.data
     switch complexity {
@@ -102,6 +104,8 @@ internal func assertPerformanceComplexity(
 }
 
 /// Benchmarks the performance of a closure.
+#warning("benchmark(_:testPoints:logging:) is only required by assertPerformance():testPoints:logging:of:).")
+#warning("Remove when the other is let go.")
 public func benchmark(
     _ operation: (Int) -> Double,
     testPoints: [Int] = Scale.medium,
