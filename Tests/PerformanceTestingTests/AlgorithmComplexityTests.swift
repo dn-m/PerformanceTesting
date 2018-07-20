@@ -19,11 +19,9 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // Filling a square matrix should be quadratic in side length
     func testQuadratic_MatrixFill() {
-        #warning("Implement Structure-less algorithm benchmark which forwards size")
-        let benchmark = Benchmark<Int>.nonMutating(
+        let benchmark = Benchmark<Int>.algorithm(
             testPoints: Scale.small,
-            setup: { $0 },
-            measuring: { size in _ = makeRandomSquareMatrix(size: size) }
+            measuring: { _ = makeRandomSquareMatrix(size: $0) }
         )
         assertPerformance(.quadratic, of: benchmark)
     }
