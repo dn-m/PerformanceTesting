@@ -20,12 +20,7 @@ public enum Logging {
     case detailed
 }
 
-public func assertPerformance <Subject> (
-    _ complexity: Complexity,
-    of benchmark: Benchmark<Subject>
-)
-{
-    #warning("Refactor `Benchmark.data`")
+public func assertPerformance <Subject> (_ complexity: Complexity, of benchmark: Benchmark<Subject>) {
     let data = benchmark.data
     switch complexity {
     case .constant:
