@@ -71,7 +71,7 @@ public struct Benchmark <Subject> {
 }
 
 /// - Returns: The amount of time that it takes to perform the given `operation`.
-internal func measure (operation: () -> Void) -> Double {
+private func measure (operation: () -> Void) -> Double {
     let start = CFAbsoluteTimeGetCurrent()
     operation()
     let finish = CFAbsoluteTimeGetCurrent()
