@@ -34,6 +34,8 @@ public func assertPerformance <Subject> (_ complexity: Complexity, of benchmark:
 /// class on the scale of inputs denoted by `testPoints`.
 ///
 /// - TODO: Add injection point (and default) for number of trials
+#warning("assertPerformance():testPoints:logging:of:) is only a dependent of a few remaining tests.")
+#warning("TODO: Work to remove.")
 public func assertPerformance(
     _ complexity: Complexity,
     testPoints: [Int] = Scale.medium,
