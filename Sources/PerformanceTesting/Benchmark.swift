@@ -7,8 +7,7 @@
 
 import Foundation
 
-#warning("Remove Subject generic parameter from Benchmark, as it no longer holds onto this!")
-public struct Benchmark <Subject> {
+public struct Benchmark {
 
     // MARK: - Type Methods
 

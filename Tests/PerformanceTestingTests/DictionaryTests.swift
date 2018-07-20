@@ -14,19 +14,13 @@ class DictionaryTests: XCTestCase {
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let benchmark = Benchmark<[Int:Int]>.nonMutating(
-            setup: makeDictionary,
-            measuring: { _ = $0.isEmpty }
-        )
+        let benchmark = Benchmark.nonMutating(setup: makeDictionary) { _ = $0.isEmpty }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let benchmark = Benchmark<[Int:Int]>.nonMutating(
-            setup: makeDictionary,
-            measuring: { _ = $0.count }
-        )
+        let benchmark = Benchmark.nonMutating(setup: makeDictionary) { _ = $0.count }
         assertPerformance(.constant, of: benchmark)
     }
 
@@ -34,46 +28,35 @@ class DictionaryTests: XCTestCase {
 
     // subscript should be constant-time in the number of elements
     func testSubscriptGetter() {
-        let benchmark = Benchmark<[Int:Int]>.nonMutating(
-            setup: makeDictionary,
-            measuring: { _ = $0[Int.random(in: 0..<$0.count)] }
-        )
+        let benchmark = Benchmark.nonMutating(setup: makeDictionary) {
+            _ = $0[Int.random(in: 0..<$0.count)]
+        }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `index` should be constant-time in the number of elements
     func testIndex() {
-        let benchmark = Benchmark<[Int:Int]>.nonMutating(
-            setup: makeDictionary,
-            measuring: { _ = $0.index(forKey: Int.random(in: 0..<$0.count)) }
-        )
+        let benchmark = Benchmark.nonMutating(setup: makeDictionary) {
+            _ = $0.index(forKey: Int.random(in: 0..<$0.count))
+        }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        let benchmark = Benchmark<[Int:Int]>.nonMutating(
-            setup: makeDictionary,
-            measuring: { _ = $0.first }
-        )
+        let benchmark = Benchmark.nonMutating(setup: makeDictionary) { _ = $0.first }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `keys` should be constant-time in the number of elements
     func testKeys() {
-        let benchmark = Benchmark<[Int:Int]>.nonMutating(
-            setup: makeDictionary,
-            measuring: { _ = $0.keys }
-        )
+        let benchmark = Benchmark.nonMutating(setup: makeDictionary) { _ = $0.keys }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `values` should be constant-time in the number of elements
     func testValues() {
-        let benchmark = Benchmark<[Int:Int]>.nonMutating(
-            setup: makeDictionary,
-            measuring: { _ = $0.values }
-        )
+        let benchmark = Benchmark.nonMutating(setup: makeDictionary) { _ = $0.values }
         assertPerformance(.constant, of: benchmark)
     }
 
@@ -82,22 +65,18 @@ class DictionaryTests: XCTestCase {
     // `updateValue` should be constant-time in the number of elements
     // in the case that the key exists
     func testUpdateValueHit() {
-        let benchmark = Benchmark<[Int:Int]>.mutating(
-            setup: makeDictionary,
-            measuring: {
-                $0.updateValue(Int.random(in: 0..<$0.count), forKey: Int.random(in: 0..<$0.count))
-            }
-        )
+        let benchmark = Benchmark.mutating(setup: makeDictionary) {
+            $0.updateValue(Int.random(in: 0..<$0.count), forKey: Int.random(in: 0..<$0.count))
+        }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `updateValue` should be constant-time in the number of elements
     // in the case that the key does not exist
     func testUpdateValueMiss() {
-        let benchmark = Benchmark<[Int:Int]>.mutating(
-            setup: makeDictionary,
-            measuring: { $0.updateValue($0.count, forKey: $0.count) }
-        )
+        let benchmark = Benchmark.mutating(setup: makeDictionary) {
+            $0.updateValue($0.count, forKey: $0.count)
+        }
         assertPerformance(.constant, of: benchmark)
     }
 
@@ -105,39 +84,33 @@ class DictionaryTests: XCTestCase {
 
     // `filter` should be linear in the number of elements
     func testFilter() {
-        let benchmark = Benchmark<[Int:Int]>.mutating(
-            setup: makeDictionary,
-            measuring: { _ = $0.filter { $0.key % 5 == 3} }
-        )
+        let benchmark = Benchmark.mutating(setup: makeDictionary) {
+            _ = $0.filter { $0.key % 5 == 3 }
+        }
         assertPerformance(.linear, of: benchmark)
     }
 
     // `removeValue` should be constant-time in the number of elements,
     // if the element to be removed is in the dictionary
     func testRemoveValueHit() {
-        let benchmark = Benchmark<[Int:Int]>.mutating(
-            setup: makeDictionary,
-            measuring: { $0.removeValue(forKey: Int.random(in: 0..<$0.count)) }
-        )
+        let benchmark = Benchmark.mutating(setup: makeDictionary) {
+            $0.removeValue(forKey: Int.random(in: 0..<$0.count))
+        }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `removeValue` should be constant-time in the number of elements,
     // if the element to be removed is not in the dictionary
     func testRemoveValueMiss() {
-        let benchmark = Benchmark<[Int:Int]>.mutating(
-            setup: makeDictionary,
-            measuring: { $0.removeValue(forKey: $0.count) }
-        )
+        let benchmark = Benchmark.mutating(setup: makeDictionary) {
+            $0.removeValue(forKey: $0.count)
+        }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `removeAll` should be linear-time in the number of elements
     func testRemoveAll() {
-        let benchmark = Benchmark<[Int:Int]>.mutating(
-            setup: makeDictionary,
-            measuring: { $0.removeAll() }
-        )
+        let benchmark = Benchmark.mutating(setup: makeDictionary) { $0.removeAll() }
         assertPerformance(.linear, of: benchmark)
     }
 
@@ -146,7 +119,7 @@ class DictionaryTests: XCTestCase {
     // `==` should be linear in the number of elements inserted
     // if the dictionaries are actually equal
     func testEqualityOperator() {
-        let benchmark = Benchmark<([Int:Int],[Int:Int])>.nonMutating(
+        let benchmark = Benchmark.nonMutating(
             setup: { (makeDictionary(size: $0), makeDictionary(size: $0)) },
             measuring: { (a,b) in _ = a == b }
         )
@@ -156,7 +129,7 @@ class DictionaryTests: XCTestCase {
     // `!=` should be linear in the number of elements inserted
     // if the dictionaries are equal
     func testInequalityOperator() {
-        let benchmark = Benchmark<([Int:Int],[Int:Int])>.nonMutating(
+        let benchmark = Benchmark.nonMutating(
             setup: { (makeDictionary(size: $0), makeDictionary(size: $0)) },
             measuring: { (a,b) in _ = a != b }
         )

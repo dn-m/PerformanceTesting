@@ -19,7 +19,7 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // Filling a square matrix should be quadratic in side length
     func testQuadratic_MatrixFill() {
-        let benchmark = Benchmark<Int>.algorithm(
+        let benchmark = Benchmark.algorithm(
             testPoints: Scale.small,
             measuring: { _ = makeRandomSquareMatrix(size: $0) }
         )
@@ -28,7 +28,7 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // Adding two square matrices should be quadratic in side length
     func testQuadratic_MatrixAdd() {
-        let benchmark = Benchmark<(Matrix<Int>,Matrix<Int>)>.nonMutating(
+        let benchmark = Benchmark.nonMutating(
             testPoints: Scale.small,
             setup: { (makeRandomSquareMatrix(size: $0), makeRandomSquareMatrix(size: $0)) },
             measuring: { (a,b) in _ = squareMatrixAdd(a,b) }
@@ -39,7 +39,7 @@ class AlgorithmComplexityTests: XCTestCase {
     // MARK: Cubic.
 
     func testQuadratic_MatrixMultiply() {
-        let benchmark = Benchmark<(Matrix<Int>,Matrix<Int>)>.nonMutating(
+        let benchmark = Benchmark.nonMutating(
             testPoints: Scale.tiny,
             setup: { (makeRandomSquareMatrix(size: $0), makeRandomSquareMatrix(size: $0)) },
             measuring: { (a,b) in _ = squareMatrixMultiply(a,b) }
@@ -52,7 +52,7 @@ class AlgorithmComplexityTests: XCTestCase {
     func testExponential_RecursiveFibonacci() {
         // hardcoded; anything larger takes too long, and using `exponentialSeries`
         // generates duplicate test points, which is not a problem, but we like variety
-        let benchmark = Benchmark<Int>.algorithm(
+        let benchmark = Benchmark.algorithm(
             testPoints: [5, 8, 11, 14, 17, 20, 23, 26, 30, 35],
             measuring: { _ = fibonacci($0) }
         )
@@ -63,7 +63,7 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // primality test should have `big theta sqrt(n)` performance
     func testSquareRoot_Primality() {
-        let benchmark = Benchmark<Int>.algorithm {
+        let benchmark = Benchmark.algorithm {
             for number in 0..<10_000 { _ = isPrime($0 + number * 2 + 1) }
         }
         assertPerformance(.squareRoot, of: benchmark)

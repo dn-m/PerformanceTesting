@@ -22,7 +22,7 @@ public enum Logging {
 
 /// Assert that the computed average time complexity of a `benchmark` is in the stated complexity
 /// class on the scale of inputs.
-public func assertPerformance <Subject> (_ complexity: Complexity, of benchmark: Benchmark<Subject>) {
+public func assertPerformance(_ complexity: Complexity, of benchmark: Benchmark) {
     let data = benchmark.data
     switch complexity {
     case .constant:

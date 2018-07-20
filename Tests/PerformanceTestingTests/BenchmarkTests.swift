@@ -12,7 +12,7 @@ class BenchmarkTests: XCTestCase {
 
     func testMutatingTestPointsCount() {
         let expected = 5
-        let benchmark = Benchmark<[()]>.mutating(
+        let benchmark = Benchmark.mutating(
             trialCount: 10,
             testPoints: Array(0..<5),
             setup: { _ in [] },
@@ -23,7 +23,7 @@ class BenchmarkTests: XCTestCase {
 
     func testNonMutatingTestPointsCount() {
         let expected = 5
-        let benchmark = Benchmark<[()]>.nonMutating(
+        let benchmark = Benchmark.nonMutating(
             trialCount: 10,
             testPoints: Array(0..<5),
             setup: { _ in [] },

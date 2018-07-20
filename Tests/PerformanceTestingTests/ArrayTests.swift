@@ -14,16 +14,13 @@ class ArrayTests: XCTestCase {
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        let benchmark = Benchmark<[Int]>.nonMutating(
-            setup: makeArray,
-            measuring: { array in _ = array.isEmpty }
-        )
+        let benchmark = Benchmark.nonMutating(setup: makeArray) { array in _ = array.isEmpty }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        let benchmark = Benchmark<[Int]>.nonMutating(setup: makeArray, measuring: { _ = $0.count })
+        let benchmark = Benchmark.nonMutating(setup: makeArray) { _ = $0.count }
         assertPerformance(.constant, of: benchmark)
     }
 
@@ -31,19 +28,19 @@ class ArrayTests: XCTestCase {
 
     // `subscript` should be constant-time in the number of elements
     func testSubscriptGetter() {
-        let benchmark = Benchmark<[Int]>.nonMutating(setup: makeArray, measuring: { _ = $0[3] })
+        let benchmark = Benchmark.nonMutating(setup: makeArray) { _ = $0[3] }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        let benchmark = Benchmark<[Int]>.nonMutating(setup: makeArray, measuring: { _ = $0.first })
+        let benchmark = Benchmark.nonMutating(setup: makeArray) { _ = $0.first }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `last` should be constant-time in the number of elements
     func testLast() {
-        let benchmark = Benchmark<[Int]>.nonMutating(setup: makeArray, measuring: { _ = $0.last })
+        let benchmark = Benchmark.nonMutating(setup: makeArray) { _ = $0.last }
         assertPerformance(.constant, of: benchmark)
     }
 
@@ -51,25 +48,19 @@ class ArrayTests: XCTestCase {
 
     // `append` should be (amortized) constant-time in the number of elements.
     func testAppend() {
-        let benchmark = Benchmark<[Int]>.mutating(
-            setup: makeArray,
-            measuring: { $0.append(42) }
-        )
+        let benchmark = Benchmark.mutating(setup: makeArray) { $0.append(42) }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `append` should be (amortized) constant-time in the number of appends
     func testAppendAmortized() {
-        let benchmark = Benchmark<[Int]>.mutating(setup: makeArray, measuring: { $0.append(6) })
+        let benchmark = Benchmark.mutating(setup: makeArray) { $0.append(6) }
         assertPerformance(.constant, of: benchmark)
     }
 
     // `insert` should be O(n) in the number of elements
     func testInsert() {
-        let benchmark = Benchmark<[Int]>.mutating(
-            setup: makeArray,
-            measuring: { $0.insert(6, at: 0) }
-        )
+        let benchmark = Benchmark.mutating(setup: makeArray) { $0.insert(6, at: 0) }
         assertPerformance(.linear, of: benchmark)
     }
 
@@ -77,7 +68,7 @@ class ArrayTests: XCTestCase {
 
     // `remove` should be linear-time in the number of elements.
     func testRemove() {
-        let benchmark = Benchmark<[Int]>.mutating(setup: makeArray, measuring: { $0.remove(at: 0) })
+        let benchmark = Benchmark.mutating(setup: makeArray) { $0.remove(at: 0) }
         assertPerformance(.linear, of: benchmark)
     }
 
@@ -87,13 +78,13 @@ class ArrayTests: XCTestCase {
     // Technically, it's linearithmic, but we should be able to fit
     // a line to it well enough.
     func testSort() {
-        let benchmark = Benchmark<[Int]>.mutating(setup: makeRandomArray, measuring: { $0.sort() })
+        let benchmark = Benchmark.mutating(setup: makeRandomArray) { $0.sort() }
         assertPerformance(.linear, of: benchmark)
     }
 
     // `partition` should be O(n) in the number of elements
     func testPartition() {
-        let benchmark = Benchmark<[Int]>.mutating(
+        let benchmark = Benchmark.mutating(
             setup: makeRandomArray,
             measuring: { _ = $0.partition { element in element > 50} }
         )
