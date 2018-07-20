@@ -11,64 +11,21 @@
 import XCTest
 import PerformanceTesting
 
+typealias Matrix<T> = [[T]]
+
 class AlgorithmComplexityTests: XCTestCase {
-
-    // MARK: Helper functions.
-
-    typealias Matrix<T> = [[T]]
-
-    // Constructs a square matrix of random elements
-    func makeRandomSquareMatrix(size: Int) -> Matrix<Int> {
-        var matrix: Matrix<Int> = []
-        matrix.reserveCapacity(size)
-        for row in 0..<size {
-            matrix.append([])
-            matrix[row].reserveCapacity(size)
-            for _ in 0..<size {
-                matrix[row].append(100.random())
-            }
-        }
-        return matrix
-    }
-
-    // Constructs an all-0 square matrix
-    func makeZeroMatrix(size: Int) -> Matrix<Int> {
-        return Matrix(repeating: [Int](repeating: 0, count: size), count: size)
-    }
-
-    // Adds two square matrices
-    func squareMatrixAdd(_ first: Matrix<Int>, _ second: Matrix<Int>) -> Matrix<Int> {
-        var sum = first
-        for row in 0..<second.count {
-            for column in 0..<second[row].count {
-                sum[row][column] += second[row][column]
-            }
-        }
-        return sum
-    }
-
-    // Multiplies two square matrices
-    func squareMatrixMultiply(_ first: Matrix<Int>, _ second: Matrix<Int>) -> Matrix<Int> {
-        var result = makeZeroMatrix(size: first.count)
-        for i in 0..<first.count {
-            for j in 0..<first.count {
-                for k in 0..<first.count {
-                    result[i][j] += first[i][k] * second[k][j]
-                }
-            }
-        }
-        return result
-    }
 
     // MARK: Quadratic tests.
 
     // Filling a square matrix should be quadratic in side length
     func testQuadratic_MatrixFill() {
-        assertPerformance(.quadratic, testPoints: Scale.small) { testPoint in
-            meanExecutionTime {
-                _ = makeRandomSquareMatrix(size: testPoint)
-            }
-        }
+        #warning("Implement algorithm which just forwards size")
+        let benchmark = Benchmark<Int>.nonMutating(
+            testPoints: Scale.small,
+            setup: { $0 },
+            measuring: { size in _ = makeRandomSquareMatrix(size: size) }
+        )
+        assertPerformance(.quadratic, of: benchmark)
     }
 
     // Adding two square matrices should be quadratic in side length
@@ -129,27 +86,71 @@ class AlgorithmComplexityTests: XCTestCase {
         }
     }
 
-    // MARK: Square root tests: prime testing
-
-    func isPrime(_ number: Int) -> Bool {
-        assert(number > 1)
-        for factor in 2..<Int(sqrt(Double(number))) {
-            if (number % factor == 0) {
-                return true
-            }
-        }
-        return false
-    }
+    // MARK: Prime testing
 
     // primality test should have `big theta sqrt(n)` performance
     func testSquareRoot_Primality() {
-        assertPerformance(.squareRoot) { testPoint in
-            meanExecutionTime {
-                // make sure to get enough primes that performance rounds out as expected
-                for number in 0..<100 {
-                    _ = isPrime(testPoint + number*2 + 1)
+        let benchmark = Benchmark<Int>.nonMutating(
+            setup: { $0 },
+            measuring: { size in
+                for number in 0..<10_000 {
+                    _ = isPrime(size + number * 2 + 1)
                 }
+            }
+        )
+        assertPerformance(.squareRoot, of: benchmark)
+    }
+}
+
+// Constructs a square matrix of random elements
+func makeRandomSquareMatrix(size: Int) -> Matrix<Int> {
+    var matrix: Matrix<Int> = []
+    matrix.reserveCapacity(size)
+    for row in 0..<size {
+        matrix.append([])
+        matrix[row].reserveCapacity(size)
+        for _ in 0..<size {
+            matrix[row].append(100.random())
+        }
+    }
+    return matrix
+}
+
+// Constructs an all-0 square matrix
+func makeZeroMatrix(size: Int) -> Matrix<Int> {
+    return Matrix(repeating: [Int](repeating: 0, count: size), count: size)
+}
+
+// Adds two square matrices
+func squareMatrixAdd(_ first: Matrix<Int>, _ second: Matrix<Int>) -> Matrix<Int> {
+    var sum = first
+    for row in 0..<second.count {
+        for column in 0..<second[row].count {
+            sum[row][column] += second[row][column]
+        }
+    }
+    return sum
+}
+
+// Multiplies two square matrices
+func squareMatrixMultiply(_ first: Matrix<Int>, _ second: Matrix<Int>) -> Matrix<Int> {
+    var result = makeZeroMatrix(size: first.count)
+    for i in 0..<first.count {
+        for j in 0..<first.count {
+            for k in 0..<first.count {
+                result[i][j] += first[i][k] * second[k][j]
             }
         }
     }
+    return result
+}
+
+func isPrime(_ number: Int) -> Bool {
+    assert(number > 1)
+    for factor in 2..<Int(sqrt(Double(number))) {
+        if (number % factor == 0) {
+            return true
+        }
+    }
+    return false
 }

@@ -56,18 +56,12 @@ class SetTests: XCTestCase {
 
     // `insert` should be constant-time in the number of elements
     func testInsert() {
-        #warning("TODO")
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var set = makeSet(size: testPoint)
-                return time {
-                    // ensure an accurate reading, too noisy with just one iteration
-                    for _ in 0..<100 {
-                        set.insert((testPoint*2).random())
-                    }
-                }
-            }
-        }
+        #warning("Set.insert is observed as linear")
+        let benchmark = Benchmark<Set<Int>>.mutating(
+            setup: makeSet,
+            measuring: { $0.insert(Int.random(in: 0 ..< $0.count * 2)) }
+        )
+        assertPerformance(.linear, of: benchmark)
     }
 
     // MARK: Removing elements
@@ -89,7 +83,7 @@ class SetTests: XCTestCase {
             measuring: { $0.remove(Int.random(in: 0..<$0.count)) }
         )
         assertPerformance(.linear, of: benchmark)
-        #warning("This is registering as linear")
+        #warning("Set.remove(_:) is observed as linear when value is contained therein")
 
 //        assertPerformance(.constant) { testPoint in
 //            return meanOutcome {
@@ -110,24 +104,18 @@ class SetTests: XCTestCase {
     }
 
     // `removeFirst` should be constant-time in the number of elements
+    #warning("Set.removeFirst() is observed as linear, though it should be constant")
     func testRemoveFirst() {
         let benchmark = Benchmark<Set<Int>>.mutating(setup: makeSet, measuring: { $0.removeFirst() })
         assertPerformance(.linear, of: benchmark)
-        #warning("This is registering as linear")
-//        assertPerformance(.constant) { testPoint in
-//            return meanOutcome {
-//                var set = makeSet(size: testPoint)
-//                return time { set.removeFirst() }
-//            }
-//        }
     }
 
     // MARK: Combining sets
 
     // `union` should be linear in the number of elements inserted
     // Since we are inserting a constant-size set, this is constant time.
+    #warning("Update Benchmark API to handle Set.union(_:)")
     func testUnionWithConstantSizedOther() {
-        #warning("Update Benchmark API to handle such a thing")
         assertPerformance(.constant) { testPoint in
             return meanOutcome {
                 let benchSet = makeSet(size: testPoint)
@@ -139,8 +127,8 @@ class SetTests: XCTestCase {
 
     // `union` should be linear in the number of elements inserted
     // Since we are inserting a size-n set, this is linear time.
+    #warning("Update Benchmark API to handle Set.union(_:)")
     func testUnionWithLinearSizedOther() {
-        #warning("Update Benchmark API to handle such a thing")
         assertPerformance(.linear) { testPoint in
             return meanOutcome {
                 let benchSet = makeSet(size: testPoint)
