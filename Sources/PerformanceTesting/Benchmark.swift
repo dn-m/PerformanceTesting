@@ -38,16 +38,15 @@ public struct Benchmark <Subject> {
         measuring operation: @escaping (Subject) -> Void
     ) -> Benchmark
     {
-        var points: [TestPoint] = []
-        for size in testPoints {
-            var trials: [Double] = []
-            let subject = setup(size)
-            for _ in 0..<trialCount {
-                trials.append(measure { operation(subject) })
+        return Benchmark(
+            testPoints: testPoints.map { size in
+                let subject = setup(size)
+                return TestPoint(
+                    size: size,
+                    trials: (0..<trialCount).map { _ in measure { operation(subject) } }
+                )
             }
-            points.append(TestPoint(size: size, trials: trials))
-        }
-        return Benchmark(testPoints: points)
+        )
     }
 
     // MARK: - Instance Properties
