@@ -42,7 +42,7 @@ internal func assertConstantTimePerformance(
     let results = linearRegression(benchmark)
 
     #warning("TODO: Use guards as asserts for slope == 0 with tolerance, and correlation")
-    #warning("TODO: If assertion fails, dump Benchmark")
+    #warning("TODO: If assertion fails, dump Benchmark, otherwise fly silently")
 
     if logging == .detailed {
         for (trial,info) in benchmark.enumerated() {
