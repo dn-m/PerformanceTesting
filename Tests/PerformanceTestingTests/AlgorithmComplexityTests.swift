@@ -51,13 +51,11 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // MARK: Exponential: Recursive Fibonacci generator.
 
-    #warning("Implement Structure-less algorithm benchmark which forwards size")
     func testExponential_RecursiveFibonacci() {
         // hardcoded; anything larger takes too long, and using `exponentialSeries`
         // generates duplicate test points, which is not a problem, but we like variety
-        let benchmark = Benchmark<Int>.nonMutating(
+        let benchmark = Benchmark<Int>.algorithm(
             testPoints: [5, 8, 11, 14, 17, 20, 23, 26, 30, 35],
-            setup: { $0 },
             measuring: { _ = fibonacci($0) }
         )
         assertPerformance(.exponential, of: benchmark)
