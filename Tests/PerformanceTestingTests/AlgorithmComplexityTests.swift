@@ -19,7 +19,7 @@ class AlgorithmComplexityTests: XCTestCase {
 
     // Filling a square matrix should be quadratic in side length
     func testQuadratic_MatrixFill() {
-        #warning("Implement algorithm which just forwards size")
+        #warning("Implement algorithm benchmark which just forwards size")
         let benchmark = Benchmark<Int>.nonMutating(
             testPoints: Scale.small,
             setup: { $0 },

@@ -146,14 +146,11 @@ class DictionaryTests: XCTestCase {
     // `==` should be linear in the number of elements inserted
     // if the dictionaries are actually equal
     func testEqualityOperator() {
-        #warning("Update Benchmark API to handle Dictionary.==")
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                let benchDictionary = makeDictionary(size: testPoint)
-                let otherDictionary = makeDictionary(size: testPoint)
-                return time { _ = benchDictionary == otherDictionary }
-            }
-        }
+        let benchmark = Benchmark<([Int:Int],[Int:Int])>.nonMutating(
+            setup: { (makeDictionary(size: $0), makeDictionary(size: $0)) },
+            measuring: { (a,b) in _ = a == b }
+        )
+        assertPerformance(.linear, of: benchmark)
     }
 
     // `!=` should be linear in the number of elements inserted
