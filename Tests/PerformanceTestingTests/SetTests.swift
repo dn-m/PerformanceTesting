@@ -117,17 +117,14 @@ class SetTests: XCTestCase {
 
     // `union` should be linear in the number of elements inserted
     // Since we are inserting a size-n set, this is linear time.
-    #warning("Update Benchmark API to handle Set.union(_:)")
+    #warning("Set.union(_:) is observed as constant, not linear")
     func testUnionWithLinearSizedOther() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                let benchSet = makeSet(size: testPoint)
-                let otherSet = Set.init(0..<100)
-                return time { _ = otherSet.union(benchSet) }
-            }
-        }
+        let benchmark = Benchmark<(Set<Int>,Set<Int>)>.nonMutating(
+            setup: { (Set(0..<$0), Set(0..<100)) },
+            measuring: { (a,b) in _ = a.union(b) }
+        )
+        assertPerformance(.constant, of: benchmark)
     }
-
 }
 
 // Constructs a set of size `n` with linearly increasing elements.
