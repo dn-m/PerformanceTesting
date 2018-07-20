@@ -42,11 +42,7 @@ public struct TestPoint {
     // MARK: - Instance Properties
 
     var times: [Double] {
-        var times: [Double] = []
-        for var trial in trials {
-            times.append(trial.time())
-        }
-        return times
+        return trials.map { $0.time }
     }
 
     var average: Double {

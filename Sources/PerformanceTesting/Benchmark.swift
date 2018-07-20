@@ -16,16 +16,17 @@ public struct Benchmark <Subject> {
         measuring operation: @escaping (inout Subject) -> Void
     ) -> Benchmark
     {
-        return Benchmark(
-            testPoints: testPoints.map { size in
-                TestPoint.mutating(
-                    trialCount: trialCount,
-                    size: size,
-                    setup: setup,
-                    measuring: operation
-                )
+        var points: [TestPoint] = []
+        for size in testPoints {
+            var trials: [Trial] = []
+            for _ in 0..<trialCount {
+                var subject = setup(size)
+                let time = measure { operation(&subject) }
+                trials.append(TimeTrial(time: time))
             }
-        )
+            points.append(TestPoint(size: size, trials: trials))
+        }
+        return Benchmark(testPoints: points)
     }
 
     public static func nonMutating <Subject> (

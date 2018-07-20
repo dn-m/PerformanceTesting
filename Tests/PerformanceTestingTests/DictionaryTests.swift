@@ -82,25 +82,23 @@ class DictionaryTests: XCTestCase {
     // `updateValue` should be constant-time in the number of elements
     // in the case that the key exists
     func testUpdateValueHit() {
-        #warning("Dictionary.update(_:forKey:) is observed in linear, not constant, time")
         let benchmark = Benchmark<[Int:Int]>.mutating(
             setup: makeDictionary,
             measuring: {
                 $0.updateValue(Int.random(in: 0..<$0.count), forKey: Int.random(in: 0..<$0.count))
             }
         )
-        assertPerformance(.linear, of: benchmark)
+        assertPerformance(.constant, of: benchmark)
     }
 
     // `updateValue` should be constant-time in the number of elements
     // in the case that the key does not exist
     func testUpdateValueMiss() {
-        #warning("Dictionary.update(_:forKey:) is observed in linear, not constant, time")
         let benchmark = Benchmark<[Int:Int]>.mutating(
             setup: makeDictionary,
             measuring: { $0.updateValue($0.count, forKey: $0.count) }
         )
-        assertPerformance(.linear, of: benchmark)
+        assertPerformance(.constant, of: benchmark)
     }
 
     // MARK: Removing elements
@@ -117,12 +115,11 @@ class DictionaryTests: XCTestCase {
     // `removeValue` should be constant-time in the number of elements,
     // if the element to be removed is in the dictionary
     func testRemoveValueHit() {
-        #warning("Dictionary.removeValue(forKey:) is observed in linear, not constant, time")
         let benchmark = Benchmark<[Int:Int]>.mutating(
             setup: makeDictionary,
             measuring: { $0.removeValue(forKey: Int.random(in: 0..<$0.count)) }
         )
-        assertPerformance(.linear, of: benchmark)
+        assertPerformance(.constant, of: benchmark)
     }
 
     // `removeValue` should be constant-time in the number of elements,
@@ -171,7 +168,6 @@ class DictionaryTests: XCTestCase {
             }
         }
     }
-
 }
 
 // Constructs a dictionary of size `n` with linearly increasing elements

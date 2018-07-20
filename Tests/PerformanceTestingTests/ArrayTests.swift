@@ -51,19 +51,17 @@ class ArrayTests: XCTestCase {
 
     // `append` should be (amortized) constant-time in the number of elements.
     func testAppend() {
-        #warning("This is observed as as linear")
-//        let benchmark = Benchmark<[Int]>.mutating(
-//            trialCount: 20,
-//            setup: makeArray,
-//            measuring: { $0.append(6) }
-//        )
-//        assertPerformance(.constant, of: benchmark)
+        let benchmark = Benchmark<[Int]>.mutating(
+            setup: makeArray,
+            measuring: { $0.append(42) }
+        )
+        assertPerformance(.constant, of: benchmark)
     }
 
-    // `append` should be (amortized) linear-time in the number of appends
+    // `append` should be (amortized) constant-time in the number of appends
     func testAppendAmortized() {
         let benchmark = Benchmark<[Int]>.mutating(setup: makeArray, measuring: { $0.append(6) })
-        assertPerformance(.linear, of: benchmark)
+        assertPerformance(.constant, of: benchmark)
     }
 
     // `insert` should be O(n) in the number of elements

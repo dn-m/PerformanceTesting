@@ -56,12 +56,11 @@ class SetTests: XCTestCase {
 
     // `insert` should be constant-time in the number of elements
     func testInsert() {
-        #warning("Set.insert is observed as linear")
         let benchmark = Benchmark<Set<Int>>.mutating(
             setup: makeSet,
             measuring: { $0.insert(Int.random(in: 0 ..< $0.count * 2)) }
         )
-        assertPerformance(.linear, of: benchmark)
+        assertPerformance(.constant, of: benchmark)
     }
 
     // MARK: Removing elements
@@ -82,15 +81,7 @@ class SetTests: XCTestCase {
             setup: makeSet,
             measuring: { $0.remove(Int.random(in: 0..<$0.count)) }
         )
-        assertPerformance(.linear, of: benchmark)
-        #warning("Set.remove(_:) is observed as linear when value is contained therein")
-
-//        assertPerformance(.constant) { testPoint in
-//            return meanOutcome {
-//                var set = makeSet(size: testPoint)
-//                return time { set.remove(testPoint.random()) }
-//            }
-//        }
+        assertPerformance(.constant, of: benchmark)
     }
 
     // `remove` should be constant-time in the number of elements,
@@ -104,10 +95,9 @@ class SetTests: XCTestCase {
     }
 
     // `removeFirst` should be constant-time in the number of elements
-    #warning("Set.removeFirst() is observed as linear, though it should be constant")
     func testRemoveFirst() {
         let benchmark = Benchmark<Set<Int>>.mutating(setup: makeSet, measuring: { $0.removeFirst() })
-        assertPerformance(.linear, of: benchmark)
+        assertPerformance(.constant, of: benchmark)
     }
 
     // MARK: Combining sets

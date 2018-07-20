@@ -15,6 +15,6 @@ class TrialTests: XCTestCase {
             subject: (0..<100).map { _ in Int.random(in: 0..<100 ) },
             operation: { array in _ = array.count }
         )
-        let _ = trial.time()
+        let _ = trial.time
     }
 }

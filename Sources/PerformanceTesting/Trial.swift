@@ -9,12 +9,20 @@ import Foundation
 
 /// Interface for values which can measure the time that it takes for perform and operation.
 public protocol Trial {
-    mutating func time() -> Double
+    var time: Double { get }
+}
+
+public struct TimeTrial: Trial {
+    public let time: Double
 }
 
 public struct NonMutatingTrial <Subject>: Trial {
 
     // MARK: - Instance Properties
+
+    public var time: Double {
+        return measure { operation(subject) }
+    }
 
     let subject: Subject
     let operation: (Subject) -> Void
@@ -25,12 +33,6 @@ public struct NonMutatingTrial <Subject>: Trial {
         self.subject = subject
         self.operation = operation
     }
-
-    // MARK: - Instance Methods
-
-    public mutating func time() -> Double {
-        return measure { operation(subject) }
-    }
 }
 
 /// All of the information needed to measure the time that it takes for a single performance of a
@@ -39,6 +41,11 @@ public struct MutatingTrial <Subject>: Trial {
 
     // MARK: - Instance Properties
 
+    public var time: Double {
+        var subject = self.subject
+        return measure { operation(&subject) }
+    }
+
     var subject: Subject
     let operation: (inout Subject) -> Void
 
@@ -46,16 +53,10 @@ public struct MutatingTrial <Subject>: Trial {
         self.subject = subject
         self.operation = operation
     }
-
-    // MARK: - Instance Methods
-
-    public mutating func time() -> Double {
-        return measure { operation(&subject) }
-    }
 }
 
 /// - Returns: The amount of time that it takes to perform the given `operation`.
-private func measure (operation: () -> Void) -> Double {
+internal func measure (operation: () -> Void) -> Double {
     let start = CFAbsoluteTimeGetCurrent()
     operation()
     let finish = CFAbsoluteTimeGetCurrent()
