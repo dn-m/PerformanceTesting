@@ -132,13 +132,13 @@ class DictionaryTests: XCTestCase {
         assertPerformance(.constant, of: benchmark)
     }
 
-    // `removeAll` should be constant-time in the number of elements
+    // `removeAll` should be linear-time in the number of elements
     func testRemoveAll() {
         let benchmark = Benchmark<[Int:Int]>.mutating(
             setup: makeDictionary,
             measuring: { $0.removeAll() }
         )
-        assertPerformance(.constant, of: benchmark)
+        assertPerformance(.linear, of: benchmark)
     }
 
     // MARK: Comparing
