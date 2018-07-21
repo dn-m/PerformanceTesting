@@ -49,15 +49,15 @@ We are pretty sure that the performance guarantees documented by the [Stdlib](ht
 For example, in order to verify that the `count` property of an `Array` is performed in constant time, one can do the following within an `XCTestCase` subclass.
 
 ```Swift
-func testArrayCountIsConstant() {
-	// Create a `Benchmark` for the given operation.
-	let benchmark = Benchmark.nonMutating(
-	    // For each size, creates an `Array` with elements increasing from zero up to the size
-	    setup: { size in Array(0 ..< size) },
-	    // Measures `array.count` 10 times by default, averaging out the results
-	    measuring: { array in _ = array.count }
-	)
-	XCTAssert(benchmark.performance(is: .constant))
+    func testArrayCountIsConstant() {
+    // Create a `Benchmark` for the given operation.
+    let benchmark = Benchmark.nonMutating(
+        // For each size, creates an `Array` with elements increasing from zero up to the size
+        setup: { size in Array(0 ..< size) },
+        // Measures `array.count` 10 times by default, averaging out the results
+        measuring: { array in _ = array.count }
+    )
+    XCTAssert(benchmark.performance(is: .constant))
 }
 ```
 
