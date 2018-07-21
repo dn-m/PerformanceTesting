@@ -59,17 +59,20 @@ struct DataSet {
 
     /// - Returns: `true` if the curve of this data resembles the given `complexity` curve.
     /// Otherwise, returns `false`.
-    func curve(is complexity: Complexity) -> Bool {
+    func curve(
+        is complexity: Complexity,
+        tolerance: Double = 0.1,
+        minimumCorrelation: Double = 0.9
+    ) -> Bool
+    {
         switch complexity {
         case .constant:
-            let tolerance = 0.01
             let results = linearRegression
             return (
                 approximatelyEqual(results.slope, 0, epsilon: tolerance) ||
                 results.correlation < 0.9
             )
         default:
-            let minimumCorrelation = 0.9
             let mappedData = mappedForLinearFit(complexity: complexity)
             let results = mappedData.linearRegression
             return results.correlation >= minimumCorrelation
