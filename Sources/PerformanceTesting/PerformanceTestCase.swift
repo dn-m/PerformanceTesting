@@ -121,8 +121,3 @@ public func approximatelyEqual <F: FloatingPoint> (_ a: F, _ b: F, epsilon: F) -
     if a == b { return true }
     return abs(b-a) < epsilon
 }
-
-enum FillStrategy {
-    case increasing
-    case random
-}
