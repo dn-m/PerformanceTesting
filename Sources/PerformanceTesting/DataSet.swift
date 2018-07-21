@@ -61,17 +61,13 @@ struct DataSet {
     /// Otherwise, returns `false`.
     func curve(
         is complexity: Complexity,
-        tolerance: Double = 0.1,
+        tolerance: Double = 0.05,
         minimumCorrelation: Double = 0.9
     ) -> Bool
     {
         switch complexity {
         case .constant:
-            let results = linearRegression
-            return (
-                approximatelyEqual(results.slope, 0, epsilon: tolerance) ||
-                results.correlation < 0.9
-            )
+            return approximatelyEqual(linearRegression.slope, 0, epsilon: tolerance)
         default:
             let mappedData = mappedForLinearFit(complexity: complexity)
             let results = mappedData.linearRegression

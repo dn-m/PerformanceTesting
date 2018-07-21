@@ -88,7 +88,7 @@ public struct Benchmark {
     /// given `complexity` class on the scale of inputs.
     public func performance(
         is complexity: Complexity,
-        tolerance: Double = 0.1,
+        tolerance: Double = 0.05,
         minimumCorrelation: Double = 0.9
     ) -> Bool
     {
