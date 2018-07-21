@@ -93,7 +93,8 @@ public struct Benchmark {
             let results = linearRegression(data)
             let tolerance = 0.1
             return (
-                approximatelyEqual(results.slope, 0, epsilon: tolerance) || results.correlation < 0.9
+                approximatelyEqual(results.slope, 0, epsilon: tolerance) ||
+                results.correlation < 0.9
             )
         default:
             let mappedData = data.mappedForLinearFit(complexity: complexity)
