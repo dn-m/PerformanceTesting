@@ -10,6 +10,10 @@ public struct TestPoint {
 
     // MARK: - Instance Properties
 
+    var average: Double {
+        return trials.average
+    }
+
     let size: Int
     let trials: [Double]
 
@@ -18,5 +22,15 @@ public struct TestPoint {
     public init(size: Int, trials: [Double]) {
         self.size = size
         self.trials = trials
+    }
+}
+
+extension TestPoint: CustomStringConvertible {
+    public var description: String {
+        return """
+        Size: \(size) (Average: \(average))
+        Times:
+            \(trials.map { String($0) }.joined(separator: "\n\t"))
+        """
     }
 }

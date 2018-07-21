@@ -73,7 +73,7 @@ public struct Benchmark {
     // MARK: - Instance Properties
 
     var data: DataSet {
-        return DataSet(testPoints.map { (Double($0.size), $0.trials.average) })
+        return DataSet(testPoints.map { (Double($0.size), $0.average) })
     }
 
     let testPoints: [TestPoint]
@@ -97,6 +97,12 @@ public struct Benchmark {
             tolerance: tolerance,
             minimumCorrelation: minimumCorrelation
         )
+    }
+}
+
+extension Benchmark: CustomStringConvertible {
+    public var description: String {
+        return testPoints.map { "\($0)" }.joined(separator: "\n")
     }
 }
 
