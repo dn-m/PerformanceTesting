@@ -108,28 +108,3 @@ class SetTests: XCTestCase {
         assertPerformance(.linear, of: benchmark)
     }
 }
-
-func set (_ strategy: FillStrategy) -> (_ size: Int) -> Set<Int> {
-    switch strategy {
-    case .increasing:
-        return makeSet
-    case .random:
-        return makeRandomSet
-    }
-}
-
-func setPair (_ strategy: FillStrategy) -> (_ size: Int) -> (Set<Int>,Set<Int>) {
-    return { size in
-        (set(strategy)(size),set(strategy)(size))
-    }
-}
-
-// Constructs a set of size `n` with linearly increasing elements.
-func makeSet(size n: Int) -> Set<Int> {
-    return Set(count: n) { $0 }
-}
-
-// Constructs an array of size `n` with random elements.
-func makeRandomSet(size n: Int) -> Set<Int> {
-    return Set(count: n) { _ in n.random() }
-}
