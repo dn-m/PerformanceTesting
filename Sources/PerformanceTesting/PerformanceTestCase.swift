@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Darwin
 
 /// The amount of information to be emitted.
 public enum Logging {
@@ -40,24 +41,12 @@ internal func assertConstantTimePerformance(
 )
 {
     let results = linearRegression(benchmark)
-
-    #warning("TODO: Use guards as asserts for slope == 0 with tolerance, and correlation")
-    #warning("TODO: If assertion fails, dump Benchmark, otherwise fly silently")
-
-    if logging == .detailed {
-        for (trial,info) in benchmark.enumerated() {
-            let (size,time) = info
-            print("trial \(trial + 1): size: \(size), time: \(time)")
-        }
-        print("slope: \(results.slope) (tolerance: \(tolerance))")
-        print("intercept: \(results.intercept)")
-        print("correlation: \(results.correlation)")
+    guard approximatelyEqual(results.slope, 0, epsilon: tolerance), results.correlation < 0.9 else {
+        dump(benchmark)
+        dump(results)
+        XCTFail("Operation not observed in constant time")
+        return
     }
-    XCTAssertEqual(results.slope, 0, accuracy: tolerance)
-    XCTAssert(
-        results.correlation < 0.9,
-        "Constant-time performance should not have a linearly correlated slope"
-    )
 }
 
 /// Assert that the data indicates that performance fits well to the given
@@ -72,16 +61,19 @@ internal func assertPerformanceComplexity(
 {
     let mappedData = data.mappedForLinearFit(complexity: complexity)
     let results = linearRegression(mappedData)
-    if logging == .detailed  {
-        for (trial,info) in mappedData.enumerated() {
-            let (size,time) = info
-            print("trial: \(trial + 1): size: \(size), time: \(time)")
+    guard results.correlation >= minimumCorrelation else {
+        if logging == .detailed  {
+            for (trial,info) in mappedData.enumerated() {
+                let (size,time) = info
+                print("trial: \(trial + 1): size: \(size), time: \(time)")
+            }
+            print("slope: \(results.slope)")
+            print("intercept: \(results.intercept)")
+            print("correlation: \(results.correlation) (minimum: \(minimumCorrelation))")
         }
-        print("slope: \(results.slope)")
-        print("intercept: \(results.intercept)")
-        print("correlation: \(results.correlation) (minimum: \(minimumCorrelation))")
+        XCTFail("Fail")
+        return
     }
-    XCTAssert(results.correlation >= minimumCorrelation)
 }
 
 extension Array where Array == [(Double,Double)] {
@@ -127,4 +119,12 @@ extension Dictionary {
             updateValue(element.value, forKey: element.key)
         }
     }
+}
+
+/// - Returns: `true`  if the given values are equal within the given `epsilon`. Otherwise, `false.`
+///
+/// - Note: This is a naive implementation which does not address extreme floating point situations.
+public func approximatelyEqual <F: FloatingPoint> (_ a: F, _ b: F, epsilon: F) -> Bool {
+    if a == b { return true }
+    return abs(b-a) < epsilon
 }
