@@ -8,36 +8,22 @@
 import XCTest
 import Darwin
 
-/// The amount of information to be emitted.
-public enum Logging {
-
-    /// No information will be emitted.
-    case none
-
-    /// High-level information for a performance test of a single operation.
-    case overview
-
-    /// Information for each trial of a performance tests of a single operation.
-    case detailed
-}
-
 /// Assert that the computed average time complexity of a `benchmark` is in the stated complexity
 /// class on the scale of inputs.
 public func assertPerformance(_ complexity: Complexity, of benchmark: Benchmark) {
     let data = benchmark.data
     switch complexity {
     case .constant:
-        assertConstantTimePerformance(data, logging: .none)
+        assertConstantTimePerformance(data)
     default:
-        assertPerformanceComplexity(data, complexity: complexity, logging: .none)
+        assertPerformanceComplexity(data, complexity: complexity)
     }
 }
 
 /// Assert that the data indicates that performance is constant-time ( O(1) ).
 internal func assertConstantTimePerformance(
     _ benchmark: [(Double,Double)],
-    tolerance: Double = 0.01,
-    logging: Logging = .none
+    tolerance: Double = 0.01
 )
 {
     let results = linearRegression(benchmark)
@@ -55,8 +41,7 @@ internal func assertConstantTimePerformance(
 internal func assertPerformanceComplexity(
     _ benchmark: [(Double,Double)],
     complexity: Complexity,
-    minimumCorrelation: Double = 0.9,
-    logging: Logging = .none
+    minimumCorrelation: Double = 0.9
 )
 {
     let mappedData = benchmark.mappedForLinearFit(complexity: complexity)
