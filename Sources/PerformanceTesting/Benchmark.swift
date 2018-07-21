@@ -71,18 +71,14 @@ public struct Benchmark {
 
     // MARK: - Instance Properties
 
-    /// - Returns: The average measure time to perform an operation, indexed by the size of the
-    /// domain.
-    var data: [(Double,Double)] {
-        return testPoints.map { (x: Double($0.size), y: $0.trials.average) }
-    }
-
     let testPoints: [TestPoint]
+    let data: DataSet
 
     // MARK: - Initializers
 
     init(testPoints: [TestPoint]) {
         self.testPoints = testPoints
+        self.data = DataSet(testPoints.map { (x: Double($0.size), y: $0.trials.average) })
     }
 
     /// - Returns: `true` if the computed average time complexity of this `Benchmark` is in the
