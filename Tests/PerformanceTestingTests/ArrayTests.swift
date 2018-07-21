@@ -91,11 +91,6 @@ class ArrayTests: XCTestCase {
     }
 }
 
-enum FillStrategy {
-    case increasing
-    case random
-}
-
 private func array (_ strategy: FillStrategy) -> (_ size: Int) -> Array<Int> {
     switch strategy {
     case .increasing:
