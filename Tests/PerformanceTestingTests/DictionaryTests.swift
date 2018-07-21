@@ -8,174 +8,129 @@
 import XCTest
 import PerformanceTesting
 
-class DictionaryTests: PerformanceTestCase {
+class DictionaryTests: XCTestCase {
 
-    // MARK: Helper functions.
-
-    // Constructs a dictionary of size `n` with linearly increasing elements
-    // associated with linearly decreasing elements
-    func makeDictionary(size n: Int) -> Dictionary<Int, Int> {
-        return Dictionary(count: n) { (key: $0, value: $0) }
-    }
-
-    // MARK: Tests: inspecting
+    // MARK: Inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        assertPerformance(.constant) { testPoint in
-            let dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime { _ = dictionary.isEmpty }
-        }
+        let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.isEmpty }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        assertPerformance(.constant) { testPoint in
-            let dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime { _ = dictionary.count }
-        }
+        let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.count }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: accessing
+    // MARK: Accessing
 
     // subscript should be constant-time in the number of elements
-    func testSubscript() {
-        assertPerformance(.constant) { testPoint in
-            let dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime { _ = dictionary[testPoint.random()] }
+    func testSubscriptGetter() {
+        let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) {
+            _ = $0[Int.random(in: 0..<$0.count)]
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `index` should be constant-time in the number of elements
     func testIndex() {
-        assertPerformance(.constant) { testPoint in
-            let dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime { _ = dictionary.index(forKey: testPoint.random()) }
+        let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) {
+            _ = $0.index(forKey: Int.random(in: 0..<$0.count))
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        assertPerformance(.constant) { testPoint in
-            let dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime { _ = dictionary.first }
-        }
+        let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.first }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `keys` should be constant-time in the number of elements
     func testKeys() {
-        assertPerformance(.constant) { testPoint in
-            let dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime { _ = dictionary.keys }
-        }
+        let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.keys }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `values` should be constant-time in the number of elements
     func testValues() {
-        assertPerformance(.constant) { testPoint in
-            let dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime { _ = dictionary.values }
-        }
+        let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.values }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: adding elements
+    // MARK: Adding elements
 
     // `updateValue` should be constant-time in the number of elements
     // in the case that the key exists
     func testUpdateValueHit() {
-        assertPerformance(.constant) { testPoint in
-
-            // ok to mutate here, we're only updating values that exist
-            var dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime {
-                dictionary.updateValue(testPoint.random(), forKey: testPoint.random())
-            }
+        let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
+            $0.updateValue(Int.random(in: 0..<$0.count), forKey: Int.random(in: 0..<$0.count))
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `updateValue` should be constant-time in the number of elements
     // in the case that the key does not exist
     func testUpdateValueMiss() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var dictionary = makeDictionary(size: testPoint)
-                return time {
-                    let value = testPoint + testPoint.random()
-                    let key = testPoint.random()
-                    dictionary.updateValue(value, forKey: key)
-                }
-            }
+        let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
+            $0.updateValue($0.count, forKey: $0.count)
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: removing elements
+    // MARK: Removing elements
 
     // `filter` should be linear in the number of elements
     func testFilter() {
-        assertPerformance(.linear) { testPoint in
-            let dictionary = makeDictionary(size: testPoint)
-            return meanExecutionTime {
-                _ = dictionary.filter { $0.key % 5 == 3 }
-            }
+        let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
+            _ = $0.filter { $0.key % 5 == 3 }
         }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
     // `removeValue` should be constant-time in the number of elements,
     // if the element to be removed is in the dictionary
     func testRemoveValueHit() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var dictionary = makeDictionary(size: testPoint)
-                return time { dictionary.removeValue(forKey: testPoint.random()) }
-            }
+        let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
+            $0.removeValue(forKey: Int.random(in: 0..<$0.count))
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `removeValue` should be constant-time in the number of elements,
     // if the element to be removed is not in the dictionary
     func testRemoveValueMiss() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var dictionary = makeDictionary(size: testPoint)
-                return time { dictionary.removeValue(forKey: testPoint+1) }
-            }
+        let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
+            $0.removeValue(forKey: $0.count)
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // `removeAll` should be constant-time in the number of elements
+    // `removeAll` should be linear-time in the number of elements
     func testRemoveAll() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                var dictionary = makeDictionary(size: testPoint)
-                return time { dictionary.removeAll() }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: dict(.increasing)) { $0.removeAll() }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
-    // MARK: Tests: comparing
+    // MARK: Comparing
 
     // `==` should be linear in the number of elements inserted
     // if the dictionaries are actually equal
     func testEqualityOperator() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                let benchDictionary = makeDictionary(size: testPoint)
-                let otherDictionary = makeDictionary(size: testPoint)
-                return time { _ = benchDictionary == otherDictionary }
-            }
+        let benchmark = Benchmark.nonMutating(setup: dictPair(.increasing)) { (a,b) in
+            _ = a == b
         }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
     // `!=` should be linear in the number of elements inserted
     // if the dictionaries are equal
     func testInequalityOperator() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                let benchDictionary = makeDictionary(size: testPoint)
-                let otherDictionary = makeDictionary(size: testPoint)
-                return time { _ = benchDictionary != otherDictionary }
-            }
+        let benchmark = Benchmark.nonMutating(setup: dictPair(.increasing)) { (a,b) in
+            _ = a != b
         }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
-
 }

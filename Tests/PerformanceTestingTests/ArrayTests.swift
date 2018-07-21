@@ -8,134 +8,85 @@
 import XCTest
 import PerformanceTesting
 
-class ArrayTests: PerformanceTestCase {
+class ArrayTests: XCTestCase {
 
-    // MARK: Helper functions.
-
-    // Constructs an array of size `n` with linearly increasing elements.
-    func makeArray(size n: Int) -> [Int] {
-        return Array(count: n) { $0 }
-    }
-
-    // Constructs an array of size `n` with random elements.
-    func makeRandomArray(size n: Int) -> [Int] {
-        return Array(count: n) { _ in n.random() }
-    }
-
-    // MARK: Tests: inspecting
+    // MARK: Inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        assertPerformance(.constant) { testPoint in
-            let array = makeArray(size: testPoint)
-            return meanExecutionTime { _ = array.isEmpty }
-        }
+        let benchmark = Benchmark.nonMutating(setup: array(.increasing)) { _ = $0.isEmpty }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        assertPerformance(.constant) { testPoint in
-            let array = makeArray(size: testPoint)
-            return meanExecutionTime { _ = array.count }
-        }
+        let benchmark = Benchmark.nonMutating(setup: array(.increasing)) { _ = $0.count }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: accessing elements
+    // MARK: Tests: Accessing elements
 
     // `subscript` should be constant-time in the number of elements
-    func testSubscript() {
-        assertPerformance(.constant) { testPoint in
-            let array = makeArray(size: testPoint)
-            return meanExecutionTime { _ = array[3] }
-        }
+    func testSubscriptGetter() {
+        let benchmark = Benchmark.nonMutating(setup: array(.increasing)) { _ = $0[3] }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        assertPerformance(.constant) { testPoint in
-            let array = makeArray(size: testPoint)
-            return meanExecutionTime { _ = array.first }
-        }
+        let benchmark = Benchmark.nonMutating(setup: array(.increasing)) { _ = $0.first }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `last` should be constant-time in the number of elements
     func testLast() {
-        assertPerformance(.constant) { testPoint in
-            let array = makeArray(size: testPoint)
-            return meanExecutionTime { _ = array.last }
-        }
+        let benchmark = Benchmark.nonMutating(setup: array(.increasing)) { _ = $0.last }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: adding elements
+    // MARK: Adding elements
 
-    // `append` should be (amortized) constant-time in the number of elements
+    // `append` should be (amortized) constant-time in the number of elements.
     func testAppend() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var array = makeArray(size: testPoint)
-                return time { array.append(6) }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: array(.increasing)) { $0.append(42) }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // `append` should be (amortized) linear-time in the number of appends
+    // `append` should be (amortized) constant-time in the number of appends
     func testAppendAmortized() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                var array: [Int] = []
-                return time {
-                    for _ in 0..<testPoint { array.append(6) }
-                }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: array(.increasing)) { $0.append(6) }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `insert` should be O(n) in the number of elements
     func testInsert() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                var array = makeArray(size: testPoint)
-                return time { array.insert(6, at: 0) }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: array(.increasing)) { $0.insert(6, at: 0) }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
-    // MARK: Tests: removing elements
+    // MARK: Removing elements
 
-
-    // `remove` should be constant-time in the number of elements
+    // `remove` should be linear-time in the number of elements.
     func testRemove() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                var array = makeRandomArray(size: testPoint)
-                return time { array.remove(at: 0) }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: array(.increasing)) { $0.remove(at: 0) }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
-    // MARK: Tests: sorting an array
+    // MARK: Sorting an array
 
     // `sort` should be roughly O(n) in the number of elements
     // Technically, it's linearithmic, but we should be able to fit
     // a line to it well enough.
     func testSort() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                var array = makeRandomArray(size: testPoint)
-                return time { array.sort() }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: array(.random)) { $0.sort() }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
     // `partition` should be O(n) in the number of elements
     func testPartition() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                var array = makeRandomArray(size: testPoint)
-                return time {
-                    _ = array.partition { element in element > 50 }
-                }
-            }
+        let benchmark = Benchmark.mutating(setup: array(.random)) {
+            _ = $0.partition { element in element > 50 }
         }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 }

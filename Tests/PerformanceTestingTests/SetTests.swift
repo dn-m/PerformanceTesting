@@ -8,146 +8,103 @@
 import XCTest
 import PerformanceTesting
 
-class SetTests: PerformanceTestCase {
+class SetTests: XCTestCase {
 
-    // MARK: Helper functions.
-
-    // Constructs a set of size `n` with linearly increasing elements.
-    func makeSet(size n: Int) -> Set<Int> {
-        return Set(count: n) { $0 }
-    }
-
-    // MARK: Tests: inspecting
+    // MARK: Inspecting
 
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
-        assertPerformance(.constant) { testPoint in
-            let set = makeSet(size: testPoint)
-            return meanExecutionTime { _ = set.isEmpty }
-        }
+        let benchmark = Benchmark.nonMutating(setup: set(.increasing)) { _ = $0.isEmpty }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
-        assertPerformance(.constant) { testPoint in
-            let set = makeSet(size: testPoint)
-            return meanExecutionTime { _ = set.count }
-        }
+        let benchmark = Benchmark.nonMutating(setup: set(.increasing)) { _ = $0.count }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
-        assertPerformance(.constant) { testPoint in
-            let set = makeSet(size: testPoint)
-            return meanExecutionTime { _ = set.first }
-        }
+        let benchmark = Benchmark.nonMutating(setup: set(.increasing)) { _ = $0.first }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: membership
+    // MARK: Membership
 
     // `contains` should be constant-time in the number of elements
     // if the element in question is in the set
     func testContainsHit() {
-        assertPerformance(.constant) { testPoint in
-            let set = makeSet(size: testPoint)
-            return meanExecutionTime { _ = set.contains(testPoint.random()) }
+        let benchmark = Benchmark.nonMutating(setup: set(.increasing)) {
+            _ = $0.contains(Int.random(in: 0..<$0.count))
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `contains` should be constant-time in the number of elements
     // if the element in question is in the set
     func testContainsMiss() {
-        assertPerformance(.constant) { testPoint in
-            let set = makeSet(size: testPoint)
-            return meanExecutionTime { _ = set.contains(testPoint+1) }
-        }
+        let benchmark = Benchmark.nonMutating(setup: set(.increasing)) { _ = $0.contains($0.count) }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: adding elements
+    // MARK: Adding elements
 
     // `insert` should be constant-time in the number of elements
     func testInsert() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var set = makeSet(size: testPoint)
-                return time {
-                    // ensure an accurate reading, too noisy with just one iteration
-                    for _ in 0..<100 {
-                        set.insert((testPoint*2).random())
-                    }
-                }
-            }
+        let benchmark = Benchmark.mutating(setup: set(.increasing)) {
+            $0.insert(Int.random(in: 0 ..< $0.count * 2))
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: removing elements
+    // MARK: Removing elements
 
     // `filter` should be linear in the number of elements
     func testFilter() {
-        assertPerformance(.linear) { testPoint in
-            let set = makeSet(size: testPoint)
-            return meanExecutionTime {
-                _ = set.filter { $0 % 5 == 3 }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: set(.increasing)) { _ = $0.filter { $0 % 5 == 3 } }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
     // `remove` should be constant-time in the number of elements,
     // if the element to be removed is in the set
     func testRemoveHit() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var set = makeSet(size: testPoint)
-                return time { set.remove(testPoint.random()) }
-            }
+        let benchmark = Benchmark.mutating(setup: set(.increasing)) {
+            $0.remove(Int.random(in: 0..<$0.count))
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `remove` should be constant-time in the number of elements,
     // if the element to be removed is not in the set
     func testRemoveMiss() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var set = makeSet(size: testPoint)
-                return time { set.remove(testPoint+1) }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: set(.increasing)) { $0.remove($0.count) }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `removeFirst` should be constant-time in the number of elements
     func testRemoveFirst() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                var set = makeSet(size: testPoint)
-                return time { set.removeFirst() }
-            }
-        }
+        let benchmark = Benchmark.mutating(setup: set(.increasing)) { $0.removeFirst() }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
-    // MARK: Tests: combining sets
+    // MARK: Combining sets
 
     // `union` should be linear in the number of elements inserted
     // Since we are inserting a constant-size set, this is constant time.
     func testUnionWithConstantSizedOther() {
-        assertPerformance(.constant) { testPoint in
-            return meanOutcome {
-                let benchSet = makeSet(size: testPoint)
-                let otherSet = Set.init(0..<100)
-                return time { _ = benchSet.union(otherSet) }
-            }
+        let benchmark = Benchmark.nonMutating(setup: { (Set(0..<$0), Set(0..<100)) }) { (a,b) in
+            _ = a.union(b)
         }
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `union` should be linear in the number of elements inserted
     // Since we are inserting a size-n set, this is linear time.
     func testUnionWithLinearSizedOther() {
-        assertPerformance(.linear) { testPoint in
-            return meanOutcome {
-                let benchSet = makeSet(size: testPoint)
-                let otherSet = Set.init(0..<100)
-                return time { _ = otherSet.union(benchSet) }
-            }
+        let benchmark = Benchmark.nonMutating(setup: { (Set(0..<$0), Set(0..<100)) }) { (a,b) in
+            _ = b.union(a)
         }
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
-
 }
