@@ -79,19 +79,6 @@ extension Array where Element == (Double,Double) {
     }
 }
 
-extension Array {
-
-    /// Fills the array using a generator function. The function
-    /// is passed the index of the current element as an argument.
-    public init(count: Int, fillingWith generator: (Int) -> Element) {
-        self.init()
-        reserveCapacity(count)
-        for i in 0..<count { append(generator(i)) }
-    }
-}
-
-
-
 /// - Returns: `true`  if the given values are equal within the given `epsilon`. Otherwise, `false.`
 ///
 /// - Note: This is a naive implementation which does not address extreme floating point situations.
