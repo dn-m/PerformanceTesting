@@ -72,14 +72,16 @@ public struct Benchmark {
 
     // MARK: - Instance Properties
 
+    var data: DataSet {
+        return DataSet(testPoints.map { (Double($0.size), $0.trials.average) })
+    }
+
     let testPoints: [TestPoint]
-    let data: DataSet
 
     // MARK: - Initializers
 
     init(testPoints: [TestPoint]) {
         self.testPoints = testPoints
-        self.data = DataSet(testPoints.map { (x: Double($0.size), y: $0.trials.average) })
     }
 
     /// - Returns: `true` if the computed average time complexity of this `Benchmark` is in the
