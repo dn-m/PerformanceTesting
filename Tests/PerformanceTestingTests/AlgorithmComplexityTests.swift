@@ -78,7 +78,7 @@ func makeRandomSquareMatrix(size: Int) -> Matrix<Int> {
         matrix.append([])
         matrix[row].reserveCapacity(size)
         for _ in 0..<size {
-            matrix[row].append(100.random())
+            matrix[row].append(.random(in: 0..<100))
         }
     }
     return matrix

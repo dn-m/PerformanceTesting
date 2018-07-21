@@ -73,7 +73,7 @@ public struct Benchmark {
 
     /// - Returns: The average measure time to perform an operation, indexed by the size of the
     /// domain.
-    var data: [(x: Double, y: Double)] {
+    var data: [(Double,Double)] {
         return testPoints.map { (x: Double($0.size), y: $0.trials.average) }
     }
 

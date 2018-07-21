@@ -27,7 +27,7 @@ internal func assertConstantTimePerformance(
 /// complexity class. Optional parameter for minimum acceptable correlation.
 /// Use assertConstantTimePerformance for O(1) assertions
 internal func assertPerformanceComplexity(
-    _ benchmark: [(x: Double, y: Double)],
+    _ benchmark: [(Double,Double)],
     complexity: Complexity,
     minimumCorrelation: Double = 0.9
 )
@@ -42,13 +42,32 @@ internal func assertPerformanceComplexity(
     }
 }
 
-extension Array where Element == (x: Double, y: Double) {
+extension Array where Element == (Double, Double) {
 
     /// Maps data representing performance of a certain complexity so that it
     /// can be fit with linear regression. This is done by applying the inverse
     /// function of the expected performance function.
     public func mappedForLinearFit(complexity: Complexity) -> Array {
         return map { ($0, complexity.inverse($1)) }
+    }
+
+    /// - Returns: `true` if the curve of this data resembles the given `complexity` curve.
+    /// Otherwise, returns `false`.
+    public func curve(is complexity: Complexity) -> Bool {
+        switch complexity {
+        case .constant:
+            let tolerance = 0.1
+            let results = linearRegression(self)
+            return (
+                approximatelyEqual(results.slope, 0, epsilon: tolerance) ||
+                results.correlation < 0.9
+            )
+        default:
+            let minimumCorrelation = 0.9
+            let mappedData = self.mappedForLinearFit(complexity: complexity)
+            let results = linearRegression(mappedData)
+            return results.correlation >= minimumCorrelation
+        }
     }
 }
 
