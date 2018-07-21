@@ -90,16 +90,7 @@ extension Array {
     }
 }
 
-extension Set {
 
-    /// Fills the array using a generator function. The function
-    /// is passed the index of the current element as an argument.
-    public init(count: Int, fillingWith generator: (Int) -> Element) {
-        self.init()
-        reserveCapacity(count)
-        for i in 0..<count { insert(generator(i)) }
-    }
-}
 
 /// - Returns: `true`  if the given values are equal within the given `epsilon`. Otherwise, `false.`
 ///
