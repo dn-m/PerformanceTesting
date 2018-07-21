@@ -88,20 +88,7 @@ public struct Benchmark {
     /// - Returns: `true` if the computed average time complexity of this `Benchmark` is in the
     /// given `complexity` class on the scale of inputs.
     public func performance(is complexity: Complexity) -> Bool {
-        switch complexity {
-        case .constant:
-            let results = linearRegression(data)
-            let tolerance = 0.1
-            return (
-                approximatelyEqual(results.slope, 0, epsilon: tolerance) ||
-                results.correlation < 0.9
-            )
-        default:
-            let mappedData = data.mappedForLinearFit(complexity: complexity)
-            let results = linearRegression(mappedData)
-            let minimumCorrelation = 0.9
-            return results.correlation >= minimumCorrelation
-        }
+        return data.curve(is: complexity)
     }
 }
 
