@@ -60,7 +60,7 @@ extension Array where Element == (Double,Double) {
     /// can be fit with linear regression. This is done by applying the inverse
     /// function of the expected performance function.
     public func mappedForLinearFit(complexity: Complexity) -> Array {
-        return self.map { ($0, complexity.inverse($1)) }
+        return map { ($0, complexity.inverse($1)) }
     }
 }
 
