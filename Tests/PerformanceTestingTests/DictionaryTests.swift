@@ -15,13 +15,13 @@ class DictionaryTests: XCTestCase {
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
         let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.isEmpty }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
         let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.count }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // MARK: Accessing
@@ -31,7 +31,7 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) {
             _ = $0[Int.random(in: 0..<$0.count)]
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `index` should be constant-time in the number of elements
@@ -39,25 +39,25 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) {
             _ = $0.index(forKey: Int.random(in: 0..<$0.count))
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
         let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.first }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `keys` should be constant-time in the number of elements
     func testKeys() {
         let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.keys }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `values` should be constant-time in the number of elements
     func testValues() {
         let benchmark = Benchmark.nonMutating(setup: dict(.increasing)) { _ = $0.values }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // MARK: Adding elements
@@ -68,7 +68,7 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
             $0.updateValue(Int.random(in: 0..<$0.count), forKey: Int.random(in: 0..<$0.count))
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `updateValue` should be constant-time in the number of elements
@@ -77,7 +77,7 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
             $0.updateValue($0.count, forKey: $0.count)
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // MARK: Removing elements
@@ -87,7 +87,7 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
             _ = $0.filter { $0.key % 5 == 3 }
         }
-        assertPerformance(.linear, of: benchmark)
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
     // `removeValue` should be constant-time in the number of elements,
@@ -96,7 +96,7 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
             $0.removeValue(forKey: Int.random(in: 0..<$0.count))
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `removeValue` should be constant-time in the number of elements,
@@ -105,13 +105,13 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.mutating(setup: dict(.increasing)) {
             $0.removeValue(forKey: $0.count)
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `removeAll` should be linear-time in the number of elements
     func testRemoveAll() {
         let benchmark = Benchmark.mutating(setup: dict(.increasing)) { $0.removeAll() }
-        assertPerformance(.linear, of: benchmark)
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
     // MARK: Comparing
@@ -122,7 +122,7 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.nonMutating(setup: dictPair(.increasing)) { (a,b) in
             _ = a == b
         }
-        assertPerformance(.linear, of: benchmark)
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
     // `!=` should be linear in the number of elements inserted
@@ -131,6 +131,6 @@ class DictionaryTests: XCTestCase {
         let benchmark = Benchmark.nonMutating(setup: dictPair(.increasing)) { (a,b) in
             _ = a != b
         }
-        assertPerformance(.linear, of: benchmark)
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 }

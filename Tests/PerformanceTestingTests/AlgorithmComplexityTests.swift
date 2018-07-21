@@ -23,7 +23,7 @@ class AlgorithmComplexityTests: XCTestCase {
             testPoints: Scale.small,
             measuring: { _ = makeRandomSquareMatrix(size: $0) }
         )
-        assertPerformance(.quadratic, of: benchmark)
+        XCTAssert(benchmark.performance(is: .quadratic), "\(benchmark)")
     }
 
     // Adding two square matrices should be quadratic in side length
@@ -33,7 +33,7 @@ class AlgorithmComplexityTests: XCTestCase {
             setup: { (makeRandomSquareMatrix(size: $0), makeRandomSquareMatrix(size: $0)) },
             measuring: { (a,b) in _ = squareMatrixAdd(a,b) }
         )
-        assertPerformance(.quadratic, of: benchmark)
+        XCTAssert(benchmark.performance(is: .quadratic), "\(benchmark)")
     }
 
     // MARK: Cubic.
@@ -44,7 +44,7 @@ class AlgorithmComplexityTests: XCTestCase {
             setup: { (makeRandomSquareMatrix(size: $0), makeRandomSquareMatrix(size: $0)) },
             measuring: { (a,b) in _ = squareMatrixMultiply(a,b) }
         )
-        assertPerformance(.cubic, of: benchmark)
+        XCTAssert(benchmark.performance(is: .cubic), "\(benchmark)")
     }
 
     // MARK: Exponential: Recursive Fibonacci generator.
@@ -56,7 +56,7 @@ class AlgorithmComplexityTests: XCTestCase {
             testPoints: [5, 8, 11, 14, 17, 20, 23, 26, 30, 35],
             measuring: { _ = fibonacci($0) }
         )
-        assertPerformance(.exponential, of: benchmark)
+        XCTAssert(benchmark.performance(is: .exponential), "\(benchmark)")
     }
 
     // MARK: Prime testing
@@ -66,7 +66,7 @@ class AlgorithmComplexityTests: XCTestCase {
         let benchmark = Benchmark.algorithm {
             for number in 0..<10_000 { _ = isPrime($0 + number * 2 + 1) }
         }
-        assertPerformance(.squareRoot, of: benchmark)
+        XCTAssert(benchmark.performance(is: .squareRoot), "\(benchmark)")
     }
 }
 

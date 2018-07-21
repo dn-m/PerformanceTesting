@@ -8,18 +8,6 @@
 import XCTest
 import Darwin
 
-/// Assert that the computed average time complexity of a `benchmark` is in the stated complexity
-/// class on the scale of inputs.
-public func assertPerformance(_ complexity: Complexity, of benchmark: Benchmark) {
-    let data = benchmark.data
-    switch complexity {
-    case .constant:
-        assertConstantTimePerformance(data)
-    default:
-        assertPerformanceComplexity(data, complexity: complexity)
-    }
-}
-
 /// Assert that the data indicates that performance is constant-time ( O(1) ).
 internal func assertConstantTimePerformance(
     _ benchmark: [(Double,Double)],
@@ -39,7 +27,7 @@ internal func assertConstantTimePerformance(
 /// complexity class. Optional parameter for minimum acceptable correlation.
 /// Use assertConstantTimePerformance for O(1) assertions
 internal func assertPerformanceComplexity(
-    _ benchmark: [(Double,Double)],
+    _ benchmark: [(x: Double, y: Double)],
     complexity: Complexity,
     minimumCorrelation: Double = 0.9
 )
@@ -54,7 +42,7 @@ internal func assertPerformanceComplexity(
     }
 }
 
-extension Array where Element == (Double,Double) {
+extension Array where Element == (x: Double, y: Double) {
 
     /// Maps data representing performance of a certain complexity so that it
     /// can be fit with linear regression. This is done by applying the inverse

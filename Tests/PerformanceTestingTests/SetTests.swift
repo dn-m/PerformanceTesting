@@ -15,19 +15,19 @@ class SetTests: XCTestCase {
     // `isEmpty` should be constant-time in the number of elements
     func testIsEmpty() {
         let benchmark = Benchmark.nonMutating(setup: set(.increasing)) { _ = $0.isEmpty }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `count` should be constant-time in the number of elements
     func testCount() {
         let benchmark = Benchmark.nonMutating(setup: set(.increasing)) { _ = $0.count }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `first` should be constant-time in the number of elements
     func testFirst() {
         let benchmark = Benchmark.nonMutating(setup: set(.increasing)) { _ = $0.first }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // MARK: Membership
@@ -38,14 +38,14 @@ class SetTests: XCTestCase {
         let benchmark = Benchmark.nonMutating(setup: set(.increasing)) {
             _ = $0.contains(Int.random(in: 0..<$0.count))
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `contains` should be constant-time in the number of elements
     // if the element in question is in the set
     func testContainsMiss() {
         let benchmark = Benchmark.nonMutating(setup: set(.increasing)) { _ = $0.contains($0.count) }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // MARK: Adding elements
@@ -55,7 +55,7 @@ class SetTests: XCTestCase {
         let benchmark = Benchmark.mutating(setup: set(.increasing)) {
             $0.insert(Int.random(in: 0 ..< $0.count * 2))
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // MARK: Removing elements
@@ -63,7 +63,7 @@ class SetTests: XCTestCase {
     // `filter` should be linear in the number of elements
     func testFilter() {
         let benchmark = Benchmark.mutating(setup: set(.increasing)) { _ = $0.filter { $0 % 5 == 3 } }
-        assertPerformance(.linear, of: benchmark)
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 
     // `remove` should be constant-time in the number of elements,
@@ -72,20 +72,20 @@ class SetTests: XCTestCase {
         let benchmark = Benchmark.mutating(setup: set(.increasing)) {
             $0.remove(Int.random(in: 0..<$0.count))
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `remove` should be constant-time in the number of elements,
     // if the element to be removed is not in the set
     func testRemoveMiss() {
         let benchmark = Benchmark.mutating(setup: set(.increasing)) { $0.remove($0.count) }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `removeFirst` should be constant-time in the number of elements
     func testRemoveFirst() {
         let benchmark = Benchmark.mutating(setup: set(.increasing)) { $0.removeFirst() }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // MARK: Combining sets
@@ -96,7 +96,7 @@ class SetTests: XCTestCase {
         let benchmark = Benchmark.nonMutating(setup: { (Set(0..<$0), Set(0..<100)) }) { (a,b) in
             _ = a.union(b)
         }
-        assertPerformance(.constant, of: benchmark)
+        XCTAssert(benchmark.performance(is: .constant), "\(benchmark)")
     }
 
     // `union` should be linear in the number of elements inserted
@@ -105,6 +105,6 @@ class SetTests: XCTestCase {
         let benchmark = Benchmark.nonMutating(setup: { (Set(0..<$0), Set(0..<100)) }) { (a,b) in
             _ = b.union(a)
         }
-        assertPerformance(.linear, of: benchmark)
+        XCTAssert(benchmark.performance(is: .linear), "\(benchmark)")
     }
 }

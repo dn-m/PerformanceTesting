@@ -1,5 +1,5 @@
 //
-//  StructurePreparation.swift
+//  CollectionPreparation.swift
 //  PerformanceTestingTests
 //
 //  Created by James Bean on 7/21/18.

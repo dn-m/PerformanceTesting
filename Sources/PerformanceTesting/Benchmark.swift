@@ -84,6 +84,23 @@ public struct Benchmark {
     init(testPoints: [TestPoint]) {
         self.testPoints = testPoints
     }
+
+    /// - Returns: `true` if the computed average time complexity of this `Benchmark` is in the
+    /// given `complexity` class on the scale of inputs.
+    public func performance(is complexity: Complexity) -> Bool {
+        switch complexity {
+        case .constant:
+            let results = linearRegression(data)
+            return (
+                approximatelyEqual(results.slope, 0, epsilon: 0.1) || results.correlation < 0.9
+            )
+        default:
+            let mappedData = data.mappedForLinearFit(complexity: complexity)
+            let results = linearRegression(mappedData)
+            let minimumCorrelation = 0.9
+            return results.correlation >= minimumCorrelation
+        }
+    }
 }
 
 /// - Returns: The amount of time that it takes to perform the given `operation`.
