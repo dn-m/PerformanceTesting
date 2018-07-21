@@ -99,18 +99,8 @@ enum FillStrategy {
 private func array (_ strategy: FillStrategy) -> (_ size: Int) -> Array<Int> {
     switch strategy {
     case .increasing:
-        return makeArray
+        return { size in .init(0..<size) }
     case .random:
-        return makeRandomArray
+        return { size in .init((0..<size).map { _ in Int.random(in: 0..<size) }) }
     }
-}
-
-// Constructs an array of size `n` with linearly increasing elements.
-func makeArray(size n: Int) -> [Int] {
-    return Array(count: n) { $0 }
-}
-
-// Constructs an array of size `n` with random elements.
-func makeRandomArray(size n: Int) -> [Int] {
-    return Array(count: n) { _ in n.random() }
 }
