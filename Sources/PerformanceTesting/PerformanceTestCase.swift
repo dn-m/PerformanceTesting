@@ -41,7 +41,7 @@ internal func assertConstantTimePerformance(
 )
 {
     let results = linearRegression(benchmark)
-    guard approximatelyEqual(results.slope, 0, epsilon: tolerance), results.correlation < 0.9 else {
+    guard approximatelyEqual(results.slope, 0, epsilon: tolerance) || results.correlation < 0.9 else {
         dump(benchmark)
         dump(results)
         XCTFail("Operation not observed in constant time")
