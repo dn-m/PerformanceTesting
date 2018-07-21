@@ -10,7 +10,7 @@ enum FillStrategy {
     case random
 }
 
-private func array (_ strategy: FillStrategy) -> (_ size: Int) -> Array<Int> {
+func array (_ strategy: FillStrategy) -> (_ size: Int) -> Array<Int> {
     switch strategy {
     case .increasing:
         return { size in .init(0..<size) }
