@@ -20,8 +20,8 @@ struct DataSet {
 
     /// - Returns: Linear regression of data contained herein.
     var linearRegression: LinearRegression {
-        let xs = data.map { $0.0 }
-        let ys = data.map { $0.1 }
+        
+        let (xs,ys) = unzip(data)
         let sumOfXs = xs.sum
         let sumOfYs = ys.sum
         let sumOfXsSquared = xs.map { pow($0,2) }.sum
@@ -110,4 +110,9 @@ private func correlation(
 public func approximatelyEqual <F: FloatingPoint> (_ a: F, _ b: F, epsilon: F) -> Bool {
     if a == b { return true }
     return abs(b-a) < epsilon
+}
+
+/// - Returns: A tuplet of arrays from an array of tuples.
+func unzip <T,U> (_ array: [(T,U)]) -> ([T],[U]) {
+    return (array.map { $0.0 }, array.map { $0.1} )
 }
