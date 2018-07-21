@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Collection of `TestPoint` values.
 public struct Benchmark {
 
     // MARK: - Type Methods
