@@ -24,7 +24,7 @@ Development
 
 ### Building
 
-Clone and buil this project with:
+Clone and build this project with:
 
     git clone https://github.com/dn-m/PerformanceTesting && cd PerformanceTesting
     swift build
