@@ -52,10 +52,9 @@ class AlgorithmComplexityTests: XCTestCase {
     func testExponential_RecursiveFibonacci() {
         // hardcoded; anything larger takes too long, and using `exponentialSeries`
         // generates duplicate test points, which is not a problem, but we like variety
-        let benchmark = Benchmark.algorithm(
-            testPoints: [5, 8, 11, 14, 17, 20, 23, 26, 30, 35],
-            measuring: { _ = fibonacci($0) }
-        )
+        let benchmark = Benchmark.algorithm(testPoints: [5, 8, 11, 14, 17, 20, 23, 26, 30, 35]) {
+            _ = fibonacci($0)
+        }
         XCTAssert(benchmark.performance(is: .exponential), "\(benchmark)")
     }
 
