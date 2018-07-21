@@ -53,25 +53,18 @@ internal func assertConstantTimePerformance(
 /// complexity class. Optional parameter for minimum acceptable correlation.
 /// Use assertConstantTimePerformance for O(1) assertions
 internal func assertPerformanceComplexity(
-    _ data: [(Double,Double)],
+    _ benchmark: [(Double,Double)],
     complexity: Complexity,
     minimumCorrelation: Double = 0.9,
     logging: Logging = .none
 )
 {
-    let mappedData = data.mappedForLinearFit(complexity: complexity)
+    let mappedData = benchmark.mappedForLinearFit(complexity: complexity)
     let results = linearRegression(mappedData)
     guard results.correlation >= minimumCorrelation else {
-        if logging == .detailed  {
-            for (trial,info) in mappedData.enumerated() {
-                let (size,time) = info
-                print("trial: \(trial + 1): size: \(size), time: \(time)")
-            }
-            print("slope: \(results.slope)")
-            print("intercept: \(results.intercept)")
-            print("correlation: \(results.correlation) (minimum: \(minimumCorrelation))")
-        }
-        XCTFail("Fail")
+        dump(benchmark)
+        dump(results)
+        XCTFail("Operation not observed in \(complexity) time")
         return
     }
 }
