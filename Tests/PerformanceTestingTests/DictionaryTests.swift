@@ -134,32 +134,3 @@ class DictionaryTests: XCTestCase {
         assertPerformance(.linear, of: benchmark)
     }
 }
-
-func dict (_ strategy: FillStrategy) -> (_ size: Int) -> Dictionary<Int,Int> {
-    switch strategy {
-    case .increasing:
-        return makeDictionary
-    case .random:
-        return makeRandomDictionary
-    }
-}
-
-func dictPair (_ strategy: FillStrategy)
-    -> (_ size: Int)
-    -> (Dictionary<Int,Int>,Dictionary<Int,Int>)
-{
-    return { size in
-        (dict(strategy)(size),dict(strategy)(size))
-    }
-}
-
-// Constructs a dictionary of size `n` with linearly increasing elements
-// associated with linearly decreasing elements
-func makeDictionary(size n: Int) -> Dictionary<Int,Int> {
-    return Dictionary(count: n) { (key: $0, value: $0) }
-}
-
-// Constructs an array of size `n` with random elements.
-func makeRandomDictionary(size n: Int) -> Dictionary<Int,Int> {
-    return Dictionary(count: n) { (key: Int.random(in: 0..<$0), value: Int.random(in: 0..<$0)) }
-}
