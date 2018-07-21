@@ -117,5 +117,5 @@ public func approximatelyEqual <F: FloatingPoint> (_ a: F, _ b: F, epsilon: F) -
 
 /// - Returns: A tuple of arrays from an array of tuples.
 func unzip <T,U> (_ array: [(T,U)]) -> ([T],[U]) {
-    return (array.map { $0.0 }, array.map { $0.1} )
+    return (array.map { $0.0 }, array.map { $0.1 } )
 }
