@@ -20,7 +20,7 @@ struct DataSet {
 
     /// - Returns: Linear regression of data contained herein.
     var linearRegression: LinearRegression {
-        
+
         let (xs,ys) = unzip(data)
         let sumOfXs = xs.sum
         let sumOfYs = ys.sum
