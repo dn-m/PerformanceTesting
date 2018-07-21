@@ -22,7 +22,7 @@ extension Array where Element == (Double, Double) {
     public func curve(is complexity: Complexity) -> Bool {
         switch complexity {
         case .constant:
-            let tolerance = 0.1
+            let tolerance = 0.01
             let results = linearRegression(self)
             return (
                 approximatelyEqual(results.slope, 0, epsilon: tolerance) ||
