@@ -67,21 +67,12 @@ struct DataSet {
     {
         switch complexity {
         case .constant:
-            return approximatelyEqual(linearRegression.slope, 0, epsilon: tolerance)
+            return linearRegression.slope.isApproximatelyEqual(to: 0, within: tolerance)
         default:
             let mappedData = mappedForLinearFit(complexity: complexity)
             let results = mappedData.linearRegression
             return results.correlation >= minimumCorrelation
         }
-    }
-}
-
-extension DataSet: ExpressibleByArrayLiteral {
-
-    // MARK: - ExpressibleByArrayLiteral
-
-    init(arrayLiteral elements: (Double,Double)...) {
-        self.data = elements
     }
 }
 
@@ -103,12 +94,26 @@ private func correlation(
     return sqrt(numerator / denominator) * slope
 }
 
-/// - Returns: `true`  if the given values are equal within the given `epsilon`. Otherwise, `false.`
-///
-/// - Note: This is a naive implementation which does not address extreme floating point situations.
-public func approximatelyEqual <F: FloatingPoint> (_ a: F, _ b: F, epsilon: F) -> Bool {
-    if a == b { return true }
-    return abs(b-a) < epsilon
+extension DataSet: ExpressibleByArrayLiteral {
+
+    // MARK: - ExpressibleByArrayLiteral
+
+    init(arrayLiteral elements: (Double,Double)...) {
+        self.data = elements
+    }
+}
+
+extension FloatingPoint {
+
+    /// - Returns: `true`  if the given `other` is equal to self within the given `epsilon`.
+    /// Otherwise, `false.`
+    ///
+    /// - Note: This is a naive implementation which does not address extreme floating point
+    /// situations.
+    func isApproximatelyEqual(to other: Self, within epsilon: Self) -> Bool {
+        if self == other { return true }
+        return abs(other - self) < epsilon
+    }
 }
 
 /// - Returns: A tuple of arrays from an array of tuples.
