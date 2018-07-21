@@ -86,8 +86,17 @@ public struct Benchmark {
 
     /// - Returns: `true` if the computed average time complexity of this `Benchmark` is in the
     /// given `complexity` class on the scale of inputs.
-    public func performance(is complexity: Complexity) -> Bool {
-        return data.curve(is: complexity)
+    public func performance(
+        is complexity: Complexity,
+        tolerance: Double = 0.1,
+        minimumCorrelation: Double = 0.9
+    ) -> Bool
+    {
+        return data.curve(
+            is: complexity,
+            tolerance: tolerance,
+            minimumCorrelation: minimumCorrelation
+        )
     }
 }
 
