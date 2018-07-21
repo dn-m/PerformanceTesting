@@ -69,7 +69,7 @@ internal func assertPerformanceComplexity(
     }
 }
 
-extension Array where Array == [(Double,Double)] {
+extension Array where Element == (Double,Double) {
 
     /// Maps data representing performance of a certain complexity so that it
     /// can be fit with linear regression. This is done by applying the inverse
