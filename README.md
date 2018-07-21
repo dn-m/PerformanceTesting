@@ -6,7 +6,7 @@ PerformanceTesting
 
 **PerformanceTesting** provides tools for checking the [asymptotic complexity](https://en.wikipedia.org/wiki/Asymptotic_computational_complexity) of algorithms and operations over data structures.
 
-For example, this is particularly useful for ensuring that an algorithm that you have written which should be perform in constant time (i.e., ***O(1)***) isn't [accidentally quadratic](https://accidentallyquadratic.tumblr.com/) (i.e., ***O(n<sup>2</sup>)***).
+For example, this is particularly useful for ensuring that an algorithm that you have written which should be perform in constant time (i.e., **O(1)**) isn't [accidentally quadratic](https://accidentallyquadratic.tumblr.com/) (i.e., **O(n<sup>2</sup>)**).
 
 Usage
 -----
