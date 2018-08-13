@@ -5,7 +5,11 @@
 //  Created by James Bean on 8/10/17.
 //
 
-import Darwin
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
 
 /// Collection of (x,y) data points.
 struct DataSet {
