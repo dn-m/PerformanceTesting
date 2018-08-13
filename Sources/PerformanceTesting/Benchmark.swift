@@ -121,15 +121,7 @@ private func measure (operation: () -> Void) -> Double {
 }
 
 private func now() -> Double {
-    #if os(Linux)
-        var tv = timeval()
-        gettimeofday(&tv, nil)
-        return Double(tv.tv_sec) + Double(tv.tv_usec) / Double(USEC_PER_SEC)
-    #elseif os(iOS) || os(watchOS) || os(tvOS) || os(OSX)
-        return CFAbsoluteTimeGetCurrent()
-    #else
-        fatalError("Operating system not supported!")
-    #endif
+    return Double(DispatchTime.now().uptimeNanoseconds) / 1_000_000_000
 }
 
 extension Array where Element == Double {
