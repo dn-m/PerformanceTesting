@@ -5,7 +5,13 @@
 //  Created by James Bean on 8/11/17.
 //
 
-import Foundation
+#if os(Linux)
+    import Glibc
+#elseif os(iOS) || os(watchOS) || os(tvOS) || os(OSX)
+    import Foundation
+#else
+    import Darwin.C
+#endif
 
 /// Collection of `TestPoint` values.
 public struct Benchmark {
@@ -108,10 +114,20 @@ extension Benchmark: CustomStringConvertible {
 
 /// - Returns: The amount of time that it takes to perform the given `operation`.
 private func measure (operation: () -> Void) -> Double {
-    let start = CFAbsoluteTimeGetCurrent()
+    let start = now()
     operation()
-    let finish = CFAbsoluteTimeGetCurrent()
+    let finish = now()
     return finish - start
+}
+
+private func now() -> Double {
+    #if os(Linux)
+        return time()
+    #elseif os(iOS) || os(watchOS) || os(tvOS) || os(OSX)
+        return CFAbsoluteTimeGetCurrent()
+    #else
+        fatalError("Operating system not supported!")
+    #endif
 }
 
 extension Array where Element == Double {
