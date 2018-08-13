@@ -1,6 +1,8 @@
 import XCTest
-@testable import PerformanceTestingTests
 
-XCTMain([
-    testCase(PerformanceTestingTests.allTests),
-])
+import PerformanceTestingTests
+
+var tests = [XCTestCaseEntry]()
+tests += PerformanceTestingTests.__allTests()
+
+XCTMain(tests)
