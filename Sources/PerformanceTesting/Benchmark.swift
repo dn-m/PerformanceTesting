@@ -5,7 +5,13 @@
 //  Created by James Bean on 8/11/17.
 //
 
-import Foundation
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
+
+import Dispatch
 
 /// Collection of `TestPoint` values.
 public struct Benchmark {
@@ -108,10 +114,14 @@ extension Benchmark: CustomStringConvertible {
 
 /// - Returns: The amount of time that it takes to perform the given `operation`.
 private func measure (operation: () -> Void) -> Double {
-    let start = CFAbsoluteTimeGetCurrent()
+    let start = now()
     operation()
-    let finish = CFAbsoluteTimeGetCurrent()
+    let finish = now()
     return finish - start
+}
+
+private func now() -> Double {
+    return Double(DispatchTime.now().uptimeNanoseconds) / 1_000_000_000
 }
 
 extension Array where Element == Double {
