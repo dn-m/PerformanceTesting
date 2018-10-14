@@ -88,7 +88,7 @@ Installation
 
 Include this package by adding the following line to your `Package.swift`'s `dependencies` section:
 
-    .package(url: "https://github.com/dn-m/PerformanceTest", .branch("master"))
+    .package(url: "https://github.com/dn-m/PerformanceTesting", .branch("master"))
 
 Add `import PerformanceTesting` to the top of your test files, and you are good to go.
 
