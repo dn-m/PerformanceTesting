@@ -1,7 +1,7 @@
 PerformanceTesting
 ==================
 
-![Swift](https://img.shields.io/badge/Swift-4.2-brightgreen.svg)
+![Swift](https://img.shields.io/badge/Swift-5.0-brightgreen.svg)
 [![Build Status](https://travis-ci.org/dn-m/PerformanceTesting.svg?branch=master)](https://travis-ci.org/dn-m/PerformanceTesting)
 
 **PerformanceTesting** provides tools for checking the [asymptotic complexity](https://en.wikipedia.org/wiki/Asymptotic_computational_complexity) of algorithms and operations over data structures.
