@@ -5,12 +5,6 @@
 //  Created by James Bean on 8/11/17.
 //
 
-#if os(Linux)
-    import Glibc
-#else
-    import Darwin.C
-#endif
-
 import Dispatch
 
 /// Collection of `TestPoint` values.
